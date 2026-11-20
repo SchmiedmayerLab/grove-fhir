@@ -2,9 +2,10 @@
 """Validate Grove study task occurrences against their definitions, results, and history.
 
 The official FHIR Validator checks each resource against its Grove profile. This companion checks
-what no single resource can show: that a Task's definitions exist and agree, that its result is
-about the same participant and instrument, and that a delivery agrees with the occurrences a
-receiver already accepted. Deliveries are applied in order; a rejected delivery changes no state.
+what no single resource can show: that a Task's definitions exist and agree, that the result of a
+questionnaire occurrence is about the same participant and instrument, and that a delivery agrees
+with the occurrences a receiver already accepted. Deliveries are applied in order; a rejected
+delivery changes no state.
 """
 
 # This source file is part of the Grove FHIR open-source project
@@ -34,13 +35,23 @@ RESULT_REFERENCE = re.compile(
     r"(?P<id>[A-Za-z0-9.-]{1,64})/_history/(?P<version>[A-Za-z0-9.-]{1,64})$"
 )
 ACCEPTED_RESPONSE_STATUSES = frozenset({"completed", "amended"})
-RULES = (
+# Rules for an occurrence of any component kind.
+OCCURRENCE_RULES = (
     "study-task-definition",
     "study-task-protocol",
-    "study-task-instrument",
     "study-task-enrollment",
     "study-task-duplicate-occurrence",
     "study-task-cancelled-after-window",
+    "study-task-output",
+    "study-task-completion-window",
+    "study-task-occurrence-conflict",
+    "study-task-status-transition",
+    "study-task-altered-replay",
+)
+# Rules for the questionnaire input of any occurrence, and for an occurrence of a questionnaire
+# component and the response that completes it.
+QUESTIONNAIRE_RULES = (
+    "study-task-instrument",
     "study-task-result-reference",
     "study-task-result-subject",
     "study-task-result-instrument",
@@ -48,13 +59,11 @@ RULES = (
     "study-task-result-window",
     "study-task-result-part-of",
     "study-task-result-shared",
-    "study-task-occurrence-conflict",
-    "study-task-status-transition",
-    "study-task-altered-replay",
     "study-task-altered-result",
     "study-task-completion-conflict",
     "study-task-correction",
 )
+RULES = OCCURRENCE_RULES + QUESTIONNAIRE_RULES
 
 
 def _load_pair_validator() -> Any:
@@ -168,6 +177,15 @@ def result_link(task: dict[str, Any]) -> str | None:
     return reference if isinstance(reference, str) else None
 
 
+def is_questionnaire(resource: dict[str, Any] | None) -> bool:
+    """Whether a component revision or a Task carries the SDC complete-questionnaire code."""
+    return any(
+        isinstance(coding, dict) and coding.get("system") == SDC_SYSTEM
+        and coding.get("code") == "complete-questionnaire"
+        for coding in members(resource, "code", "coding")
+    )
+
+
 def actions(plan: dict[str, Any]) -> Iterator[dict[str, Any]]:
     for action in plan.get("action", []):
         if isinstance(action, dict):
@@ -195,6 +213,7 @@ class TaskView:
     task: Resolved
     key: tuple[str, str]
     label: str
+    questionnaire: bool = False
     response: dict[str, Any] | None = None
 
     @property
@@ -370,18 +389,6 @@ def check_task(view: TaskView, index: Definitions, responses: Sequence[Resolved]
     ):
         report("study-task-protocol", f"protocol revision {protocol_canonical!r} has no action assigning {component_canonical!r}")
 
-    questionnaire_canonical = typed_input(task, SDC_SYSTEM, "questionnaire").get("valueCanonical")
-    pinned = None
-    if component is not None:
-        pinned = [
-            artifact.get("resource")
-            for artifact in members(component, "relatedArtifact")
-            if isinstance(artifact, dict) and artifact.get("type") == "depends-on"
-        ]
-    instrument = index.one("Questionnaire", questionnaire_canonical)
-    if instrument is None or (pinned is not None and pinned != [questionnaire_canonical]):
-        report("study-task-instrument", f"instrument {questionnaire_canonical!r} is not the one resolvable instrument of the component revision")
-
     enrollment_key = identifier_key(member(typed_input(task, PARAMETER_SYSTEM, "enrollment"), "valueReference", "identifier"))
     enrollment = index.enrollment(enrollment_key)
     if enrollment is None or subject not in index.subject_keys(enrollment.get("individual")):
@@ -395,7 +402,59 @@ def check_task(view: TaskView, index: Definitions, responses: Sequence[Resolved]
         if end is None or stopped is None or stopped > end:
             report("study-task-cancelled-after-window", "a cancelled occurrence was last modified after its window ended")
 
-    if status != "completed":
+    # A component revision or a Task with the complete-questionnaire code makes the occurrence a
+    # questionnaire occurrence. Any other occurrence completes without an output.
+    view.questionnaire = is_questionnaire(component) or is_questionnaire(task)
+    if not view.questionnaire:
+        # Without a resolved component the kind is unknown; study-task-definition already rejects it.
+        if component is None:
+            return issues
+        if members(task, "output"):
+            report("study-task-output", "the component revision defines no result, so the occurrence carries no output")
+        # Without a result, lastModified is when the status became completed.
+        if status == "completed":
+            completed = instant(task.get("lastModified"))
+            if start is None or end is None or completed is None or completed < start or completed > end:
+                report("study-task-completion-window", "the occurrence was not completed within its performance window")
+        if any(
+            isinstance(coding, dict) and coding.get("system") == SDC_SYSTEM and coding.get("code") == "questionnaire"
+            for entry in members(task, "input") for coding in members(entry, "type", "coding")
+        ):
+            report("study-task-instrument", "the component revision administers no instrument, so the occurrence carries no questionnaire input")
+        return issues
+    issues.extend(check_questionnaire(view, component, index, responses, subject, start, end))
+    return issues
+
+
+def check_questionnaire(
+    view: TaskView,
+    component: dict[str, Any] | None,
+    index: Definitions,
+    responses: Sequence[Resolved],
+    subject: tuple[str, str] | None,
+    start: datetime | None,
+    end: datetime | None,
+) -> list[Issue]:
+    """The instrument and result issues of one questionnaire occurrence."""
+    task, label = view.resource, view.label
+    issues: list[Issue] = []
+
+    def report(rule: str, message: str) -> None:
+        issues.append(Issue(rule, label, message))
+
+    questionnaire_canonical = typed_input(task, SDC_SYSTEM, "questionnaire").get("valueCanonical")
+    pinned = None
+    if component is not None:
+        pinned = [
+            artifact.get("resource")
+            for artifact in members(component, "relatedArtifact")
+            if isinstance(artifact, dict) and artifact.get("type") == "depends-on"
+        ]
+    instrument = index.one("Questionnaire", questionnaire_canonical)
+    if instrument is None or (pinned is not None and pinned != [questionnaire_canonical]):
+        report("study-task-instrument", f"instrument {questionnaire_canonical!r} is not the one resolvable instrument of the component revision")
+
+    if task.get("status") != "completed":
         return issues
     response = resolve_result(view, responses)
     if response is None:
@@ -456,7 +515,9 @@ class Receiver:
                 view.facts(), str(view.resource.get("status", "")), view.content(), submission, result_id, version,
                 instant(member(view.response, "authored")),
             )
-            outcome, rule = self.transition(self.occurrences.get(view.key), current, view.response)
+            outcome, rule = self.transition(
+                self.occurrences.get(view.key), current, view.response, view.questionnaire
+            )
             if submission and version and not rule:
                 stored = self.responses.get((submission, version))
                 content = canonical_json(view.response)
@@ -483,11 +544,14 @@ class Receiver:
 
     @staticmethod
     def transition(
-        prior: Occurrence | None, current: Occurrence, response: dict[str, Any] | None
+        prior: Occurrence | None,
+        current: Occurrence,
+        response: dict[str, Any] | None,
+        questionnaire: bool,
     ) -> tuple[str, str | None]:
         """The outcome for one occurrence, or the message and rule that reject it."""
         completing = current.status == "completed" and (prior is None or prior.status == "ready")
-        if completing and (response or {}).get("status") != "completed":
+        if questionnaire and completing and (response or {}).get("status") != "completed":
             return "the first accepted result of an occurrence is a completed response", "study-task-result-status"
         if prior is None:
             return "accepted", None

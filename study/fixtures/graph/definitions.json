@@ -20,15 +20,12 @@
         "status": "active",
         "action": [
           {
+            "title": "Welcome",
+            "definitionCanonical": "https://example.org/fhir/ActivityDefinition/welcome|1.0.0"
+          },
+          {
             "title": "Daily check-in",
-            "definitionCanonical": "https://example.org/fhir/ActivityDefinition/daily-check-in|1.0.0",
-            "timingTiming": {
-              "repeat": {
-                "frequency": 1,
-                "period": 1,
-                "periodUnit": "d"
-              }
-            }
+            "definitionCanonical": "https://example.org/fhir/ActivityDefinition/daily-check-in|1.0.0"
           }
         ]
       }
@@ -215,6 +212,26 @@
             "value": "participant-001"
           }
         }
+      }
+    },
+    {
+      "fullUrl": "https://example.org/fhir/ActivityDefinition/welcome",
+      "resource": {
+        "resourceType": "ActivityDefinition",
+        "id": "welcome",
+        "meta": {
+          "profile": [
+            "https://grovealliance.org/fhir/study/StructureDefinition/grove-study-activity"
+          ]
+        },
+        "url": "https://example.org/fhir/ActivityDefinition/welcome",
+        "version": "1.0.0",
+        "name": "Welcome",
+        "title": "Welcome",
+        "status": "active",
+        "description": "Shows the participant a welcome message about the study.",
+        "kind": "Task",
+        "intent": "order"
       }
     }
   ]

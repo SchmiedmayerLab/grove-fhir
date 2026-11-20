@@ -6,8 +6,9 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-A completed occurrence links its accepted result from `Task.output[result]`.
+A completed questionnaire occurrence links its accepted result from `Task.output[result]`, an output slice the [Grove Study Questionnaire Task](StructureDefinition-grove-study-questionnaire-task.html) adds to the base Task.
 The result is a [Grove Questionnaire Response](https://grovealliance.org/fhir/questionnaire/StructureDefinition-grove-questionnaire-response.html), and every rule of the Questionnaire Exchange applies to it unchanged.
+An occurrence of a component kind without a result is completed without an output, as [Assign an occurrence](occurrences.html) defines.
 
 ### Result link
 
@@ -36,7 +37,7 @@ Scientific validation of the answers is separate from this exchange.
 
 ### One completion per occurrence
 
-An occurrence is completed once.
+A questionnaire occurrence is completed once, and a completed questionnaire occurrence always links its result.
 A response with another submission identifier never completes an occurrence that is already completed, and one response never completes two occurrences.
 
 A response still in progress, or a completion recorded on a device and not yet accepted, is application state.

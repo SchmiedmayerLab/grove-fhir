@@ -6181,6 +6181,27 @@
           "classification": "example"
         },
         {
+          "fshName": "GroveStudyWelcomeActivityExample",
+          "fshType": "Instance",
+          "resourceType": "ActivityDefinition",
+          "id": "GroveStudyWelcomeActivityExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveStudyWelcomeTaskExample",
+          "fshType": "Instance",
+          "resourceType": "Task",
+          "id": "GroveStudyWelcomeTaskExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveStudyActivity",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-study-activity",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveStudyProtocol",
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
@@ -6199,6 +6220,13 @@
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "grove-study-questionnaire-task",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveStudyTask",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-study-task",
           "classification": "definition"
         },
         {

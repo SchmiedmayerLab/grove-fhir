@@ -174,12 +174,15 @@
     },
     {"path": "study/fixtures/graph/definitions.json", "profiles": []},
     {"path": "study/fixtures/graph/deliveries/assigned.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/completed-after-window.json", "profiles": []},
     {"path": "study/fixtures/graph/deliveries/completed.json", "profiles": []},
     {"path": "study/fixtures/graph/deliveries/conflicting-reuse.json", "profiles": []},
     {"path": "study/fixtures/graph/deliveries/corrected.json", "profiles": []},
     {"path": "study/fixtures/graph/deliveries/excused.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/informational-completed.json", "profiles": []},
     {"path": "study/fixtures/graph/deliveries/invalid-result-reference.json", "profiles": []},
     {"path": "study/fixtures/graph/deliveries/pending-as-completed.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/questionnaire-completed-without-result.json", "profiles": []},
     {"path": "study/fixtures/graph/deliveries/re-enrollment.json", "profiles": []},
     {"path": "study/fixtures/graph/deliveries/result-outside-window.json", "profiles": []},
     {"path": "study/fixtures/graph/deliveries/reused-after-re-enrollment.json", "profiles": []},
@@ -192,7 +195,8 @@
   "negativeCorpora": [
     "Conformance/corpora/mobile-profile-invariants/corpus.json",
     "Conformance/corpora/healthkit-insulin-delivery/corpus.json",
-    "study/fixtures/structural/corpus.json"
+    "study/fixtures/structural/corpus.json",
+    "study/fixtures/structural/base/corpus.json"
   ],
   "excluded": [
     {

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 0,
+  "purpose": "One assigned welcome occurrence per way a Task that claims only the Grove Study Task profile can break it. The official Validator must accept the control and reject each case for exactly the declared reason: an output on a ready Task, and a Task without its participant.",
+  "profile": "https://grovealliance.org/fhir/study/StructureDefinition/grove-study-task",
+  "control": "control.json",
+  "cases": [
+    {
+      "path": "ready-with-output.json",
+      "expectedInvariant": "grove-study-task-output-1"
+    },
+    {
+      "path": "missing-participant.json",
+      "expectedRequired": "Task.for"
+    }
+  ]
+}

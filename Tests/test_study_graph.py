@@ -88,6 +88,7 @@ class StudyGraphCaseTests(unittest.TestCase):
             "assigned-then-completed", "exact-replay", "conflicting-reuse", "same-time-occurrences",
             "re-enrollment", "corrected-result", "wrong-subject", "wrong-instrument-version",
             "pending-as-completed", "invalid-result-reference", "result-outside-window",
+            "informational-completed", "completed-after-window", "questionnaire-completed-without-result",
         } <= identifiers)
 
     def test_every_graph_fixture_passes_through_the_official_validator(self) -> None:
@@ -97,6 +98,7 @@ class StudyGraphCaseTests(unittest.TestCase):
             with self.subTest(path=path.name):
                 self.assertIn(path.relative_to(ROOT).as_posix(), validated)
         self.assertIn("study/fixtures/structural/corpus.json", manifest["negativeCorpora"])
+        self.assertIn("study/fixtures/structural/base/corpus.json", manifest["negativeCorpora"])
 
     def test_completion_is_counted_once_across_replay_and_correction(self) -> None:
         receiver = self.receiver()
@@ -223,6 +225,98 @@ class StudyGraphCaseTests(unittest.TestCase):
             outcome(self.receiver().apply(graph.resources_of(delivery))),
             {"rejected": ["study-task-enrollment"]},
         )
+
+    def test_an_occurrence_without_a_result_kind_carries_no_output(self) -> None:
+        delivery = self.delivery("informational-completed")
+        delivery["entry"][0]["resource"]["output"] = [{
+            "type": {"coding": [{"system": graph.SDC_SYSTEM, "code": "questionnaire-response"}]},
+            "valueReference": {"reference": "QuestionnaireResponse/response-0001/_history/1"},
+        }]
+        self.assertEqual(
+            outcome(self.receiver().apply(graph.resources_of(delivery))),
+            {"rejected": ["study-task-output"]},
+        )
+
+    def test_a_completed_informational_occurrence_replays_and_stays_final(self) -> None:
+        receiver = self.receiver()
+        self.assertEqual(
+            outcome(receiver.apply(graph.resources_of(self.delivery("informational-completed")))),
+            {"outcomes": {"welcome-0001": "accepted"}},
+        )
+        self.assertEqual(
+            outcome(receiver.apply(graph.resources_of(self.delivery("informational-completed")))),
+            {"outcomes": {"welcome-0001": "replayed"}},
+        )
+        reopened = self.delivery("informational-completed")
+        reopened["entry"][0]["resource"]["status"] = "ready"
+        self.assertEqual(
+            outcome(receiver.apply(graph.resources_of(reopened))),
+            {"rejected": ["study-task-status-transition"]},
+        )
+
+    def test_an_occurrence_without_a_result_is_completed_within_its_window(self) -> None:
+        for last_modified in ("2026-08-17T23:59:59-07:00", "2026-08-25T08:00:01-07:00"):
+            with self.subTest(last_modified=last_modified):
+                delivery = self.delivery("informational-completed")
+                delivery["entry"][0]["resource"]["lastModified"] = last_modified
+                self.assertEqual(
+                    outcome(self.receiver().apply(graph.resources_of(delivery))),
+                    {"rejected": ["study-task-completion-window"]},
+                )
+        on_time = self.delivery("informational-completed")
+        on_time["entry"][0]["resource"]["lastModified"] = "2026-08-25T08:00:00-07:00"
+        self.assertEqual(
+            outcome(self.receiver().apply(graph.resources_of(on_time))),
+            {"outcomes": {"welcome-0001": "accepted"}},
+        )
+
+    def test_a_base_task_of_a_questionnaire_component_carries_the_questionnaire_input(self) -> None:
+        delivery = self.delivery("assigned")
+        task = delivery["entry"][0]["resource"]
+        task["meta"]["profile"] = ["https://grovealliance.org/fhir/study/StructureDefinition/grove-study-task"]
+        task["input"] = [
+            entry for entry in task["input"]
+            if not any(coding.get("code") == "questionnaire" for coding in entry["type"]["coding"])
+        ]
+        self.assertEqual(task["status"], "ready")
+        self.assertEqual(
+            outcome(self.receiver().apply(graph.resources_of(delivery))),
+            {"rejected": ["study-task-instrument"]},
+        )
+
+    def test_a_questionnaire_code_applies_the_questionnaire_rules(self) -> None:
+        delivery = self.delivery("informational-completed")
+        delivery["entry"][0]["resource"]["code"] = {
+            "coding": [{"system": graph.SDC_SYSTEM, "code": "complete-questionnaire"}]
+        }
+        self.assertEqual(
+            outcome(self.receiver().apply(graph.resources_of(delivery))),
+            {"rejected": ["study-task-instrument", "study-task-result-reference"]},
+        )
+
+    def test_an_occurrence_without_an_instrument_carries_no_questionnaire_input(self) -> None:
+        delivery = self.delivery("informational-completed")
+        delivery["entry"][0]["resource"]["input"].append(
+            copy.deepcopy(self.delivery("assigned")["entry"][0]["resource"]["input"][3])
+        )
+        self.assertEqual(
+            outcome(self.receiver().apply(graph.resources_of(delivery))),
+            {"rejected": ["study-task-instrument"]},
+        )
+
+    def test_an_unresolved_component_is_rejected_for_its_definition_only(self) -> None:
+        delivery = self.delivery("informational-completed")
+        task = delivery["entry"][0]["resource"]
+        task["instantiatesCanonical"] = "https://example.org/fhir/ActivityDefinition/unknown|1.0.0"
+        task["output"] = [{"type": {"text": "result"}, "valueString": "done"}]
+        self.assertEqual(
+            outcome(self.receiver().apply(graph.resources_of(delivery))),
+            {"rejected": ["study-task-definition", "study-task-protocol"]},
+        )
+
+    def test_rule_groups_are_disjoint(self) -> None:
+        self.assertEqual(set(graph.OCCURRENCE_RULES) & set(graph.QUESTIONNAIRE_RULES), set())
+        self.assertEqual(len(graph.RULES), len(set(graph.RULES)))
 
     def test_paired_questionnaire_rules_apply_to_the_linked_response(self) -> None:
         delivery = self.delivery("completed")
@@ -392,18 +486,32 @@ class StudyGraphCaseTests(unittest.TestCase):
 
 class StudyStructuralCorpusTests(unittest.TestCase):
     def test_each_case_differs_from_the_control_in_one_place(self) -> None:
-        corpus = load(STRUCTURAL / "corpus.json")
-        control = load(STRUCTURAL / corpus["control"])
-        for case in corpus["cases"]:
-            with self.subTest(case=case["path"]):
-                mutated = load(STRUCTURAL / case["path"])
-                changed = {key for key in set(control) | set(mutated) if control.get(key) != mutated.get(key)}
-                self.assertEqual(len(changed), 1, changed)
+        for directory in (STRUCTURAL, STRUCTURAL / "base"):
+            corpus = load(directory / "corpus.json")
+            control = load(directory / corpus["control"])
+            for case in corpus["cases"]:
+                with self.subTest(corpus=directory.name, case=case["path"]):
+                    mutated = load(directory / case["path"])
+                    changed = {key for key in set(control) | set(mutated) if control.get(key) != mutated.get(key)}
+                    self.assertEqual(len(changed), 1, changed)
 
     def test_the_control_completes_the_graph_fixture_occurrence(self) -> None:
         control = load(STRUCTURAL / "control.json")
         completed = load(GRAPH / "deliveries/completed.json")["entry"][0]["resource"]
         self.assertEqual(control, completed)
+
+    def test_the_base_control_assigns_the_informational_graph_occurrence(self) -> None:
+        control = load(STRUCTURAL / "base/control.json")
+        completed = load(GRAPH / "deliveries/informational-completed.json")["entry"][0]["resource"]
+        self.assertEqual(control["status"], "ready")
+        self.assertEqual(
+            {key: value for key, value in control.items() if key not in {"status", "lastModified"}},
+            {key: value for key, value in completed.items() if key not in {"status", "lastModified", "executionPeriod"}},
+        )
+        delivery = load(GRAPH / "deliveries/informational-completed.json")
+        delivery["entry"][0]["resource"] = control
+        assigned = graph.Receiver(graph.load(GRAPH / "definitions.json")).apply(graph.resources_of(delivery))
+        self.assertEqual(outcome(assigned), {"outcomes": {"welcome-0001": "accepted"}})
 
 
 class StudyExampleTests(unittest.TestCase):
@@ -433,7 +541,10 @@ class StudyExampleTests(unittest.TestCase):
         self.assertEqual(result.issues, [])
         self.assertEqual(
             result.outcomes,
-            {"occurrence-0001": "accepted", "occurrence-0002": "accepted", "occurrence-0003": "accepted"},
+            {
+                "occurrence-0001": "accepted", "occurrence-0002": "accepted",
+                "occurrence-0003": "accepted", "welcome-0001": "accepted",
+            },
         )
 
 

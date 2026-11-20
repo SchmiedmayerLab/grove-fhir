@@ -11,9 +11,11 @@ canonical: https://grovealliance.org/fhir/study
 name: GroveFHIRStudy
 title: Grove FHIR Study Interaction Exchange
 description: >-
-  A FHIR R4 contract for exchanging versioned study protocols, assigned task occurrences, and the
-  questionnaire responses that complete them.
+  An experimental FHIR R4 contract for exchanging versioned study protocols, the occurrences of
+  study components they assign, and the questionnaire responses that complete questionnaire
+  occurrences.
 status: draft
+experimental: true
 version: 0.8.2
 fhirVersion: 4.0.1
 copyrightYear: 2026+

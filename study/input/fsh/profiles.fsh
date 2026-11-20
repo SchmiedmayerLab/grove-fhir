@@ -6,18 +6,23 @@
 // SPDX-License-Identifier: MIT
 //
 
+RuleSet: GroveStudyExperimental
+* ^experimental = true
+* ^status = #draft
+* ^extension[$standardsStatus].valueCode = #draft
+
 Invariant: grove-study-protocol-pinned-1
 Description: "The protocol has an absolute canonical url without a version separator, and every action definition names one exact url|version."
 Severity: #error
 Expression: "url.matches('^https?://[^\\\\s|#]+$') and repeat(action).definition.ofType(canonical).all(matches('^https?://[^\\\\s|#]+[|][^\\\\s|#]+$'))"
 
 Invariant: grove-study-activity-pinned-1
-Description: "The activity has an absolute canonical url without a version separator, and its instrument names one exact Questionnaire url|version."
+Description: "The activity has an absolute canonical url without a version separator, and every artifact it depends on is named by one exact url|version."
 Severity: #error
 Expression: "url.matches('^https?://[^\\\\s|#]+$') and relatedArtifact.where(type = 'depends-on').resource.all(matches('^https?://[^\\\\s|#]+[|][^\\\\s|#]+$'))"
 
 Invariant: grove-study-task-pinned-1
-Description: "instantiatesCanonical and the protocol and questionnaire inputs each name one exact url|version."
+Description: "instantiatesCanonical and every canonical input each name one exact url|version."
 Severity: #error
 Expression: "instantiatesCanonical.all(matches('^https?://[^\\\\s|#]+[|][^\\\\s|#]+$')) and input.value.ofType(canonical).all(matches('^https?://[^\\\\s|#]+[|][^\\\\s|#]+$'))"
 
@@ -26,17 +31,22 @@ Description: "The performance window has a start and an end, each with seconds a
 Severity: #error
 Expression: "input.value.ofType(Period).all(start.exists() and end.exists() and start.toString().matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([.][0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$') and end.toString().matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([.][0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$') and start < end)"
 
-Invariant: grove-study-task-status-1
-Description: "A completed Task links exactly one result; a ready or cancelled Task links none."
+Invariant: grove-study-task-output-1
+Description: "Only a completed Task carries an output."
 Severity: #error
-Expression: "iif(status = 'completed', output.count() = 1, output.empty())"
+Expression: "output.empty() or status = 'completed'"
 
 Invariant: grove-study-task-status-reason-1
 Description: "Only a cancelled Task carries a status reason."
 Severity: #error
 Expression: "statusReason.empty() or status = 'cancelled'"
 
-Invariant: grove-study-task-result-1
+Invariant: grove-study-questionnaire-task-completed-1
+Description: "A completed Task links its result."
+Severity: #error
+Expression: "status != 'completed' or output.exists()"
+
+Invariant: grove-study-questionnaire-task-result-1
 Description: "The result is a version-specific literal reference to a QuestionnaireResponse."
 Severity: #error
 Expression: "output.value.ofType(Reference).all(reference.matches('^(https?://[^\\\\s|#]+/)?QuestionnaireResponse/[A-Za-z0-9.-]{1,64}/_history/[A-Za-z0-9.-]{1,64}$'))"
@@ -46,6 +56,7 @@ Parent: PlanDefinition
 Id: grove-study-protocol
 Title: "Grove Study Protocol"
 Description: "One published revision of a study protocol. Each action names the exact revision of the study component it assigns."
+* insert GroveStudyExperimental
 * obeys grove-study-protocol-pinned-1
 * url 1..1 MS
 * version 1..1 MS
@@ -54,16 +65,15 @@ Description: "One published revision of a study protocol. Each action names the 
 * action 1..* MS
 * action.title MS
 * action.definition[x] 1..1 MS
-* action.definition[x] only Canonical(ActivityDefinition)
-* action.definition[x] ^short = "Exact url|version of the ActivityDefinition this action assigns"
-* action.timing[x] MS
-* action.timing[x] ^short = "When the action assigns occurrences; recurrence is evaluated by the assigning application"
+* action.definition[x] only Canonical(GroveStudyActivity)
+* action.definition[x] ^short = "Exact url|version of the study component revision this action assigns"
 
-Profile: GroveStudyQuestionnaireActivity
+Profile: GroveStudyActivity
 Parent: ActivityDefinition
-Id: grove-study-questionnaire-activity
-Title: "Grove Study Questionnaire Activity"
-Description: "One immutable revision of a study component that asks the participant to complete one exact Questionnaire version."
+Id: grove-study-activity
+Title: "Grove Study Activity"
+Description: "One immutable revision of a study component of any kind, such as a questionnaire or an informational component. Each assigned occurrence of the component is a Task. A profile derived from this one defines what a component of one kind adds."
+* insert GroveStudyExperimental
 * obeys grove-study-activity-pinned-1
 * url 1..1 MS
 * url ^short = "Canonical URL of the study component"
@@ -74,6 +84,13 @@ Description: "One immutable revision of a study component that asks the particip
 * kind = #Task (exactly)
 * intent 1..1 MS
 * intent = #order (exactly)
+
+Profile: GroveStudyQuestionnaireActivity
+Parent: GroveStudyActivity
+Id: grove-study-questionnaire-activity
+Title: "Grove Study Questionnaire Activity"
+Description: "One immutable revision of a study component that asks the participant to complete one exact Questionnaire version."
+* insert GroveStudyExperimental
 * code 1..1 MS
 * code = $sdcTemp#complete-questionnaire
 * relatedArtifact ^slicing.discriminator.type = #value
@@ -86,18 +103,19 @@ Description: "One immutable revision of a study component that asks the particip
 * relatedArtifact[instrument].resource only Canonical($GroveQuestionnaire)
 * relatedArtifact[instrument].resource ^short = "Exact url|version of the Questionnaire the participant completes"
 
-Profile: GroveStudyQuestionnaireTask
+Profile: GroveStudyTask
 Parent: Task
-Id: grove-study-questionnaire-task
-Title: "Grove Study Questionnaire Task"
-Description: "One assigned occurrence of a study component that the participant completes with one exact Questionnaire version. A recurring schedule is assigned as one Task per occurrence."
-* obeys grove-study-task-pinned-1 and grove-study-task-window-1 and grove-study-task-status-1 and grove-study-task-status-reason-1 and grove-study-task-result-1
+Id: grove-study-task
+Title: "Grove Study Task"
+Description: "One assigned occurrence of a study component of any kind. A recurring schedule is assigned as one Task per occurrence. A profile derived from this one adds the inputs and the result of one component kind; a completed Task of a kind without a result carries no output."
+* insert GroveStudyExperimental
+* obeys grove-study-task-pinned-1 and grove-study-task-window-1 and grove-study-task-output-1 and grove-study-task-status-reason-1
 * identifier 1..1 MS
 * identifier ^short = "Occurrence identifier; assigned once and preserved on every retransmission"
 * identifier.system 1..1 MS
 * identifier.value 1..1 MS
 * instantiatesCanonical 1..1 MS
-* instantiatesCanonical only Canonical(GroveStudyQuestionnaireActivity)
+* instantiatesCanonical only Canonical(GroveStudyActivity)
 * instantiatesCanonical ^short = "Exact url|version of the component revision this occurrence belongs to"
 * status 1..1 MS
 * status from GroveStudyTaskStatusVS (required)
@@ -108,8 +126,6 @@ Description: "One assigned occurrence of a study component that the participant 
 * statusReason ^short = "Why a cancelled occurrence was stopped, where that changes how it counts"
 * intent 1..1 MS
 * intent = #order (exactly)
-* code 1..1 MS
-* code = $sdcTemp#complete-questionnaire
 * for 1..1 MS
 * for only Reference(Patient)
 * for ^short = "The participant"
@@ -119,19 +135,18 @@ Description: "One assigned occurrence of a study component that the participant 
 * authoredOn 1..1 MS
 * authoredOn ^short = "When the occurrence was assigned"
 * lastModified 1..1 MS
-* lastModified ^short = "When the status or result link last changed"
+* lastModified ^short = "When the status or an output last changed"
 * executionPeriod MS
 * executionPeriod ^short = "When the participant actually worked on the occurrence"
-* input 4..4 MS
+* input 3..* MS
 * input ^slicing.discriminator.type = #value
 * input ^slicing.discriminator.path = "type"
-* input ^slicing.rules = #closed
-* input ^slicing.description = "Each input places the occurrence in its study context."
+* input ^slicing.rules = #open
+* input ^slicing.description = "Each input places the occurrence in its study context. A derived profile adds the inputs of one component kind."
 * input contains
     performanceWindow 1..1 MS and
     enrollment 1..1 MS and
-    protocol 1..1 MS and
-    questionnaire 1..1 MS
+    protocol 1..1 MS
 * input[performanceWindow].type = GroveStudyTaskParameterCS#performance-window
 * input[performanceWindow].value[x] only Period
 * input[performanceWindow].value[x] ^short = "When the participant is allowed to perform the occurrence"
@@ -144,14 +159,32 @@ Description: "One assigned occurrence of a study component that the participant 
 * input[protocol].type = GroveStudyTaskParameterCS#protocol
 * input[protocol].value[x] only Canonical(GroveStudyProtocol)
 * input[protocol].value[x] ^short = "Exact url|version of the protocol whose action assigned the occurrence"
+* output MS
+* output ^slicing.discriminator.type = #value
+* output ^slicing.discriminator.path = "type"
+* output ^slicing.rules = #open
+* output ^slicing.description = "The accepted result of a completed occurrence. A derived profile defines the result of one component kind."
+
+Profile: GroveStudyQuestionnaireTask
+Parent: GroveStudyTask
+Id: grove-study-questionnaire-task
+Title: "Grove Study Questionnaire Task"
+Description: "One assigned occurrence of a study component that the participant completes with one exact Questionnaire version. A completed Task links exactly one QuestionnaireResponse version."
+* insert GroveStudyExperimental
+* obeys grove-study-questionnaire-task-completed-1 and grove-study-questionnaire-task-result-1
+* instantiatesCanonical only Canonical(GroveStudyQuestionnaireActivity)
+* code 1..1 MS
+* code = $sdcTemp#complete-questionnaire
+* input 4..4
+* input ^slicing.rules = #closed
+* input ^slicing.description = "The three inputs every occurrence carries and the questionnaire input; a questionnaire Task carries no other input."
+* input contains questionnaire 1..1 MS
 * input[questionnaire].type = $sdcTemp#questionnaire
 * input[questionnaire].value[x] only Canonical($GroveQuestionnaire)
 * input[questionnaire].value[x] ^short = "Exact url|version of the Questionnaire the participant completes"
-* output 0..1 MS
-* output ^slicing.discriminator.type = #value
-* output ^slicing.discriminator.path = "type"
+* output 0..1
 * output ^slicing.rules = #closed
-* output ^slicing.description = "The accepted result of a completed occurrence."
+* output ^slicing.description = "The one accepted QuestionnaireResponse version of a completed occurrence."
 * output contains result 0..1 MS
 * output[result].type = $sdcTemp#questionnaire-response
 * output[result].value[x] only Reference($GroveQuestionnaireResponse)

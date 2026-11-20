@@ -1,6 +1,6 @@
 {
   "schemaVersion": 0,
-  "purpose": "Graph cases for a single-arm daily check-in. Each case applies its deliveries in order to a receiver that starts empty and holds definitions.json. Every delivery passes the official FHIR Validator; the expected outcome of each delivery is either the outcome of every occurrence it carries or the graph rules that reject it. Scripts/validate-study-graph.py applies the cases and Tests/test_study_graph.py checks them.",
+  "purpose": "Graph cases for a single-arm protocol with an informational welcome component and a daily check-in. Each case applies its deliveries in order to a receiver that starts empty and holds definitions.json. Every delivery passes the official FHIR Validator; the expected outcome of each delivery is either the outcome of every occurrence it carries or the graph rules that reject it. Scripts/validate-study-graph.py applies the cases and Tests/test_study_graph.py checks them.",
   "definitions": "definitions.json",
   "cases": [
     {
@@ -73,6 +73,27 @@
       "purpose": "An occurrence cancelled with the excused reason before its window opened is accepted.",
       "deliveries": [
         {"path": "deliveries/excused.json", "outcomes": {"occurrence-0003": "accepted"}}
+      ]
+    },
+    {
+      "id": "informational-completed",
+      "purpose": "An occurrence of an informational component, which defines no result, is completed without an output.",
+      "deliveries": [
+        {"path": "deliveries/informational-completed.json", "outcomes": {"welcome-0001": "accepted"}}
+      ]
+    },
+    {
+      "id": "completed-after-window",
+      "purpose": "An occurrence of a component without a result is not completed after its performance window ended.",
+      "deliveries": [
+        {"path": "deliveries/completed-after-window.json", "rejected": ["study-task-completion-window"]}
+      ]
+    },
+    {
+      "id": "questionnaire-completed-without-result",
+      "purpose": "A Task that conforms to the base Task profile does not complete a questionnaire occurrence without a result link.",
+      "deliveries": [
+        {"path": "deliveries/questionnaire-completed-without-result.json", "rejected": ["study-task-result-reference"]}
       ]
     },
     {
