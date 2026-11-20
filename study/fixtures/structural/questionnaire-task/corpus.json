@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 0,
+  "purpose": "One completed daily check-in occurrence per way a Grove Study Questionnaire Task can break its profile or the Grove Study Task profile it derives from. The official Validator must accept the control and reject each case for exactly the declared reason: a pending status, a result link on a ready or cancelled Task or none on a completed one, a status reason on a completed Task, a reversed or date-only performance window, an unpinned component or instrument canonical, a result link without a version, an incomplete occurrence identifier, and an enrollment input without the ResearchSubject identifier. A pending status also fails the required status binding, and a reversed window also fails the core Period rule per-1.",
+  "profile": "https://grovealliance.org/fhir/study/StructureDefinition/grove-study-questionnaire-task",
+  "control": "control.json",
+  "cases": [
+    {
+      "path": "pending-status.json",
+      "expectedInvariant": "grove-study-task-output-1",
+      "alsoRejected": [
+        "The System URI could not be determined for the code 'in-progress'",
+        "The value provided ('in-progress') was not found in the value set 'Grove Study Task Status'"
+      ]
+    },
+    {"path": "completed-without-result.json", "expectedInvariant": "grove-study-questionnaire-task-completed-1"},
+    {"path": "ready-with-result.json", "expectedInvariant": "grove-study-task-output-1"},
+    {"path": "cancelled-with-result.json", "expectedInvariant": "grove-study-task-output-1"},
+    {"path": "reason-on-completed.json", "expectedInvariant": "grove-study-task-status-reason-1"},
+    {
+      "path": "window-reversed.json",
+      "expectedInvariant": "grove-study-task-window-1",
+      "alsoRejected": ["Constraint failed: per-1:"]
+    },
+    {"path": "window-date-only.json", "expectedInvariant": "grove-study-task-window-1"},
+    {"path": "unpinned-component.json", "expectedInvariant": "grove-study-task-pinned-1"},
+    {"path": "unpinned-instrument.json", "expectedInvariant": "grove-study-task-pinned-1"},
+    {"path": "unversioned-result.json", "expectedInvariant": "grove-study-questionnaire-task-result-1"},
+    {"path": "incomplete-identifier.json", "expectedRequired": "Task.identifier.system"},
+    {"path": "enrollment-without-identifier.json", "expectedRequired": "Task.input:enrollment.value[x].identifier"}
+  ]
+}

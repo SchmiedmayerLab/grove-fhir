@@ -136,7 +136,7 @@ def main() -> int:
         failures.append("release manifest guide sources must be unique")
     if sources != [
         "mobile", "questionnaire", "sensor", "sensorkit", "healthkit",
-        "health-connect", "providers", "withings", "oura", "google-health",
+        "health-connect", "providers", "withings", "oura", "google-health", "study",
     ]:
         failures.append("release manifest guide order or membership is not canonical")
 

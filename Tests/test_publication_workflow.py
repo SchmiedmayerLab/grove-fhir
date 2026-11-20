@@ -225,7 +225,7 @@ class PublicationStagingTests(unittest.TestCase):
 
     def fixture(self, root: Path):
         guides = [{'source': name, 'canonicalPath': name, 'aliases': []}
-                  for name in ('mobile', 'questionnaire', 'sensor', 'healthkit')]
+                  for name in ('mobile', 'questionnaire', 'sensor', 'healthkit', 'study')]
         config = {'schemaVersion': 0, 'releaseMode': 'ci-build-only', 'guides': guides,
                   'canonicalBaseUrl': 'https://example.org/fhir',
                   'previewBaseUrl': 'https://example.org/dev', 'sourceRepository': 'https://github.com/example/repo'}
@@ -304,7 +304,7 @@ class PublicationStagingTests(unittest.TestCase):
                  mock.patch.object(STAGE.subprocess, 'check_output', side_effect=lambda cmd, **kw: 'a'*40 if 'rev-parse' in cmd else '[[]]' if cmd[0] == 'gh' else ''), \
                  mock.patch.object(STAGE.subprocess, 'run', side_effect=run):
                 archive = STAGE.stage(output=root / '.build/publication-release', evidence=output, publication_date='2026-11-13')
-            self.assertEqual(len([c for c in calls if '-go-publish' in c]), 4)
+            self.assertEqual(len([c for c in calls if '-go-publish' in c]), 5)
             self.assertEqual(json.loads((archive.parent / 'mobile-semantic-snapshot-0.9.0.json').read_text()),
                              {"published": True})
             self.assertTrue(any('Scripts/validate-questionnaire-fhir.py' in c for c in calls))
@@ -313,7 +313,7 @@ class PublicationStagingTests(unittest.TestCase):
                              (output / 'machine-contract-index-0.9.0.json').read_bytes())
             STAGE.checked_extract(archive, root / 'result')
             manifest = json.loads((root / 'result/publication-manifest.json').read_text())
-            self.assertEqual(len(manifest['packages']), 4)
+            self.assertEqual(len(manifest['packages']), 5)
             for guide in guides:
                 name = guide['source']
                 for suffix, payload in [('', b'versioned offline guide'), ('current-', b'current offline guide')]:
