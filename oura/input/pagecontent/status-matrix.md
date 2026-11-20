@@ -15,9 +15,9 @@ This table lists every Oura field in the published Grove inventory. Each field h
 
 | Source type | Source status | Provider field | Field status | Measurement | Representation / conversion | Binding reason / effective time |
 | --- | --- | --- | --- | --- | --- | --- |
-| `daily_activity` | `supported` | `steps` | `supported` | step-count | integer count to UCUM {steps} | the source civil day represented as a complete day Period; midpoint substitution is forbidden |
-| `daily_activity` | `supported` | `active_calories` | `supported` | active-energy | identity UCUM kcal | the source civil day represented as a complete day Period; midpoint substitution is forbidden |
-| `daily_activity` | `supported` | `equivalent_walking_distance` | `supported` | distance | identity UCUM m | the source civil day represented as a complete day Period; midpoint substitution is forbidden |
+| `daily_activity` | `supported` | `steps` | `supported` | step-count | integer count to UCUM {steps} | the source activity day, from 04:00 on its named date to 04:00 on the following date in the evidenced source zone; midnight substitution is forbidden |
+| `daily_activity` | `supported` | `active_calories` | `supported` | active-energy | identity UCUM kcal | the source activity day, from 04:00 on its named date to 04:00 on the following date in the evidenced source zone; midnight substitution is forbidden |
+| `daily_activity` | `supported` | `equivalent_walking_distance` | `supported` | distance | identity UCUM m | the source activity day, from 04:00 on its named date to 04:00 on the following date in the evidenced source zone; midnight substitution is forbidden |
 | `sleep` | `supported` | `total_sleep_duration` | `supported` | sleep-duration | seconds divided by 3600 to UCUM h | bedtime_start through bedtime_end; output deferred when either boundary is absent |
 | `sleep` | `supported` | `deep_sleep_duration` | `supported` | deep-sleep-duration | — | — |
 | `sleep` | `supported` | `rem_sleep_duration` | `supported` | rem-sleep-duration | — | — |
