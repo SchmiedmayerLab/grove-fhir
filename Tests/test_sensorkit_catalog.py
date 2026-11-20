@@ -70,7 +70,7 @@ class SensorKitCatalogTests(unittest.TestCase):
 
     def test_current_platform_inventory_is_closed_and_scope_complete(self) -> None:
         entries = self.catalog["entries"]
-        self.assertEqual(len(entries), 22)
+        self.assertEqual(len(entries), 24)
         source_tokens = [entry["sourceToken"] for entry in entries]
         source_codes = [entry["sourceTypeCode"] for entry in entries]
         self.assertEqual(source_tokens, sorted(source_tokens))
@@ -84,6 +84,8 @@ class SensorKitCatalogTests(unittest.TestCase):
             "SRSensor.deviceUsageReport",
             "SRSensor.electrocardiogram",
             "SRSensor.faceMetrics",
+            "SRSensor.headphoneMotion",
+            "SRSensor.headphoneSettings",
             "SRSensor.heartRate",
             "SRSensor.keyboardMetrics",
             "SRSensor.mediaEvents",
@@ -103,7 +105,7 @@ class SensorKitCatalogTests(unittest.TestCase):
         self.assertEqual(set(source_tokens), expected)
         scopes = [entry["scope"] for entry in entries]
         self.assertEqual(scopes.count("catalog-baseline"), 20)
-        self.assertEqual(scopes.count("stable-addition"), 2)
+        self.assertEqual(scopes.count("stable-addition"), 4)
         self.assertEqual(
             set(self.catalog["inventoryScopes"]),
             {"catalog-baseline", "stable-addition"},
@@ -116,9 +118,9 @@ class SensorKitCatalogTests(unittest.TestCase):
             self.catalog["sourceEvidence"]["sdkBaseline"],
             {
                 "platform": "iPhoneOS",
-                "version": "26.5",
-                "xcodeVersion": "26.6",
-                "xcodeBuild": "17F113",
+                "version": "27.2",
+                "xcodeVersion": "27.2",
+                "xcodeBuild": "27B52",
             },
         )
         self.assertEqual(
@@ -140,6 +142,19 @@ class SensorKitCatalogTests(unittest.TestCase):
                 "sensorkit-sleep-session-observation"
             )
         )
+
+    def test_sleep_session_retains_native_identifier_separately(self) -> None:
+        sleep = next(row for row in self.catalog["entries"] if row["sourceToken"] == "SRSensor.sleepSessions")
+        mapping = sleep["structured"]["nativeR4Mappings"][0]
+        self.assertEqual(mapping["sourceField"], "SRSleepSession.identifier")
+        self.assertEqual(mapping["r4Element"], "Observation.identifier")
+        self.assertEqual(mapping["valueKind"], "identifier")
+        self.assertTrue(mapping["exactSourceValue"])
+        self.assertIn("source repository", mapping["identifierSystemRule"])
+        self.assertIn("never replaces", mapping["rule"])
+        self.assertEqual(mapping["cardinality"], "0..1")
+        self.assertIn("governedSourceIdentifier", mapping["rule"])
+        self.assertIn("omission remains conformant", mapping["rule"])
 
     def test_every_row_has_one_definitive_status_and_admitted_contract(self) -> None:
         statuses = set(self.catalog["statusVocabulary"])

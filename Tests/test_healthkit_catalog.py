@@ -112,7 +112,7 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             provenance["targetAdapterProfiles"], sorted(active_healthkit_profiles)
         )
-        self.assertEqual(len(active_healthkit_profiles), 119)
+        self.assertEqual(len(active_healthkit_profiles), 121)
 
         single_profiles = {
             profile
@@ -125,7 +125,7 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(single_claim["cardinality"], 1)
         self.assertFalse(single_claim["otherProfilesAllowed"])
         self.assertEqual(single_claim["profiles"], sorted(single_profiles))
-        self.assertEqual(len(single_profiles), 111)
+        self.assertEqual(len(single_profiles), 113)
 
         self.assertEqual(
             self.claims["healthKitRecordingDocumentClaim"]["profiles"],
@@ -214,13 +214,13 @@ class HealthKitCatalogTests(unittest.TestCase):
             source["sdkBaseline"],
             {
                 "platform": "iPhoneOS",
-                "version": "26.5",
-                "xcodeVersion": "26.6",
-                "xcodeBuild": "17F113",
+                "version": "27.2",
+                "xcodeVersion": "27.2",
+                "xcodeBuild": "27B52",
             },
         )
         self.assertEqual(source["platform"], "Apple HealthKit")
-        self.assertEqual(source["accessed"], "2026-08-21")
+        self.assertEqual(source["accessed"], "2026-11-14")
         self.assertEqual(source["rowCount"], len(rows))
         self.assertEqual(source["derivedAggregateCount"], 1)
         self.assertIn("derived mappings are excluded", source["rowScope"])
@@ -820,7 +820,7 @@ class HealthKitCatalogTests(unittest.TestCase):
                 self.assertNotIn(key, table)
                 table[key] = ", ".join(name.strip().strip("`") for name in source_types.split(","))
                 constants[key] = constant
-        # A row names the key by the string the constant holds in an iOS 26.5 simulator on the SDK
+        # A row names the key by the string the constant holds in an iOS 27.2 simulator on the SDK
         # baseline; these twelve hold another string than their constant's name.
         self.assertEqual(
             {key: constant for key, constant in constants.items() if key != constant},

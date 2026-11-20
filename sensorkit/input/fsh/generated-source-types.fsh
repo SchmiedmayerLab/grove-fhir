@@ -22,7 +22,7 @@ Description: "The concept properties the SensorKit source-type code system carri
 CodeSystem: SensorKitSourceTypeCS
 Id: sensorkit-source-type
 Title: "SensorKit Source Type"
-Description: "The 22 public SensorKit sensors published by the iPhoneOS 26.5 SDK baseline (Xcode 26.6, build 17F113). Membership is derived from, and verified against, sensorkit/input/data/sensorkit-inventory.json. A code is a Grove token rather than an Apple string; the SRSensor value a producer reads back is carried as the identifier property."
+Description: "The 24 public SensorKit sensors published by the iPhoneOS 27.2 SDK baseline (Xcode 27.2, build 27B52). Membership is derived from, and verified against, sensorkit/input/data/sensorkit-inventory.json. A code is a Grove token rather than an Apple string; the SRSensor value a producer reads back is carried as the identifier property."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -70,6 +70,16 @@ Description: "The 22 public SensorKit sensors published by the iPhoneOS 26.5 SDK
 * #face-metrics ^property[0].valueString = "com.apple.SensorKit.faceMetrics"
 * #face-metrics ^property[1].code = #documentation
 * #face-metrics ^property[1].valueString = "https://developer.apple.com/documentation/sensorkit/srsensor/facemetrics"
+* #headphone-motion "Headphone motion" "The SensorKit SRSensor.headphoneMotion source type. Grove admits a Recording Document with the direct `meta.profile` claims grove-sensor-recording-document and sensorkit-recording-document."
+* #headphone-motion ^property[0].code = #identifier
+* #headphone-motion ^property[0].valueString = "com.apple.SensorKit.motion.headphone"
+* #headphone-motion ^property[1].code = #documentation
+* #headphone-motion ^property[1].valueString = "https://developer.apple.com/documentation/sensorkit/srsensor/headphonemotion"
+* #headphone-settings "Headphone settings" "The SensorKit SRSensor.headphoneSettings source type. Grove admits a Recording Document with the direct `meta.profile` claims grove-sensor-recording-document and sensorkit-recording-document."
+* #headphone-settings ^property[0].code = #identifier
+* #headphone-settings ^property[0].valueString = "com.apple.SensorKit.hearing.headphoneSettings"
+* #headphone-settings ^property[1].code = #documentation
+* #headphone-settings ^property[1].valueString = "https://developer.apple.com/documentation/sensorkit/srsensor/headphonesettings"
 * #heart-rate "High-frequency heart rate" "The SensorKit SRSensor.heartRate source type. Grove admits a Recording Document with the direct `meta.profile` claims grove-sensor-recording-document and sensorkit-recording-document."
 * #heart-rate ^property[0].code = #identifier
 * #heart-rate ^property[0].valueString = "com.apple.SensorKit.heart.rate"

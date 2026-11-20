@@ -26,7 +26,7 @@ Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the follo
 Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning. Columns naming the same nullableGroup represent one optional source object: every member is empty, or every member is non-empty, in a given row.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -48,7 +48,7 @@ Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the follo
 Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning. Columns naming the same nullableGroup represent one optional source object: every member is empty, or every member is non-empty, in a given row.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -72,7 +72,7 @@ Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the follo
 Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning. Columns naming the same nullableGroup represent one optional source object: every member is empty, or every member is non-empty, in a given row.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -96,7 +96,7 @@ Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the follo
 Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning. Columns naming the same nullableGroup represent one optional source object: every member is empty, or every member is non-empty, in a given row.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -119,7 +119,7 @@ Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the follo
 Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning. Columns naming the same nullableGroup represent one optional source object: every member is empty, or every member is non-empty, in a given row.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -147,7 +147,7 @@ Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the follo
 Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning. Columns naming the same nullableGroup represent one optional source object: every member is empty, or every member is non-empty, in a given row.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -169,7 +169,7 @@ Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the follo
 Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning. Columns naming the same nullableGroup represent one optional source object: every member is empty, or every member is non-empty, in a given row.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -192,7 +192,7 @@ Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the follo
 Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning. Columns naming the same nullableGroup represent one optional source object: every member is empty, or every member is non-empty, in a given row.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -223,7 +223,7 @@ Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the follo
 Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning. Columns naming the same nullableGroup represent one optional source object: every member is empty, or every member is non-empty, in a given row.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -243,7 +243,7 @@ Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the follo
 Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
 `^(?:0|-?[1-9][0-9]*)$`
 Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
-The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning. Columns naming the same nullableGroup represent one optional source object: every member is empty, or every member is non-empty, in a given row.
 
 | Column | Type | Nullable | Unit | Meaning |
 |---|---|---|---|---|
@@ -358,3 +358,96 @@ Version byte 0x01, then a varint record count, then that many PPG records. Decod
 | `x` | `float64` | `[g]` | Acceleration along x in G. |
 | `y` | `float64` | `[g]` | Acceleration along y in G. |
 | `z` | `float64` | `[g]` | Acceleration along z in G. |
+
+### `device-motion-samples` — Device Motion Samples
+
+Media type: `text/csv`.
+UTF-8 without a byte-order mark.
+One header row naming every column in order, then one row per source sample in source order.
+LF (0x0A) after every row, including the last. CR (0x0D) is prohibited anywhere, including inside quoted fields.
+Comma (0x2C).
+A field is enclosed in double quotes exactly when it contains a comma, a double quote, or LF; embedded double quotes are doubled; all other fields are unquoted.
+Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the following regular expression. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
+`^(?:0(?:\.0|\.[0-9]*[1-9])?|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?|-(?:0\.[0-9]*[1-9]|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?))$`
+Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
+`^(?:0|-?[1-9][0-9]*)$`
+Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning. Columns naming the same nullableGroup represent one optional source object: every member is empty, or every member is non-empty, in a given row.
+
+| Column | Type | Nullable | Unit | Meaning |
+|---|---|---|---|---|
+| `timestamp` | timestamp | no | — | Exact recorded sample start date. |
+| `storedTimestamp` | timestamp | no | — | SRFetchResult.timestamp: when SensorKit wrote the sample to its data store, distinct from the sample instant. |
+| `uptime` | number | no | `s` | CoreMotion time since boot in seconds. |
+| `identifier` | integer | no | — | Unsigned native batch identifier within the device partition. |
+| `roll` | number | no | `rad` | Exact source attitude Euler angle. |
+| `pitch` | number | no | `rad` | Exact source attitude Euler angle. |
+| `yaw` | number | no | `rad` | Exact source attitude Euler angle. |
+| `m11` | number | no | `1` | Exact source attitude rotation-matrix element. |
+| `m12` | number | no | `1` | Exact source attitude rotation-matrix element. |
+| `m13` | number | no | `1` | Exact source attitude rotation-matrix element. |
+| `m21` | number | no | `1` | Exact source attitude rotation-matrix element. |
+| `m22` | number | no | `1` | Exact source attitude rotation-matrix element. |
+| `m23` | number | no | `1` | Exact source attitude rotation-matrix element. |
+| `m31` | number | no | `1` | Exact source attitude rotation-matrix element. |
+| `m32` | number | no | `1` | Exact source attitude rotation-matrix element. |
+| `m33` | number | no | `1` | Exact source attitude rotation-matrix element. |
+| `quaternionX` | number | no | `1` | Exact source attitude quaternion element. |
+| `quaternionY` | number | no | `1` | Exact source attitude quaternion element. |
+| `quaternionZ` | number | no | `1` | Exact source attitude quaternion element. |
+| `quaternionW` | number | no | `1` | Exact source attitude quaternion element. |
+| `rotationRateX` | number | no | `rad/s` | Source rotation rate. |
+| `rotationRateY` | number | no | `rad/s` | Source rotation rate. |
+| `rotationRateZ` | number | no | `rad/s` | Source rotation rate. |
+| `gravityX` | number | no | `[g]` | Source gravity acceleration. |
+| `gravityY` | number | no | `[g]` | Source gravity acceleration. |
+| `gravityZ` | number | no | `[g]` | Source gravity acceleration. |
+| `userAccelerationX` | number | no | `[g]` | Source acceleration with gravity removed. |
+| `userAccelerationY` | number | no | `[g]` | Source acceleration with gravity removed. |
+| `userAccelerationZ` | number | no | `[g]` | Source acceleration with gravity removed. |
+| `magneticFieldX` | number | no | `uT` | Source calibrated magnetic field. |
+| `magneticFieldY` | number | no | `uT` | Source calibrated magnetic field. |
+| `magneticFieldZ` | number | no | `uT` | Source calibrated magnetic field. |
+| `magneticFieldAccuracy` | integer | no | — | Exact CMMagneticFieldCalibrationAccuracy raw value, including uncalibrated sentinel. |
+| `heading` | number | no | `deg` | Exact source heading, including unavailable sentinel. |
+| `headingAccuracy` | number | no | `deg` | Exact source heading accuracy, including unavailable sentinel. |
+| `sensorLocation` | integer | no | — | Exact CMDeviceMotion.SensorLocation raw value. |
+| `device` | string | no | — | Exact SRDevice.productType source partition; not a stable physical-unit identifier. |
+
+### `headphone-settings-samples` — Headphone Settings Samples
+
+Media type: `text/csv`.
+UTF-8 without a byte-order mark.
+One header row naming every column in order, then one row per source sample in source order.
+LF (0x0A) after every row, including the last. CR (0x0D) is prohibited anywhere, including inside quoted fields.
+Comma (0x2C).
+A field is enclosed in double quotes exactly when it contains a comma, a double quote, or LF; embedded double quotes are doubled; all other fields are unquoted.
+Finite IEEE-754 binary64 values use canonical base-10 lexemes matching the following regular expression. A plus sign, exponent, leading integer zero, negative zero, and redundant fractional trailing zero are prohibited; a lone fractional .0 remains admitted for integral values.
+`^(?:0(?:\.0|\.[0-9]*[1-9])?|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?|-(?:0\.[0-9]*[1-9]|[1-9][0-9]*(?:\.(?:0|[0-9]*[1-9]))?))$`
+Integer values use base-10 lexemes matching the following regular expression. A plus sign, -0, leading zero, decimal point, and exponent are prohibited.
+`^(?:0|-?[1-9][0-9]*)$`
+Seconds since the Unix epoch as a finite IEEE-754 binary64 value in the numbers form above; the column documentation states which columns are timestamps.
+The table's `Nullable` column controls empty fields: `no` requires a non-empty field in every data row; `yes` permits an empty field with the meaning stated for that column. The literal strings `null` and `NULL` have no special meaning. Columns naming the same nullableGroup represent one optional source object: every member is empty, or every member is non-empty, in a given row.
+
+| Column | Type | Nullable | Unit | Meaning |
+|---|---|---|---|---|
+| `storedTimestamp` | timestamp | no | — | SRFetchResult.timestamp: when SensorKit wrote the sample to its data store. SRHeadphoneSettings has no time of its own, so this is the only time the source supplies. |
+| `adaptiveAudioStrength` | integer | no | — | Exact SRHeadphoneSettingsAdaptiveAudioStrength raw value: 1 low, 2 medium, 3 high. Any other raw value is preserved unchanged and not mapped to a strength. |
+| `listeningMode` | integer | no | — | Exact SRHeadphoneSettingsListeningMode raw value: 1 normal, 2 active noise cancelling, 3 transparency, 4 automatic active noise cancelling. Any other raw value is preserved unchanged and not mapped to a mode. |
+| `personalizedVolumeEnabled` | integer | no | — | Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined. |
+| `conversationAwarenessEnabled` | integer | no | — | Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined. |
+| `spatialAudioEnabled` | integer | no | — | Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined. |
+| `personalizedSpatialAudioEnabled` | integer | no | — | Exact SDK enum raw value; preserve unsupported, enabled and disabled as distinct states where defined. |
+| `hearingAidEnabled` | integer | yes | — | Exact hearing-assistance setting enum raw value. Empty only when the entire hearingAssistance object is absent. |
+| `mediaAssistEnabled` | integer | yes | — | Exact hearing-assistance setting enum raw value. Empty only when the entire hearingAssistance object is absent. |
+| `adjustMediaEnabled` | integer | yes | — | Exact hearing-assistance setting enum raw value. Empty only when the entire hearingAssistance object is absent. |
+| `adjustVoiceEnabled` | integer | yes | — | Exact hearing-assistance setting enum raw value. Empty only when the entire hearingAssistance object is absent. |
+| `hearingProtectionEnabled` | integer | yes | — | Exact hearing-assistance setting enum raw value. Empty only when the entire hearingAssistance object is absent. |
+| `conversationBoostEnabled` | integer | yes | — | Exact hearing-assistance setting enum raw value. Empty only when the entire hearingAssistance object is absent. |
+| `hearingAidAmplification` | number | yes | — | Exact dimensionless SDK setting; no clinical unit or range is inferred. Empty only when the entire hearingAssistance object is absent. |
+| `hearingAidBalance` | number | yes | — | Exact dimensionless SDK setting; no clinical unit or range is inferred. Empty only when the entire hearingAssistance object is absent. |
+| `hearingAidTone` | number | yes | — | Exact dimensionless SDK setting; no clinical unit or range is inferred. Empty only when the entire hearingAssistance object is absent. |
+| `ambientNoiseReduction` | number | yes | — | Exact dimensionless SDK setting; no clinical unit or range is inferred. Empty only when the entire hearingAssistance object is absent. |
+| `device` | string | no | — | Exact SRDevice.productType source partition; not a stable physical-unit identifier. |
+
+Optional group `hearingAssistance`: `hearingAidEnabled`, `mediaAssistEnabled`, `adjustMediaEnabled`, `adjustVoiceEnabled`, `hearingProtectionEnabled`, `conversationBoostEnabled`, `hearingAidAmplification`, `hearingAidBalance`, `hearingAidTone`, `ambientNoiseReduction`. All members are empty together or non-empty together in each row.

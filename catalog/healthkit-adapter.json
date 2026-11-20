@@ -7,11 +7,11 @@
     "platform": "Apple HealthKit",
     "sdkBaseline": {
       "platform": "iPhoneOS",
-      "version": "26.5",
-      "xcodeVersion": "26.6",
-      "xcodeBuild": "17F113"
+      "version": "27.2",
+      "xcodeBuild": "27B52",
+      "xcodeVersion": "27.2"
     },
-    "accessed": "2026-08-21",
+    "accessed": "2026-11-14",
     "inventory": "Every source-type identifier the stated SDK baseline hands back at runtime, read inside an iOS simulator on that baseline. Derived aggregation contracts are listed separately and are not platform source types.",
     "rowScope": "rows contains exactly the runtime source-type identifiers of the stated SDK baseline, one row per identifier, and derived mappings are excluded and declared separately; where Apple declares more than one constant for an identifier, every declaring name is listed in symbols.",
     "evidence": [
@@ -31,7 +31,7 @@
         "scope": "Exact SDK baseline, retained source terminology, and source-file hashes"
       }
     ],
-    "rowCount": 218,
+    "rowCount": 221,
     "derivedAggregateCount": 1
   },
   "producerCanonicalization": {
@@ -395,6 +395,21 @@
       ],
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bladder-incontinence"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierBleedingAfterMenopause",
+      "title": "Bleeding After Menopause",
+      "symbols": [
+        "HKCategoryTypeIdentifierBleedingAfterMenopause"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingaftermenopause",
+      "status": "supported",
+      "measurementIDs": [
+        "bleeding-after-menopause"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-after-menopause"
       ]
     },
     {
@@ -936,6 +951,21 @@
       ],
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-memory-lapse"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierMenopausalState",
+      "title": "Menopausal State",
+      "symbols": [
+        "HKCategoryTypeIdentifierMenopausalState"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/menopausalstate",
+      "status": "supported",
+      "measurementIDs": [
+        "menopausal-state"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-menopausal-state"
       ]
     },
     {
@@ -2885,6 +2915,21 @@
       ],
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-heart-rate-recovery-one-minute"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeartRateVariabilityRMSSD",
+      "title": "Heart Rate Variability RMSSD",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeartRateVariabilityRMSSD"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartratevariabilityrmssd",
+      "status": "supported",
+      "measurementIDs": [
+        "heart-rate-variability-rmssd"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate-variability-rmssd"
       ]
     },
     {
