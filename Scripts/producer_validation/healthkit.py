@@ -138,11 +138,14 @@ def validate_healthkit_source_document_time(resource: dict[str, Any], label: str
         found += 1
         extension = extensions[0]
         members = extension.get("extension")
-        if set(extension) != {"url", "extension"} or not isinstance(members, list) or [
+        member_urls = [
             member.get("url") if isinstance(member, dict) else None for member in members
-        ] != contract["members"]:
-            fail("carries exactly one basis and one period, in that order")
-        basis, period = members
+        ] if isinstance(members, list) else None
+        if set(extension) != {"url", "extension"} or member_urls is None or sorted(
+            member_urls, key=str
+        ) != sorted(contract["members"]):
+            fail("carries exactly one basis and one period")
+        basis, period = (members[member_urls.index(name)] for name in ("basis", "period"))
         if set(basis) != {"url", "valueCode"} or basis["valueCode"] not in {
             item["code"] for item in contract["bases"]
         }:
@@ -165,7 +168,8 @@ def validate_healthkit_source_document_time(resource: dict[str, Any], label: str
                 continue
             zone_extensions = element.get("extension") if isinstance(element, dict) else None
             if (
-                set(element) != {"extension"}
+                not isinstance(element, dict)
+                or set(element) != {"extension"}
                 or not isinstance(zone_extensions, list)
                 or len(zone_extensions) != 1
                 or not isinstance(zone_extensions[0], dict)
@@ -456,9 +460,16 @@ def validate_healthkit_ecg_contract(resource: dict[str, Any], label: str) -> Non
             f"{label} HealthKit ECG correlated symptoms must agree with symptomsStatus"
         )
     unreadable = ecg_claim["correlatedSymptomEvidence"]["unreadableSymptoms"]
+    # Only an entry with the data-absent-reason extension is the unreadable-symptoms member;
+    # another extension on a symptom member is ordinary Reference content.
     absent_members = [
         member for member in members
-        if isinstance(member, dict) and "extension" in member
+        if isinstance(member, dict)
+        and isinstance(member.get("extension"), list)
+        and any(
+            isinstance(item, dict) and item.get("url") == unreadable["extension"]
+            for item in member["extension"]
+        )
     ]
     if absent_members:
         if (

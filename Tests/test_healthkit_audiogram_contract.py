@@ -61,19 +61,19 @@ class AudiogramContractTests(unittest.TestCase):
         renderer = (ROOT / "Scripts/render-measurement-profiles.py").read_text()
         self.assertNotIn('"audiogram-panel"', renderer)
 
-    def test_panel_invariant_names_exactly_the_catalog_frequencies(self):
-        self.assertIn("healthkit-audiogram-panel-1", self.row["obeys"])
-        fsh = (ROOT / "healthkit/input/fsh/audiogram.fsh").read_text()
-        expression = re.search(r"Invariant: healthkit-audiogram-panel-1\n.*?\nExpression: \"(.*?)\"\n", fsh, re.S).group(1)
-        named = {int(value) for value in re.findall(r"\$this = (\d+)", expression)}
-        coded = {member["valueQuantity"]["value"] for component in self.row["components"] for member in component["extensionValues"] if member["member"] == "frequency"}
-        self.assertEqual(named, coded)
-        ears = {}
+    def test_panel_invariant_is_generated_from_the_catalog(self):
+        extension = self.row["componentExtension"]
+        self.assertIn(extension["invariant"], self.row["obeys"])
+        generated = (ROOT / "healthkit/input/fsh/generated-measurement-profiles.fsh").read_text()
+        expression = re.search(r"Invariant: healthkit-audiogram-panel-1\n.*?\nExpression: \"(.*?)\"\n", generated, re.S).group(1)
+        self.assertEqual(RENDERER.component_invariant(self.row).splitlines()[-1], f'Expression: "{expression}"')
+        self.assertNotIn("healthkit-audiogram-panel-1", (ROOT / "healthkit/input/fsh/audiogram.fsh").read_text())
         for component in self.row["components"]:
             ear, frequency = component["id"].split("-", 1)
-            ears.setdefault(int(frequency), set()).add(ear)
-        # The invariant tests frequency alone, which is exact only while the catalog codes both ears at every frequency.
-        self.assertTrue(all(value == {"left", "right"} for value in ears.values()))
+            self.assertIn(f"'{component['code']}'", expression)
+            self.assertIn(f"'{int(frequency) * 1000}@{ear}'", expression)
+        # Both clauses use the same key, so frequency compares the same way in each.
+        self.assertEqual(expression.count("* 1000).truncate()"), 2)
         self.assertIn(".isDistinct()", expression)
 
     def test_range_and_frequency_constraints_keep_the_source_domain(self):

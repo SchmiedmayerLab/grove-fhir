@@ -1,11 +1,19 @@
 {
   "schemaVersion": 0,
-  "purpose": "A HealthKit audiogram panel with two catalog LOINC components and one text-only component at 125 Hz, a frequency the catalog does not code. The official Validator must accept the control and reject, through healthkit-audiogram-panel-1, a text-only component at 250 Hz, which the catalog codes, and a second component for the same ear and frequency.",
+  "purpose": "A HealthKit audiogram panel with two catalog LOINC components and one text-only component at 125 Hz, a frequency the catalog does not code. The official Validator must accept the control and reject, through healthkit-audiogram-panel-1, a component without a catalog coding at 250 Hz, which the catalog codes, whether it is text-only, written as 250.0 or coded in another code system, and a second component for the same ear and frequency.",
   "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-panel",
   "control": "control.json",
   "cases": [
     {
       "path": "catalog-frequency-without-code.json",
+      "expectedInvariant": "healthkit-audiogram-panel-1"
+    },
+    {
+      "path": "decimal-catalog-frequency-without-code.json",
+      "expectedInvariant": "healthkit-audiogram-panel-1"
+    },
+    {
+      "path": "other-coding-at-catalog-frequency.json",
       "expectedInvariant": "healthkit-audiogram-panel-1"
     },
     {
