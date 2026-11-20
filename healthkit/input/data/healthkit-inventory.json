@@ -2,18 +2,18 @@
   "oracle": {
     "headers": {
       "HKMetadata.h": "ce1c107200f9e330d66347f0bf22c8529bf102b26302eb8ef49b16d9945a353d",
-      "HKMetadataEnums.h": "c50c9903ce97f8fdbda5226e4d88a3792695423bbeea579e36fcd3cd614fabda",
+      "HKMetadataEnums.h": "ccffab5671ea890588a6935c8f9d5f9fa779e83349ea0c4ee0cc64bdaa93e2f8",
       "HKObjectType.h": "90c56172228a80a20977456b4a82f5caca5196252bd42d7e89d0f338035f5c81",
-      "HKTypeIdentifiers.h": "0169c6f491e28597bf1c4326e78f5f8ea883de26294bbe12f0d04cb2e13b16f7"
+      "HKTypeIdentifiers.h": "90cd9674f3cedfa7b7911edd5f290db9f47dab90507d5c56ff321de20f68d3e4"
     },
     "kind": "apple-runtime-identifiers",
     "method": "Every HealthKit identifier constant declared by the SDK baseline, resolved inside an iOS simulator on that baseline, plus the sample types Apple exposes only through a class accessor. Documentation pages come from Apple's published symbol index.",
-    "retrieved": "2026-08-21",
+    "retrieved": "2026-11-14",
     "sdkBaseline": {
       "platform": "iPhoneOS",
-      "version": "26.5",
-      "xcodeBuild": "17F113",
-      "xcodeVersion": "26.6"
+      "version": "27.2",
+      "xcodeBuild": "27B52",
+      "xcodeVersion": "27.2"
     }
   },
   "schemaVersion": 0,
@@ -59,6 +59,12 @@
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bladderincontinence",
       "symbols": [
         "HKCategoryTypeIdentifierBladderIncontinence"
+      ]
+    },
+    "HKCategoryTypeIdentifierBleedingAfterMenopause": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingaftermenopause",
+      "symbols": [
+        "HKCategoryTypeIdentifierBleedingAfterMenopause"
       ]
     },
     "HKCategoryTypeIdentifierBleedingAfterPregnancy": {
@@ -275,6 +281,12 @@
       "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/memorylapse",
       "symbols": [
         "HKCategoryTypeIdentifierMemoryLapse"
+      ]
+    },
+    "HKCategoryTypeIdentifierMenopausalState": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/menopausalstate",
+      "symbols": [
+        "HKCategoryTypeIdentifierMenopausalState"
       ]
     },
     "HKCategoryTypeIdentifierMenstrualFlow": {
@@ -1061,6 +1073,12 @@
       "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartraterecoveryoneminute",
       "symbols": [
         "HKQuantityTypeIdentifierHeartRateRecoveryOneMinute"
+      ]
+    },
+    "HKQuantityTypeIdentifierHeartRateVariabilityRMSSD": {
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartratevariabilityrmssd",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeartRateVariabilityRMSSD"
       ]
     },
     "HKQuantityTypeIdentifierHeartRateVariabilitySDNN": {

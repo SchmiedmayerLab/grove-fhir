@@ -112,7 +112,7 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             provenance["targetAdapterProfiles"], sorted(active_healthkit_profiles)
         )
-        self.assertEqual(len(active_healthkit_profiles), 119)
+        self.assertEqual(len(active_healthkit_profiles), 121)
 
         single_profiles = {
             profile
@@ -125,7 +125,7 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(single_claim["cardinality"], 1)
         self.assertFalse(single_claim["otherProfilesAllowed"])
         self.assertEqual(single_claim["profiles"], sorted(single_profiles))
-        self.assertEqual(len(single_profiles), 111)
+        self.assertEqual(len(single_profiles), 113)
 
         self.assertEqual(
             self.claims["healthKitRecordingDocumentClaim"]["profiles"],
@@ -214,13 +214,13 @@ class HealthKitCatalogTests(unittest.TestCase):
             source["sdkBaseline"],
             {
                 "platform": "iPhoneOS",
-                "version": "26.5",
-                "xcodeVersion": "26.6",
-                "xcodeBuild": "17F113",
+                "version": "27.2",
+                "xcodeVersion": "27.2",
+                "xcodeBuild": "27B52",
             },
         )
         self.assertEqual(source["platform"], "Apple HealthKit")
-        self.assertEqual(source["accessed"], "2026-08-21")
+        self.assertEqual(source["accessed"], "2026-11-14")
         self.assertEqual(source["rowCount"], len(rows))
         self.assertEqual(source["derivedAggregateCount"], 1)
         self.assertIn("derived mappings are excluded", source["rowScope"])
@@ -674,6 +674,22 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertIn("may travel in the same Bundle", symptom["exchangeRule"])
         self.assertNotRegex(symptom["exchangeRule"], r"\bevent")
         self.assertIn("normal HealthKit", symptom["sourceRevisionRule"])
+        self.assertEqual(
+            {key: value for key, value in symptom["unreadableSymptoms"].items() if key != "rule"},
+            {
+                "symptomsStatus": "present",
+                "r4Element": "Observation.hasMember",
+                "cardinality": "1..1",
+                "extension": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                "code": "unknown",
+            },
+        )
+        self.assertIn("keeps the present status", symptom["unreadableSymptoms"]["rule"])
+        profiles = (ROOT / "healthkit/input/fsh/profiles.fsh").read_text(encoding="utf-8")
+        self.assertIn(
+            "* hasMember.extension[dataAbsentReason].valueCode = #unknown (exactly)", profiles
+        )
+        self.assertIn("extension.count() = 1 and extension(", profiles)
         self.assertNotIn("authorization", json.dumps(contract).lower())
         self.assertEqual(
             [item["outputRole"] for item in contract["outputs"]],
@@ -820,7 +836,7 @@ class HealthKitCatalogTests(unittest.TestCase):
                 self.assertNotIn(key, table)
                 table[key] = ", ".join(name.strip().strip("`") for name in source_types.split(","))
                 constants[key] = constant
-        # A row names the key by the string the constant holds in an iOS 26.5 simulator on the SDK
+        # A row names the key by the string the constant holds in an iOS 27.2 simulator on the SDK
         # baseline; these twelve hold another string than their constant's name.
         self.assertEqual(
             {key: constant for key, constant in constants.items() if key != constant},
@@ -844,7 +860,10 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             {key: source_types for key, source_types in table.items() if source_types not in {every, devices}},
             {
-                "HKTimeZone": "every type with an Observation output; heartbeat series and workout routes",
+                "HKTimeZone": (
+                    "every type with an Observation output; heartbeat series, workout routes, "
+                    "clinical records and CDA documents"
+                ),
                 "HKMetadataKeyHeartRateMotionContext": "HKQuantityTypeIdentifierHeartRate",
                 "HKHeartRateEventThreshold": (
                     "HKCategoryTypeIdentifierHighHeartRateEvent, "
@@ -958,7 +977,7 @@ class HealthKitCatalogTests(unittest.TestCase):
             for name in headings
         }
         links = {part.split(")", 1)[0] for part in section.split("](#")[1:]}
-        self.assertEqual(len(links), 6)
+        self.assertEqual(len(links), 7)
         self.assertLessEqual(links, anchors)
 
     def test_insulin_delivery_reason_is_a_required_component_coded_by_its_key(self) -> None:

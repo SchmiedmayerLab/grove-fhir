@@ -77,8 +77,8 @@ Expression: "(code.coding.where(system = 'https://grovealliance.org/fhir/mobile/
 Severity: #error
 
 Invariant: healthkit-ecg-symptom-state-1
-Description: "A present symptoms status has at least one separately identified symptom Observation member; none and not-set have no member."
-Expression: "(extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() = 'present' and hasMember.exists()) or (extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() != 'present' and hasMember.empty())"
+Description: "A present symptoms status has at least one separately identified symptom Observation member, or, when the symptom samples could not be read, exactly one member that carries only a data-absent-reason of unknown; none and not-set have no member."
+Expression: "(extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() = 'present' and hasMember.exists() and hasMember.all(type.exists() and identifier.exists() and extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason').empty())) or (extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() = 'present' and hasMember.count() = 1 and hasMember.all(type.empty() and identifier.empty() and display.empty() and extension.count() = 1 and extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason').value.first() = 'unknown')) or (extension('https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status').value.first() != 'present' and hasMember.empty())"
 Severity: #error
 
 Invariant: healthkit-medication-concept-identity-1
@@ -132,7 +132,7 @@ Profile: HealthKitECGObservation
 Parent: HealthKitObservation
 Id: healthkit-ecg-observation
 Title: "HealthKit ECG Observation"
-Description: "A HealthKit Lead-I-like waveform that directly claims the source-neutral Grove Sensor ECG profile. Native R4 elements carry classification, classification method, and references to separately exchanged symptom Observations; validation inputs such as reported count and sampling frequency are not duplicated on the wire."
+Description: "A HealthKit Lead-I-like waveform that directly claims the source-neutral Grove Sensor ECG profile. Native R4 elements carry classification, classification method, and references to separately exchanged symptom Observations, or the reason they are absent; validation inputs such as reported count and sampling frequency are not duplicated on the wire."
 * obeys healthkit-ecg-symptom-state-1
 * extension[healthKitSourceType].valueCode = #HKDataTypeIdentifierElectrocardiogram
 * extension contains
@@ -153,10 +153,14 @@ Description: "A HealthKit Lead-I-like waveform that directly claims the source-n
 * dataAbsentReason 0..0
 * hasMember 0..* MS
 * hasMember only Reference(Observation)
+* hasMember.extension contains $dataAbsentReason named dataAbsentReason 0..1 MS
+* hasMember.extension[dataAbsentReason] ^short = "Why the symptom members are absent"
+* hasMember.extension[dataAbsentReason] ^definition = "Present only as the single member of a present symptoms status whose symptom samples could not be read, for example because their read authorization is missing; the member then carries no type, identifier or display."
+* hasMember.extension[dataAbsentReason].valueCode = #unknown (exactly)
 * hasMember.reference 0..0
-* hasMember.type 1..1 MS
+* hasMember.type 0..1 MS
 * hasMember.type = "Observation" (exactly)
-* hasMember.identifier 1..1 MS
+* hasMember.identifier 0..1 MS
 * hasMember.identifier.type 1..1 MS
 * hasMember.identifier.type = $groveIdentifierRole#source-output
 * hasMember.identifier.system 1..1 MS
@@ -217,6 +221,7 @@ Description: "Provenance for transforming or byte-preserving one HealthKit objec
 * entity.what.identifier.system 1..1 MS
 * entity.what.identifier.value 1..1 MS
 * entity.extension contains HealthKitSourceRevision named sourceRevision 0..1 MS
+* entity.extension contains HealthKitSourceDocumentTime named sourceDocumentTime 0..1 MS
 
 Profile: HealthKitRecordingDocument
 Parent: GroveSensorRecordingDocument

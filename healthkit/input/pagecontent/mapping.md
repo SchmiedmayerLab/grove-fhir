@@ -11,7 +11,7 @@ The resulting Observation follows [HealthKit Observation](StructureDefinition-he
 Preserve the facts HealthKit states; do not infer hardware, capture mode, clinical meaning, or study membership from an API type alone.
 
 The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary).
-The [authoritative status matrix](status-matrix.html) lists all 218 source-type identifiers in the published adapter contract, including every admitted and fail-closed row.
+The [authoritative status matrix](status-matrix.html) lists all 221 source-type identifiers in the published adapter contract, including every admitted and fail-closed row.
 The [walkthrough](walkthrough.html) applies the rules below to one concrete heart-rate sample, from `HKQuantitySample` to the operational exchange Bundle.
 
 ### Source-record and output identity
@@ -93,7 +93,7 @@ Source-record and source-output identity remain the identity of a record: Bundle
 ### Electrocardiograms
 
 A structured HealthKit ECG directly claims the source-neutral Sensor ECG profile and the HealthKit ECG adapter profile.
-The caller supplies the already-obtained `HKElectrocardiogram`, every voltage measurement and exact offset, and every associated symptom `HKCategorySample`; the adapter performs no query and never resamples.
+The caller supplies the already-obtained `HKElectrocardiogram`, every voltage measurement and exact offset, and every associated symptom `HKCategorySample`, or the fact that they could not be read; the adapter performs no query and never resamples.
 Voltage offsets must form one exact uniform sequence, the reported count must match, and an optional sampling frequency must agree exactly with the SampledData period.
 
 Classification is carried in `Observation.interpretation`, and the optional Apple ECG algorithm version is carried in `Observation.method`.
@@ -104,6 +104,30 @@ Each correlated symptom is converted through its existing HealthKit symptom Obse
 Each symptom is its own record, with its own source record and conversion Provenance, and it may travel in the same Bundle as the ECG.
 The ECG groups the separately available observations with identifier-only `hasMember` references carrying the symptoms' opaque `source-output` Identifiers.
 Distinct equal-type samples remain distinct; `present` requires at least one distinct member, while `none` and `notSet` require none.
+
+Symptom samples need their own HealthKit read authorization, separate from the ECG's, and HealthKit does not reveal a denied read: a `present` ECG whose symptom samples cannot be read returns none.
+The producer then states that the symptoms could not be read instead of withholding the ECG.
+It keeps the `present` status as HealthKit reports it and carries exactly one `hasMember` entry with only the standard [data-absent-reason](http://hl7.org/fhir/R4/extension-data-absent-reason.html) extension, code `unknown`, and no type, identifier or display.
+The waveform and the optional average heart rate are emitted as usual; `none` and `notSet` never carry the reason.
+This member names no target, so it is the one `hasMember` entry that is neither a resolving literal nor an identifier-only Reference (`referencePolicy.dataAbsentReferences` in the exchange protocol); it grants nothing.
+
+### Audiogram sensitivity tests
+
+An `HKAudiogramSample` becomes one audiogram-panel Observation.
+Preserve its complete source interval: use `effectiveDateTime` for a point and `effectivePeriod` for a nonzero interval.
+Each sensitivity test becomes its own component, retaining the supplied dB hearing-level value.
+
+Use the catalog's ear-and-frequency LOINC code when it names that exact coordinate.
+For another frequency, retain the exact frequency and ear in the required `healthkit-audiogram-sensitivity-test` extension and use an explicit component text label; do not substitute the nearest catalog frequency.
+The same extension carries the air-conduction method, the masking state when the source API exposes it, and any source clamping bounds.
+Each ear retains its own masking state; a source sensitivity point has at most one test per ear.
+A coded component's extension fixes the frequency to the integer the catalog names, so write it without a fractional part (`250`, not `250.0`).
+Under `healthkit-audiogram-panel-1`, a component without one of the catalog's LOINC codings, whether text-only or coded in another system, never carries an ear and frequency that a catalog component names, and no two components carry the same ear and frequency. Both rules compare frequencies as whole millihertz (the value times 1000, truncated), so `250` and `250.0` are the same frequency.
+
+Clamping bounds describe the source's measurement limits.
+Preserve the supplied sensitivity without clamping it again or inventing a less-than or greater-than comparator.
+Emit only the ears and frequencies actually tested.
+The native sample UUID, source metadata, recording Device, writer attribution and conversion Provenance follow the common sample rules.
 
 ### Workouts
 
@@ -209,6 +233,20 @@ Do not parse and reserialize, relabel, upgrade, downgrade, or otherwise rewrite 
 Grove validation checks that an inline attachment is strict UTF-8 JSON containing one `resourceType`-bearing object, but it does not apply R4 rules to a DSTU2 payload or assert conformance to the issuer's FHIR release.
 The R4 envelope asserts the exact source release, payload integrity, identity, and provenance—not that Grove has validated or endorsed the provider's clinical content.
 
+The `startDate` and `endDate` of a clinical record or a CDA document sample are facts about the HealthKit sample, not about the care its document describes.
+Carry them in the [HealthKit Source Document Time](StructureDefinition-healthkit-source-document-time.html) extension on the source entity of the conversion Provenance, with the basis that names their meaning:
+
+| Sample class | Basis | Meaning of the period |
+|---|---|---|
+| `HKClinicalRecord` | `clinical-record-download` | when the system downloaded the FHIR data to the device and added the sample to Health; not taken from the FHIR data |
+| `HKCDADocumentSample` | `cda-document-app-supplied` | the start and end dates that the app creating the sample supplied for the document; no clinical service or download time is inferred |
+
+The period states both endpoints as complete date-times with an offset under the [time rules](#values-units-and-time), and equal endpoints are admitted.
+A supplied `HKTimeZone` maps to the `timezone` extension on both endpoints and is not repeated in source metadata.
+A sample that carries `HKTimeZone` therefore emits this extension, so the zone always has a conformant place; without one, neither endpoint carries a `timezone` extension.
+Never copy these dates into `DocumentReference.context.period`, `DocumentReference.date`, or the embedded source bytes.
+The extension mints no identity; adding or changing it changes the record version.
+
 ### Values, units, and time
 
 | HealthKit sample type | Required profile and code | FHIR value |
@@ -224,7 +262,7 @@ Map an available IANA time-zone name to the standard FHIR `timezone` extension o
 
 For an `HKHeartbeatSeriesSample` or `HKWorkoutRoute`, set `DocumentReference.context.period` to the sample's `startDate` and `endDate`. Both endpoints use the same millisecond precision, half-even rounding, numeric-offset and IANA `timezone` rules as Observation effective times. Preserve the complete source interval, including equal endpoints; reject reversed or unrepresentable periods and invalid supplied time-zone names. Without a source time zone, serialize the endpoints in UTC without inventing a zone name. Do not substitute the conversion instant in `DocumentReference.date` for the recording period. A time zone represented on this period is not repeated in source metadata.
 
-Provider-issued clinical documents preserve their original bytes. Do not infer a clinical service period from import or conversion timestamps. Preserve otherwise unmapped `HKTimeZone` metadata on the wrapper when its relationship to a clinical date-time is not established.
+Provider-issued clinical documents preserve their original bytes. Do not infer a clinical service period from import or conversion timestamps. The sample dates of a clinical record or CDA document sample, with a supplied `HKTimeZone`, belong to the [source document time](#clinical-fhir-records) extension and never to the document.
 
 Step count preserves the source interval total with Grove `step-count-total` and UCUM `{steps}`.
 The effective Period must have both endpoints and a positive duration.
@@ -448,7 +486,7 @@ Use the clinical, device and other structured mappings in this guide first. The 
 
 | Runtime key | SDK constant | Source types | Element |
 |---|---|---|---|
-| `HKTimeZone` | `HKMetadataKeyTimeZone` | every type with an Observation output; heartbeat series and workout routes | the `timezone` extension on each `effective[x]` or recording `context.period` endpoint, as the [time rules](#values-units-and-time) define |
+| `HKTimeZone` | `HKMetadataKeyTimeZone` | every type with an Observation output; heartbeat series, workout routes, clinical records and CDA documents | the `timezone` extension on each `effective[x]`, recording `context.period` or [source document time](#clinical-fhir-records) endpoint, as the [time rules](#values-units-and-time) define |
 | `HKWasUserEntered` | `HKMetadataKeyWasUserEntered` | every type with an Observation output | the `grove-recording-method` extension, `manual-entry` when the key states `true`, as the [capture-mode rule](#capture-mode-and-performer) defines |
 | `HKMetadataKeySyncIdentifier` | `HKMetadataKeySyncIdentifier` | every type with an Observation or document output | the `writer-record` Identifier and, when disclosed, the [readable sync identifier](#readable-sync-identifier), as the [revision rules](#logical-identity-and-revisions) define |
 | `HKMetadataKeySyncVersion` | `HKMetadataKeySyncVersion` | every type with an Observation or document output | the Grove Writer Record Version extension beside the `writer-record` Identifier |

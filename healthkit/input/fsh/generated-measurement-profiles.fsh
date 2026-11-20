@@ -20,6 +20,7 @@ Description: "Measurement concepts defined by the HealthKit adapter for platform
 * #apple-stand-time "Apple stand time" "Standing time credited by Apple's proprietary Stand algorithm during the exact Observation effective Period."
 * #atrial-fibrillation-burden "Atrial fibrillation burden" "The percentage of analyzed heart-rhythm time classified as atrial fibrillation within the exact Observation effective Period."
 * #bladder-incontinence "Bladder incontinence" "Logged severity of bladder incontinence."
+* #bleeding-after-menopause "Bleeding after menopause" "Logged vaginal bleeding after menopause."
 * #bleeding-after-pregnancy "Bleeding after pregnancy" "Logged vaginal bleeding amount after pregnancy."
 * #bleeding-during-pregnancy "Bleeding during pregnancy" "Logged vaginal bleeding amount during pregnancy."
 * #blood-alcohol-content "Blood alcohol content" "The blood alcohol concentration expressed as a percent, as reported by the source at the Observation effective instant."
@@ -41,6 +42,7 @@ Description: "Measurement concepts defined by the HealthKit adapter for platform
 * #irregular-menstrual-cycles "Irregular menstrual cycles" "Cycle lengths outside the expected range, derived from the participant's logged cycle records. Corresponds to SNOMED CT 80182007 (Irregular periods); the concept is cited rather than bound, because this guide carries no SNOMED dependency."
 * #low-cardio-fitness-notification "Low Cardio Fitness Notification" "A device notification that estimated cardio fitness fell below the configured threshold."
 * #low-heart-rate-notification "Low Heart Rate Notification" "A device notification that heart rate stayed below the wearer's configured threshold while apparently inactive."
+* #menopausal-state "Menopausal state" "A person's logged menopausal state at one source instant."
 * #number-of-alcoholic-beverages "Number of alcoholic beverages" "The number of standard alcoholic drinks attributed to the exact Observation effective Period."
 * #number-of-times-fallen "Number of times fallen" "The total number of falls attributed to the exact Observation effective Period."
 * #persistent-intermenstrual-bleeding "Persistent intermenstrual bleeding" "Bleeding between periods persisting across cycles, derived from logged cycle records."
@@ -153,6 +155,26 @@ Title: "Grove HealthKit Biological Sex Result"
 Description: "Every admitted result code of the Grove HealthKit Biological Sex measurement."
 * ^experimental = false
 * include codes from system HealthkitBiologicalSexCS
+
+CodeSystem: HealthkitBleedingAfterMenopauseCS
+Id: healthkit-bleeding-after-menopause
+Title: "Bleeding After Menopause Result"
+Description: "The closed result codes of the Bleeding After Menopause measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #unspecified "Unspecified" "Bleeding of unspecified amount."
+* #light "Light" "Light bleeding."
+* #medium "Medium" "Medium bleeding."
+* #heavy "Heavy" "Heavy bleeding."
+* #none "None" "No bleeding."
+
+ValueSet: HealthkitBleedingAfterMenopauseVS
+Id: healthkit-bleeding-after-menopause
+Title: "Bleeding After Menopause Result"
+Description: "Every admitted result code of the Bleeding After Menopause measurement."
+* ^experimental = false
+* include codes from system HealthkitBleedingAfterMenopauseCS
 
 CodeSystem: HealthkitBleedingAfterPregnancyCS
 Id: healthkit-bleeding-after-pregnancy
@@ -421,6 +443,24 @@ Title: "Low Heart Rate Notification Result"
 Description: "Every admitted result code of the Low Heart Rate Notification measurement."
 * ^experimental = false
 * include codes from system HealthkitLowHeartRateNotificationCS
+
+CodeSystem: HealthkitMenopausalStateCS
+Id: healthkit-menopausal-state
+Title: "Menopausal State Result"
+Description: "The closed result codes of the Menopausal State measurement."
+* ^experimental = false
+* ^caseSensitive = true
+* ^content = #complete
+* #menopause "Menopause" "The source states menopause."
+* #perimenopause "Perimenopause" "The source states perimenopause."
+* #none "None" "The source states neither menopause nor perimenopause."
+
+ValueSet: HealthkitMenopausalStateVS
+Id: healthkit-menopausal-state
+Title: "Menopausal State Result"
+Description: "Every admitted result code of the Menopausal State measurement."
+* ^experimental = false
+* include codes from system HealthkitMenopausalStateCS
 
 CodeSystem: HealthkitPersistentIntermenstrualBleedingCS
 Id: healthkit-persistent-intermenstrual-bleeding
@@ -814,119 +854,165 @@ Profile: HealthkitAudiogramPanel
 Parent: HealthKitObservation
 Id: healthkit-audiogram-panel
 Title: "Audiogram Panel"
-Description: "HKAudiogramSample: a hearing test reporting an air conduction threshold per ear at each frequency it measured. The thresholds are parts of one test rather than results that stand alone, so they are components. Every component is optional: a test states the frequencies it measured and no others, and a frequency outside this set is carried by its own component keyed to the frequency rather than forced onto a neighbouring code."
+Description: "HKAudiogramSample: an air conduction hearing test preserving its complete source interval and each ear/frequency sensitivity test. Known frequencies use the declared LOINC components; other frequencies use an explicit text-only component code and their exact frequency in HealthKit Audiogram Sensitivity Test, never a neighbouring frequency code. Each sensitivity test retains its available masking state. Every emitted component carries its source test details, including available masking and clamping bounds; no unmeasured frequency or absent ear is invented."
+* obeys healthkit-audiogram-panel-1
 * code = $loinc#89015-2
-* effective[x] only dateTime
+* effective[x] only dateTime or Period
 * value[x] 0..0
+* component.extension contains HealthKitAudiogramSensitivityTest named sensitivityTest 1..1 MS
 * component ^slicing.discriminator.type = #pattern
 * component ^slicing.discriminator.path = "code"
 * component ^slicing.rules = #open
 * component contains left-250 0..1 MS and right-250 0..1 MS and left-500 0..1 MS and right-500 0..1 MS and left-750 0..1 MS and right-750 0..1 MS and left-1000 0..1 MS and right-1000 0..1 MS and left-1500 0..1 MS and right-1500 0..1 MS and left-2000 0..1 MS and right-2000 0..1 MS and left-3000 0..1 MS and right-3000 0..1 MS and left-4000 0..1 MS and right-4000 0..1 MS and left-5000 0..1 MS and right-5000 0..1 MS and left-6000 0..1 MS and right-6000 0..1 MS and left-8000 0..1 MS and right-8000 0..1 MS
+* component[left-250].extension[sensitivityTest].extension[frequency].valueQuantity.value = 250 (exactly)
+* component[left-250].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-250].code = $loinc#91375-6
 * component[left-250].value[x] only Quantity
 * component[left-250].valueQuantity.value 1..1 MS
 * component[left-250].valueQuantity.system = $ucum (exactly)
 * component[left-250].valueQuantity.code = #dB (exactly)
+* component[right-250].extension[sensitivityTest].extension[frequency].valueQuantity.value = 250 (exactly)
+* component[right-250].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-250].code = $loinc#91374-9
 * component[right-250].value[x] only Quantity
 * component[right-250].valueQuantity.value 1..1 MS
 * component[right-250].valueQuantity.system = $ucum (exactly)
 * component[right-250].valueQuantity.code = #dB (exactly)
+* component[left-500].extension[sensitivityTest].extension[frequency].valueQuantity.value = 500 (exactly)
+* component[left-500].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-500].code = $loinc#89024-4
 * component[left-500].value[x] only Quantity
 * component[left-500].valueQuantity.value 1..1 MS
 * component[left-500].valueQuantity.system = $ucum (exactly)
 * component[left-500].valueQuantity.code = #dB (exactly)
+* component[right-500].extension[sensitivityTest].extension[frequency].valueQuantity.value = 500 (exactly)
+* component[right-500].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-500].code = $loinc#89025-1
 * component[right-500].value[x] only Quantity
 * component[right-500].valueQuantity.value 1..1 MS
 * component[right-500].valueQuantity.system = $ucum (exactly)
 * component[right-500].valueQuantity.code = #dB (exactly)
+* component[left-750].extension[sensitivityTest].extension[frequency].valueQuantity.value = 750 (exactly)
+* component[left-750].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-750].code = $loinc#91379-8
 * component[left-750].value[x] only Quantity
 * component[left-750].valueQuantity.value 1..1 MS
 * component[left-750].valueQuantity.system = $ucum (exactly)
 * component[left-750].valueQuantity.code = #dB (exactly)
+* component[right-750].extension[sensitivityTest].extension[frequency].valueQuantity.value = 750 (exactly)
+* component[right-750].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-750].code = $loinc#91378-0
 * component[right-750].value[x] only Quantity
 * component[right-750].valueQuantity.value 1..1 MS
 * component[right-750].valueQuantity.system = $ucum (exactly)
 * component[right-750].valueQuantity.code = #dB (exactly)
+* component[left-1000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 1000 (exactly)
+* component[left-1000].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-1000].code = $loinc#89016-0
 * component[left-1000].value[x] only Quantity
 * component[left-1000].valueQuantity.value 1..1 MS
 * component[left-1000].valueQuantity.system = $ucum (exactly)
 * component[left-1000].valueQuantity.code = #dB (exactly)
+* component[right-1000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 1000 (exactly)
+* component[right-1000].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-1000].code = $loinc#89017-8
 * component[right-1000].value[x] only Quantity
 * component[right-1000].valueQuantity.value 1..1 MS
 * component[right-1000].valueQuantity.system = $ucum (exactly)
 * component[right-1000].valueQuantity.code = #dB (exactly)
+* component[left-1500].extension[sensitivityTest].extension[frequency].valueQuantity.value = 1500 (exactly)
+* component[left-1500].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-1500].code = $loinc#91373-1
 * component[left-1500].value[x] only Quantity
 * component[left-1500].valueQuantity.value 1..1 MS
 * component[left-1500].valueQuantity.system = $ucum (exactly)
 * component[left-1500].valueQuantity.code = #dB (exactly)
+* component[right-1500].extension[sensitivityTest].extension[frequency].valueQuantity.value = 1500 (exactly)
+* component[right-1500].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-1500].code = $loinc#91372-3
 * component[right-1500].value[x] only Quantity
 * component[right-1500].valueQuantity.value 1..1 MS
 * component[right-1500].valueQuantity.system = $ucum (exactly)
 * component[right-1500].valueQuantity.code = #dB (exactly)
+* component[left-2000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 2000 (exactly)
+* component[left-2000].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-2000].code = $loinc#89018-6
 * component[left-2000].value[x] only Quantity
 * component[left-2000].valueQuantity.value 1..1 MS
 * component[left-2000].valueQuantity.system = $ucum (exactly)
 * component[left-2000].valueQuantity.code = #dB (exactly)
+* component[right-2000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 2000 (exactly)
+* component[right-2000].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-2000].code = $loinc#89019-4
 * component[right-2000].value[x] only Quantity
 * component[right-2000].valueQuantity.value 1..1 MS
 * component[right-2000].valueQuantity.system = $ucum (exactly)
 * component[right-2000].valueQuantity.code = #dB (exactly)
+* component[left-3000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 3000 (exactly)
+* component[left-3000].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-3000].code = $loinc#89020-2
 * component[left-3000].value[x] only Quantity
 * component[left-3000].valueQuantity.value 1..1 MS
 * component[left-3000].valueQuantity.system = $ucum (exactly)
 * component[left-3000].valueQuantity.code = #dB (exactly)
+* component[right-3000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 3000 (exactly)
+* component[right-3000].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-3000].code = $loinc#89021-0
 * component[right-3000].value[x] only Quantity
 * component[right-3000].valueQuantity.value 1..1 MS
 * component[right-3000].valueQuantity.system = $ucum (exactly)
 * component[right-3000].valueQuantity.code = #dB (exactly)
+* component[left-4000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 4000 (exactly)
+* component[left-4000].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-4000].code = $loinc#89022-8
 * component[left-4000].value[x] only Quantity
 * component[left-4000].valueQuantity.value 1..1 MS
 * component[left-4000].valueQuantity.system = $ucum (exactly)
 * component[left-4000].valueQuantity.code = #dB (exactly)
+* component[right-4000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 4000 (exactly)
+* component[right-4000].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-4000].code = $loinc#89023-6
 * component[right-4000].value[x] only Quantity
 * component[right-4000].valueQuantity.value 1..1 MS
 * component[right-4000].valueQuantity.system = $ucum (exactly)
 * component[right-4000].valueQuantity.code = #dB (exactly)
+* component[left-5000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 5000 (exactly)
+* component[left-5000].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-5000].code = $loinc#91377-2
 * component[left-5000].value[x] only Quantity
 * component[left-5000].valueQuantity.value 1..1 MS
 * component[left-5000].valueQuantity.system = $ucum (exactly)
 * component[left-5000].valueQuantity.code = #dB (exactly)
+* component[right-5000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 5000 (exactly)
+* component[right-5000].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-5000].code = $loinc#91376-4
 * component[right-5000].value[x] only Quantity
 * component[right-5000].valueQuantity.value 1..1 MS
 * component[right-5000].valueQuantity.system = $ucum (exactly)
 * component[right-5000].valueQuantity.code = #dB (exactly)
+* component[left-6000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 6000 (exactly)
+* component[left-6000].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-6000].code = $loinc#89026-9
 * component[left-6000].value[x] only Quantity
 * component[left-6000].valueQuantity.value 1..1 MS
 * component[left-6000].valueQuantity.system = $ucum (exactly)
 * component[left-6000].valueQuantity.code = #dB (exactly)
+* component[right-6000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 6000 (exactly)
+* component[right-6000].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-6000].code = $loinc#89027-7
 * component[right-6000].value[x] only Quantity
 * component[right-6000].valueQuantity.value 1..1 MS
 * component[right-6000].valueQuantity.system = $ucum (exactly)
 * component[right-6000].valueQuantity.code = #dB (exactly)
+* component[left-8000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 8000 (exactly)
+* component[left-8000].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-8000].code = $loinc#89028-5
 * component[left-8000].value[x] only Quantity
 * component[left-8000].valueQuantity.value 1..1 MS
 * component[left-8000].valueQuantity.system = $ucum (exactly)
 * component[left-8000].valueQuantity.code = #dB (exactly)
+* component[right-8000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 8000 (exactly)
+* component[right-8000].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-8000].code = $loinc#89029-3
 * component[right-8000].value[x] only Quantity
 * component[right-8000].valueQuantity.value 1..1 MS
@@ -955,6 +1041,18 @@ Description: "HKCategoryTypeIdentifierBladderIncontinence: records bladder incon
 * value[x] only CodeableConcept
 * valueCodeableConcept 1..1 MS
 * valueCodeableConcept from GroveSymptomSeverityVS (required)
+
+Profile: HealthkitBleedingAfterMenopause
+Parent: HealthKitObservation
+Id: healthkit-bleeding-after-menopause
+Title: "Bleeding After Menopause"
+Description: "Bleeding logged after menopause, with the exact HKCategoryValueVaginalBleeding amount at the source instant, like bleeding after pregnancy and bleeding during pregnancy. This measurement is distinct from menstrual flow and intermenstrual bleeding."
+* code = HealthKitMeasurementCS#bleeding-after-menopause
+* code from HealthKitMeasurementVS (required)
+* effective[x] only dateTime
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitBleedingAfterMenopauseVS (required)
 
 Profile: HealthkitBleedingAfterPregnancy
 Parent: HealthKitObservation
@@ -1411,6 +1509,18 @@ Description: "HKCategoryTypeIdentifierLowHeartRateEvent: an Apple Watch notifica
 * component[threshold].valueQuantity.value 1..1 MS
 * component[threshold].valueQuantity.system = $ucum (exactly)
 * component[threshold].valueQuantity.code = #/min (exactly)
+
+Profile: HealthkitMenopausalState
+Parent: HealthKitObservation
+Id: healthkit-menopausal-state
+Title: "Menopausal State"
+Description: "The exact HKCategoryValueMenopausalState recorded at the source instant. The source sample establishes no continuous interval of that state and does not imply when it began or ended."
+* code = HealthKitMeasurementCS#menopausal-state
+* code from HealthKitMeasurementVS (required)
+* effective[x] only dateTime
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1 MS
+* valueCodeableConcept from HealthkitMenopausalStateVS (required)
 
 Invariant: healthkit-number-of-alcoholic-beverages-value-domain-1
 Description: "A populated Number of Alcoholic Beverages value is >= 0, an integer."
@@ -2553,6 +2663,11 @@ Description: "Apple's 1-10 workout effort rating over the associated workout's e
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #{score} (exactly)
 
+Invariant: healthkit-audiogram-panel-1
+Description: "A component without a catalog coding does not carry the frequency and ear of a catalog component, and no two components carry the same frequency and ear; quantities compare as whole thousandths of their unit."
+Severity: #error
+Expression: "component.where(code.coding.where((system = 'http://loinc.org' and code in ('91375-6' | '91374-9' | '89024-4' | '89025-1' | '91379-8' | '91378-0' | '89016-0' | '89017-8' | '91373-1' | '91372-3' | '89018-6' | '89019-4' | '89020-2' | '89021-0' | '89022-8' | '89023-6' | '91377-2' | '91376-4' | '89026-9' | '89027-7' | '89028-5' | '89029-3'))).empty()).select(((extension.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test').extension.where(url = 'frequency').value.value.first() * 1000).truncate().toString()) + '@' + (extension.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test').extension.where(url = 'ear').value.first().toString())).intersect('250000@left' | '250000@right' | '500000@left' | '500000@right' | '750000@left' | '750000@right' | '1000000@left' | '1000000@right' | '1500000@left' | '1500000@right' | '2000000@left' | '2000000@right' | '3000000@left' | '3000000@right' | '4000000@left' | '4000000@right' | '5000000@left' | '5000000@right' | '6000000@left' | '6000000@right' | '8000000@left' | '8000000@right').empty() and component.select(((extension.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test').extension.where(url = 'frequency').value.value.first() * 1000).truncate().toString()) + '@' + (extension.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test').extension.where(url = 'ear').value.first().toString())).isDistinct()"
+
 Instance: HealthkitAppleExerciseTimeExample
 InstanceOf: HealthkitAppleExerciseTime
 Usage: #example
@@ -2654,8 +2769,16 @@ Description: "A conformant Audiogram Panel instance."
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * component[left-250].code = $loinc#91375-6
 * component[left-250].valueQuantity = 20 'dB'
+* component[left-250].extension[sensitivityTest].extension[frequency].valueQuantity = 250 'Hz'
+* component[left-250].extension[sensitivityTest].extension[ear].valueCode = #left
+* component[left-250].extension[sensitivityTest].extension[conduction].valueCode = #air
+* component[left-250].extension[sensitivityTest].extension[masked].valueBoolean = false
 * component[right-250].code = $loinc#91374-9
 * component[right-250].valueQuantity = 25 'dB'
+* component[right-250].extension[sensitivityTest].extension[frequency].valueQuantity = 250 'Hz'
+* component[right-250].extension[sensitivityTest].extension[ear].valueCode = #right
+* component[right-250].extension[sensitivityTest].extension[conduction].valueCode = #air
+* component[right-250].extension[sensitivityTest].extension[masked].valueBoolean = false
 
 Instance: HealthkitBiologicalSexExample
 InstanceOf: HealthkitBiologicalSex
@@ -2688,6 +2811,22 @@ Description: "A conformant Bladder Incontinence instance."
 * subject = Reference(HealthKitPatientExample)
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * valueCodeableConcept = GroveSymptomSeverityCS#not-present "Not present"
+
+Instance: HealthkitBleedingAfterMenopauseExample
+InstanceOf: HealthkitBleedingAfterMenopause
+Usage: #example
+Title: "Bleeding After Menopause Example"
+Description: "A conformant Bleeding After Menopause instance."
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:m4CeQ-P7-jyP4j6PtgUoBvKVyMyXqI6SEa67dqVQv24"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:1LBXMScZn-OnN01-yjllgwWTHRytvLZ6WOEymlI84V4"
+* status = #final
+* code = HealthKitMeasurementCS#bleeding-after-menopause
+* extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierBleedingAfterMenopause
+* subject = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueCodeableConcept = HealthkitBleedingAfterMenopauseCS#unspecified "Unspecified"
 
 Instance: HealthkitBleedingAfterPregnancyExample
 InstanceOf: HealthkitBleedingAfterPregnancy
@@ -3172,6 +3311,22 @@ Description: "A conformant Low Heart Rate Notification instance."
 * effectivePeriod.start = "2026-08-19T00:00:00-07:00"
 * effectivePeriod.end = "2026-08-20T00:00:00-07:00"
 * valueCodeableConcept = HealthkitLowHeartRateNotificationCS#occurred "Occurred"
+
+Instance: HealthkitMenopausalStateExample
+InstanceOf: HealthkitMenopausalState
+Usage: #example
+Title: "Menopausal State Example"
+Description: "A conformant Menopausal State instance."
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:r0j_q_uBS0F0-tnOoXsbbMwASj_tH-O07MsphNVafKU"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:xFUqiGlKb8Z4Gg4jMI4BTWH010fcnFtIek7ov9Ehsbg"
+* status = #final
+* code = HealthKitMeasurementCS#menopausal-state
+* extension[healthKitSourceType].valueCode = #HKCategoryTypeIdentifierMenopausalState
+* subject = Reference(HealthKitPatientExample)
+* effectiveDateTime = "2026-08-19T10:30:00-07:00"
+* valueCodeableConcept = HealthkitMenopausalStateCS#menopause "Menopause"
 
 Instance: HealthkitNumberOfAlcoholicBeveragesExample
 InstanceOf: HealthkitNumberOfAlcoholicBeverages

@@ -11,7 +11,7 @@ GENERATED FILE. Edit the corresponding catalog JSON and run
 
 ### HealthKit support matrix
 
-This table is the normative support inventory for all 218 Apple HealthKit source types in the iPhoneOS 26.5 baseline from Xcode 26.6 build `17F113`. Each source type has one status, and producers may emit only the output contracts named for admitted rows. `supported`, `platform-exclusive`, and `mapped-standard` each admit only the output contract(s) named in that row. `unmodeled`, `deferred`, and `intentionally-unsupported` admit no output; producers fail closed.
+This table is the normative support inventory for all 221 Apple HealthKit source types in the iPhoneOS 27.2 baseline from Xcode 27.2 build `27B52`. Each source type has one status, and producers may emit only the output contracts named for admitted rows. `supported`, `platform-exclusive`, and `mapped-standard` each admit only the output contract(s) named in that row. `unmodeled`, `deferred`, and `intentionally-unsupported` admit no output; producers fail closed.
 
 | HealthKit type | Title | Contract status | Measurement | Direct profile claim(s) | Binding reason / requirement |
 | --- | --- | --- | --- | --- | --- |
@@ -22,6 +22,7 @@ This table is the normative support inventory for all 218 Apple HealthKit source
 | `HKCategoryTypeIdentifierAppleWalkingSteadinessEvent` | Apple Walking Steadiness Event | `supported` | walking-steadiness-notification | healthkit-walking-steadiness-notification | — |
 | `HKCategoryTypeIdentifierAudioExposureEvent` | Audio Exposure Event | `supported` | environmental-audio-exposure-notification | healthkit-environmental-audio-exposure-notification | — |
 | `HKCategoryTypeIdentifierBladderIncontinence` | Bladder Incontinence | `supported` | bladder-incontinence | healthkit-bladder-incontinence | — |
+| `HKCategoryTypeIdentifierBleedingAfterMenopause` | Bleeding After Menopause | `supported` | bleeding-after-menopause | healthkit-bleeding-after-menopause | — |
 | `HKCategoryTypeIdentifierBleedingAfterPregnancy` | Bleeding After Pregnancy | `supported` | bleeding-after-pregnancy | healthkit-bleeding-after-pregnancy | — |
 | `HKCategoryTypeIdentifierBleedingDuringPregnancy` | Bleeding During Pregnancy | `supported` | bleeding-during-pregnancy | healthkit-bleeding-during-pregnancy | — |
 | `HKCategoryTypeIdentifierBloating` | Bloating | `supported` | symptom-bloating | healthkit-symptom-bloating | — |
@@ -58,6 +59,7 @@ This table is the normative support inventory for all 218 Apple HealthKit source
 | `HKCategoryTypeIdentifierLowHeartRateEvent` | Low Heart Rate Event | `supported` | low-heart-rate-notification | healthkit-low-heart-rate-notification | — |
 | `HKCategoryTypeIdentifierLowerBackPain` | Lower Back Pain | `supported` | symptom-lower-back-pain | healthkit-symptom-lower-back-pain | — |
 | `HKCategoryTypeIdentifierMemoryLapse` | Memory Lapse | `supported` | symptom-memory-lapse | healthkit-symptom-memory-lapse | — |
+| `HKCategoryTypeIdentifierMenopausalState` | Menopausal State | `supported` | menopausal-state | healthkit-menopausal-state | — |
 | `HKCategoryTypeIdentifierMenstrualFlow` | Menstrual Flow | `supported` | menstruation-flow | grove-mobile-menstruation-flow; healthkit-observation | — |
 | `HKCategoryTypeIdentifierMindfulSession` | Mindful Session | `supported` | mindfulness-session | grove-mobile-mindfulness-session; healthkit-observation | — |
 | `HKCategoryTypeIdentifierMoodChanges` | Mood Changes | `supported` | symptom-mood-changes | healthkit-symptom-mood-changes | — |
@@ -102,7 +104,7 @@ This table is the normative support inventory for all 218 Apple HealthKit source
 | `HKCorrelationTypeIdentifierBloodPressure` | Blood Pressure | `supported` | blood-pressure | grove-mobile-blood-pressure; healthkit-observation | — |
 | `HKCorrelationTypeIdentifierFood` | Food | `supported` | food-correlation | healthkit-food-correlation | — |
 | `HKDataTypeIdentifierAudiogram` | Audiogram | `supported` | audiogram-panel | healthkit-audiogram-panel | — |
-| `HKDataTypeIdentifierElectrocardiogram` | ECG | `supported` | electrocardiogram | grove-sensor-ecg-observation; healthkit-ecg-observation | The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present. Classification is Observation.interpretation; Apple ECG algorithm version is Observation.method; optional average heart rate is a separate LOINC 8867-4 Observation derived from the waveform. Each supplied symptom is converted through its existing HealthKit symptom Observation profile as a separate record, and the ECG hasMember carries that Observation's opaque source-output Identifier. Sampling frequency and reported count are validated against SampledData but are not duplicated on the wire. The adapter preserves source and waveform intervals, lead, offsets, and voltages without fetching or resampling. |
+| `HKDataTypeIdentifierElectrocardiogram` | ECG | `supported` | electrocardiogram | grove-sensor-ecg-observation; healthkit-ecg-observation | The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present, or the fact that they could not be read, which the ECG states as a single data-absent-reason unknown hasMember entry. Classification is Observation.interpretation; Apple ECG algorithm version is Observation.method; optional average heart rate is a separate LOINC 8867-4 Observation derived from the waveform. Each supplied symptom is converted through its existing HealthKit symptom Observation profile as a separate record, and the ECG hasMember carries that Observation's opaque source-output Identifier. Sampling frequency and reported count are validated against SampledData but are not duplicated on the wire. The adapter preserves source and waveform intervals, lead, offsets, and voltages without fetching or resampling. |
 | `HKDataTypeIdentifierHeartbeatSeries` | Heartbeat Series | `platform-exclusive` | — | grove-sensor-recording-document; healthkit-recording-document | The beat-to-beat interval series is admitted as a recording document carrying the published beat-interval-series column schema. No shared measurement models a beat series, so the samples are carried rather than reduced to a scalar. |
 | `HKDataTypeStateOfMind` | State of Mind | `supported` | state-of-mind | healthkit-state-of-mind | — |
 | `HKDataTypeUserAnnotatedMedicationConcept` | User Annotated Medication Concept | `platform-exclusive` | — | healthkit-user-annotated-medication | A non-archived tracked medication is admitted as a MedicationStatement identified by the HKHealthConceptIdentifier of its concept, carrying the person's nickname, the platform's general form, whether a schedule exists, and status active. An archived medication is not admitted, because archival alone does not establish that medication use was completed or stopped. |
@@ -189,6 +191,7 @@ This table is the normative support inventory for all 218 Apple HealthKit source
 | `HKQuantityTypeIdentifierHeadphoneAudioExposure` | Headphone Audio Exposure | `supported` | headphone-audio-exposure | healthkit-headphone-audio-exposure | — |
 | `HKQuantityTypeIdentifierHeartRate` | Heart Rate | `supported` | heart-rate | grove-mobile-heart-rate; healthkit-observation | — |
 | `HKQuantityTypeIdentifierHeartRateRecoveryOneMinute` | Heart Rate Recovery (1 min) | `supported` | heart-rate-recovery-one-minute | healthkit-heart-rate-recovery-one-minute | — |
+| `HKQuantityTypeIdentifierHeartRateVariabilityRMSSD` | Heart Rate Variability RMSSD | `supported` | heart-rate-variability-rmssd | grove-mobile-heart-rate-variability-rmssd; healthkit-observation | — |
 | `HKQuantityTypeIdentifierHeartRateVariabilitySDNN` | Heart Rate Variability SDNN | `supported` | heart-rate-variability-sdnn | grove-mobile-heart-rate-variability-sdnn; healthkit-observation | — |
 | `HKQuantityTypeIdentifierHeight` | Height | `supported` | body-height | grove-mobile-body-height; healthkit-observation | — |
 | `HKQuantityTypeIdentifierInhalerUsage` | Inhaler Usage | `supported` | inhaler-usage | healthkit-inhaler-usage | — |

@@ -29,14 +29,14 @@
     "platform": "Apple SensorKit",
     "sdkBaseline": {
       "platform": "iPhoneOS",
-      "version": "26.5",
-      "xcodeVersion": "26.6",
-      "xcodeBuild": "17F113"
+      "version": "27.2",
+      "xcodeVersion": "27.2",
+      "xcodeBuild": "27B52"
     },
-    "accessed": "2026-08-20",
+    "accessed": "2026-11-14",
     "appleSensorInventory": "https://developer.apple.com/documentation/sensorkit/srsensor",
     "appleFrameworkDocumentation": "https://developer.apple.com/documentation/sensorkit",
-    "scope": "The exact 22 public Apple SRSensor symbols frozen by the current catalog."
+    "scope": "The exact 24 public Apple SRSensor symbols frozen by the current catalog."
   },
   "inventoryScopes": {
     "catalog-baseline": "One of the 20 platform symbols in the initial closed catalog baseline.",
@@ -491,6 +491,54 @@
       }
     },
     {
+      "sourceToken": "SRSensor.headphoneMotion",
+      "symbol": "SRSensorHeadphoneMotion",
+      "identifier": "com.apple.SensorKit.motion.headphone",
+      "sourceTypeCode": "headphone-motion",
+      "title": "Headphone motion",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/headphonemotion",
+      "minimumIOS": "27.0",
+      "scope": "stable-addition",
+      "status": "mapped-standard",
+      "structured": {
+        "status": "deferred",
+        "reason": "The source includes orientation, multiple motion vectors, calibration facts and native batch timing; the typed recording preserves them without inventing one scalar clinical meaning."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "device-motion-samples"
+        ]
+      }
+    },
+    {
+      "sourceToken": "SRSensor.headphoneSettings",
+      "symbol": "SRSensorHeadphoneSettings",
+      "identifier": "com.apple.SensorKit.hearing.headphoneSettings",
+      "sourceTypeCode": "headphone-settings",
+      "title": "Headphone settings",
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/headphonesettings",
+      "minimumIOS": "27.0",
+      "scope": "stable-addition",
+      "status": "mapped-standard",
+      "structured": {
+        "status": "deferred",
+        "reason": "The source describes device configuration, explicit setting availability and optional hearing-assistance settings; the typed recording does not infer a clinical finding."
+      },
+      "raw": {
+        "status": "mapped-standard",
+        "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-recording-document",
+        "outputDiscriminator": "native-recording",
+        "encoding": "caller-supplied exact bytes",
+        "formats": [
+          "headphone-settings-samples"
+        ]
+      }
+    },
+    {
       "sourceToken": "SRSensor.heartRate",
       "symbol": "SRSensorHeartRate",
       "identifier": "com.apple.SensorKit.heart.rate",
@@ -804,7 +852,23 @@
       "structured": {
         "status": "platform-exclusive",
         "profile": "https://grovealliance.org/fhir/sensorkit/StructureDefinition/sensorkit-sleep-session-observation",
-        "outputDiscriminator": "sleep-session"
+        "outputDiscriminator": "sleep-session",
+        "representedFields": [
+          "SRSleepSession.startDate",
+          "SRSleepSession.duration",
+          "SRSleepSession.identifier"
+        ],
+        "nativeR4Mappings": [
+          {
+            "sourceField": "SRSleepSession.identifier",
+            "r4Element": "Observation.identifier",
+            "cardinality": "0..1",
+            "valueKind": "identifier",
+            "exactSourceValue": true,
+            "identifierSystemRule": "An absolute deployment-governed namespace scoped to the source repository. Keep the exact namespace and value stable on replay; do not claim global device or account uniqueness.",
+            "rule": "Optional. A deployment that discloses source-native identifiers under the governedSourceIdentifier policy of catalog/exchange-protocol.json carries the exact native string, without normalization, as the one governed source Identifier of the sleep-session Observation, with no Grove identifier-role coding; omission remains conformant. It never replaces the acquisition-derived source-record or source-output keys and is not evidence of cross-install deduplication."
+          }
+        ]
       }
     },
     {

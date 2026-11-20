@@ -21,7 +21,7 @@ Description: "The concept properties the HealthKit source-type code system carri
 CodeSystem: HealthKitSourceTypeCS
 Id: healthkit-source-type
 Title: "HealthKit Source Types"
-Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xcode 26.6, build 17F113) hands back at runtime. A code is the identifier a producer reads from the sample, not the name of the constant that holds it. Membership is derived from, and verified against, healthkit/input/data/healthkit-inventory.json; the derived sleep-duration session aggregate is a Grove transformation contract rather than a platform source type and is excluded. The exact code is carried in the HealthKit source-type lineage extension and never asserted as an equivalent clinical result coding."
+Description: "The 221 source-type identifiers the iPhoneOS 27.2 SDK baseline (Xcode 27.2, build 27B52) hands back at runtime. A code is the identifier a producer reads from the sample, not the name of the constant that holds it. Membership is derived from, and verified against, healthkit/input/data/healthkit-inventory.json; the derived sleep-duration session aggregate is a Grove transformation contract rather than a platform source type and is excluded. The exact code is carried in the HealthKit source-type lineage extension and never asserted as an equivalent clinical result coding."
 * ^experimental = false
 * ^caseSensitive = true
 * ^content = #complete
@@ -51,6 +51,9 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCategoryTypeIdentifierBladderIncontinence "Bladder Incontinence" "The HealthKit HKCategoryTypeIdentifierBladderIncontinence source type. Grove converts it to healthkit-bladder-incontinence."
 * #HKCategoryTypeIdentifierBladderIncontinence ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierBladderIncontinence ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bladderincontinence"
+* #HKCategoryTypeIdentifierBleedingAfterMenopause "Bleeding After Menopause" "The HealthKit HKCategoryTypeIdentifierBleedingAfterMenopause source type. Grove converts it to healthkit-bleeding-after-menopause."
+* #HKCategoryTypeIdentifierBleedingAfterMenopause ^property[0].code = #documentation
+* #HKCategoryTypeIdentifierBleedingAfterMenopause ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingaftermenopause"
 * #HKCategoryTypeIdentifierBleedingAfterPregnancy "Bleeding After Pregnancy" "The HealthKit HKCategoryTypeIdentifierBleedingAfterPregnancy source type. Grove converts it to healthkit-bleeding-after-pregnancy."
 * #HKCategoryTypeIdentifierBleedingAfterPregnancy ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierBleedingAfterPregnancy ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingafterpregnancy"
@@ -159,6 +162,9 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCategoryTypeIdentifierMemoryLapse "Memory Lapse" "The HealthKit HKCategoryTypeIdentifierMemoryLapse source type. Grove converts it to healthkit-symptom-memory-lapse."
 * #HKCategoryTypeIdentifierMemoryLapse ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierMemoryLapse ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/memorylapse"
+* #HKCategoryTypeIdentifierMenopausalState "Menopausal State" "The HealthKit HKCategoryTypeIdentifierMenopausalState source type. Grove converts it to healthkit-menopausal-state."
+* #HKCategoryTypeIdentifierMenopausalState ^property[0].code = #documentation
+* #HKCategoryTypeIdentifierMenopausalState ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/menopausalstate"
 * #HKCategoryTypeIdentifierMenstrualFlow "Menstrual Flow" "The HealthKit HKCategoryTypeIdentifierMenstrualFlow source type. Grove converts it to grove-mobile-menstruation-flow."
 * #HKCategoryTypeIdentifierMenstrualFlow ^property[0].code = #documentation
 * #HKCategoryTypeIdentifierMenstrualFlow ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/menstrualflow"
@@ -552,6 +558,9 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKQuantityTypeIdentifierHeartRateRecoveryOneMinute "Heart Rate Recovery (1 min)" "The HealthKit HKQuantityTypeIdentifierHeartRateRecoveryOneMinute source type. Grove converts it to healthkit-heart-rate-recovery-one-minute."
 * #HKQuantityTypeIdentifierHeartRateRecoveryOneMinute ^property[0].code = #documentation
 * #HKQuantityTypeIdentifierHeartRateRecoveryOneMinute ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartraterecoveryoneminute"
+* #HKQuantityTypeIdentifierHeartRateVariabilityRMSSD "Heart Rate Variability RMSSD" "The HealthKit HKQuantityTypeIdentifierHeartRateVariabilityRMSSD source type. Grove converts it to grove-mobile-heart-rate-variability-rmssd."
+* #HKQuantityTypeIdentifierHeartRateVariabilityRMSSD ^property[0].code = #documentation
+* #HKQuantityTypeIdentifierHeartRateVariabilityRMSSD ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartratevariabilityrmssd"
 * #HKQuantityTypeIdentifierHeartRateVariabilitySDNN "Heart Rate Variability SDNN" "The HealthKit HKQuantityTypeIdentifierHeartRateVariabilitySDNN source type. Grove converts it to grove-mobile-heart-rate-variability-sdnn."
 * #HKQuantityTypeIdentifierHeartRateVariabilitySDNN ^property[0].code = #documentation
 * #HKQuantityTypeIdentifierHeartRateVariabilitySDNN ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartratevariabilitysdnn"

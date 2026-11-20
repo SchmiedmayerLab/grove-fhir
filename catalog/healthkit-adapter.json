@@ -7,11 +7,11 @@
     "platform": "Apple HealthKit",
     "sdkBaseline": {
       "platform": "iPhoneOS",
-      "version": "26.5",
-      "xcodeVersion": "26.6",
-      "xcodeBuild": "17F113"
+      "version": "27.2",
+      "xcodeBuild": "27B52",
+      "xcodeVersion": "27.2"
     },
-    "accessed": "2026-08-21",
+    "accessed": "2026-11-14",
     "inventory": "Every source-type identifier the stated SDK baseline hands back at runtime, read inside an iOS simulator on that baseline. Derived aggregation contracts are listed separately and are not platform source types.",
     "rowScope": "rows contains exactly the runtime source-type identifiers of the stated SDK baseline, one row per identifier, and derived mappings are excluded and declared separately; where Apple declares more than one constant for an identifier, every declaring name is listed in symbols.",
     "evidence": [
@@ -31,7 +31,7 @@
         "scope": "Exact SDK baseline, retained source terminology, and source-file hashes"
       }
     ],
-    "rowCount": 218,
+    "rowCount": 221,
     "derivedAggregateCount": 1
   },
   "producerCanonicalization": {
@@ -113,7 +113,7 @@
     "r4Element": "DocumentReference.context.period",
     "start": "HKSample.startDate",
     "end": "HKSample.endDate",
-    "rule": "Preserve the complete source interval with both endpoints, including equal endpoints. Apply the Mobile millisecond, half-even and numeric-offset rules; map a supplied valid IANA time-zone name to the standard timezone extension on both endpoints. Without a source zone, use UTC without a timezone extension. Refuse reversed or unrepresentable periods and invalid supplied time-zone names. Do not repeat the mapped time zone in source metadata or use DocumentReference.date as measurement time. Provider-issued clinical documents do not infer a service period from import or conversion timestamps; unmapped time-zone metadata remains on their wrapper."
+    "rule": "Preserve the complete source interval with both endpoints, including equal endpoints. Apply the Mobile millisecond, half-even and numeric-offset rules; map a supplied valid IANA time-zone name to the standard timezone extension on both endpoints. Without a source zone, use UTC without a timezone extension. Refuse reversed or unrepresentable periods and invalid supplied time-zone names. Do not repeat the mapped time zone in source metadata or use DocumentReference.date as measurement time. Provider-issued clinical documents do not infer a service period from import or conversion timestamps; the sample dates of a clinical record or CDA document sample and a supplied time-zone name belong to sourceDocumentTimeExtension."
   },
   "observationIssued": {
     "cardinality": "0..0",
@@ -194,7 +194,7 @@
       "callerEvidence": [
         "HKElectrocardiogram",
         "all HKElectrocardiogram.VoltageMeasurement values and timeSinceSampleStart offsets",
-        "the exact associated HKCategorySample objects when symptomsStatus is present"
+        "the exact associated HKCategorySample objects when symptomsStatus is present, or the fact that they could not be read"
       ],
       "requiredContext": [
         "classification",
@@ -257,7 +257,15 @@
         ],
         "rule": "Each supplied HKCategorySample is converted through its existing HealthKit symptom Observation profile with its own source-record and source-output identities, exact effectivePeriod, and severity. The ECG hasMember Reference carries type Observation and that symptom's complete source-output Identifier. Duplicate References and samples outside the admitted seven source types fail closed; the number of associated samples is not capped by the number of admitted types.",
         "exchangeRule": "A symptom Observation is its own record, with its own source record and normal conversion Provenance, and may travel in the same Bundle as the ECG. The ECG uses an identifier-only logical hasMember Reference; it never embeds or relabels the symptom as an ECG child output.",
-        "sourceRevisionRule": "Each symptom record represents its HKSourceRevision through the normal HealthKit application/recording Device and conversion Provenance policy. Source-revision fields are not copied into a complex ECG extension."
+        "sourceRevisionRule": "Each symptom record represents its HKSourceRevision through the normal HealthKit application/recording Device and conversion Provenance policy. Source-revision fields are not copied into a complex ECG extension.",
+        "unreadableSymptoms": {
+          "symptomsStatus": "present",
+          "r4Element": "Observation.hasMember",
+          "cardinality": "1..1",
+          "extension": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+          "code": "unknown",
+          "rule": "The symptom samples of a present ECG can be unreadable while the ECG itself is readable. When symptomsStatus is present but the caller states that the symptom samples could not be read, the ECG keeps the present status and carries exactly one hasMember entry with only the data-absent-reason extension, code unknown, and no type, identifier or display. The waveform and the optional average heart rate are emitted as usual. none and notSet never carry the reason, and the reason never accompanies a symptom member."
+        }
       },
       "wireMapping": {
         "classification": "Observation.interpretation with exactly one coding from HealthKitECGClassificationVS",
@@ -269,7 +277,7 @@
         "sourcePeriod": "required healthkit-ecg-source-period extension because waveform effectivePeriod may be narrower"
       },
       "effectiveRule": "Observation.effectivePeriod starts at HKElectrocardiogram.startDate plus the exact first timeSinceSampleStart and ends at the exact last supplied voltage instant. The required healthkit-ecg-source-period extension separately preserves the HKElectrocardiogram startDate/endDate.",
-      "admissionRule": "The caller supplies already-obtained evidence. The supplied voltage array length and SampledData whitespace-token frame count both equal numberOfVoltageMeasurements exactly; offsets are complete, unique, sorted, and satisfy offset[i] = offset[0] + i * SampledData.period exactly; every voltage is present. Canonicalize samplingFrequency and computed 1000 / SampledData.period to the producer's shortest round-trip base-10 decimal representation and require exact decimal equality (tolerance zero). Every associated symptom is supplied as its exact HKCategorySample and converted as its own admitted HealthKit Observation record. Missing, non-uniform, repeated-symptom-identity, resampled, or inconsistent evidence fails closed; the adapter performs no HealthKit query."
+      "admissionRule": "The caller supplies already-obtained evidence. The supplied voltage array length and SampledData whitespace-token frame count both equal numberOfVoltageMeasurements exactly; offsets are complete, unique, sorted, and satisfy offset[i] = offset[0] + i * SampledData.period exactly; every voltage is present. Canonicalize samplingFrequency and computed 1000 / SampledData.period to the producer's shortest round-trip base-10 decimal representation and require exact decimal equality (tolerance zero). Every associated symptom is supplied as its exact HKCategorySample and converted as its own admitted HealthKit Observation record, unless the caller states that the symptom samples could not be read. Missing, non-uniform, repeated-symptom-identity, resampled, or inconsistent evidence fails closed; the adapter performs no HealthKit query."
     }
   },
   "derivedAggregates": [
@@ -395,6 +403,21 @@
       ],
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bladder-incontinence"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierBleedingAfterMenopause",
+      "title": "Bleeding After Menopause",
+      "symbols": [
+        "HKCategoryTypeIdentifierBleedingAfterMenopause"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/bleedingaftermenopause",
+      "status": "supported",
+      "measurementIDs": [
+        "bleeding-after-menopause"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-after-menopause"
       ]
     },
     {
@@ -936,6 +959,21 @@
       ],
       "profiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-symptom-memory-lapse"
+      ]
+    },
+    {
+      "sourceTypeIdentifier": "HKCategoryTypeIdentifierMenopausalState",
+      "title": "Menopausal State",
+      "symbols": [
+        "HKCategoryTypeIdentifierMenopausalState"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkcategorytypeidentifier/menopausalstate",
+      "status": "supported",
+      "measurementIDs": [
+        "menopausal-state"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-menopausal-state"
       ]
     },
     {
@@ -1604,7 +1642,7 @@
         "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-ecg-observation",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
       ],
-      "requirement": "The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present. Classification is Observation.interpretation; Apple ECG algorithm version is Observation.method; optional average heart rate is a separate LOINC 8867-4 Observation derived from the waveform. Each supplied symptom is converted through its existing HealthKit symptom Observation profile as a separate record, and the ECG hasMember carries that Observation's opaque source-output Identifier. Sampling frequency and reported count are validated against SampledData but are not duplicated on the wire. The adapter preserves source and waveform intervals, lead, offsets, and voltages without fetching or resampling."
+      "requirement": "The caller supplies the HKElectrocardiogram, every voltage measurement with its exact timeSinceSampleStart, and each associated HKCategorySample when symptomsStatus is present, or the fact that they could not be read, which the ECG states as a single data-absent-reason unknown hasMember entry. Classification is Observation.interpretation; Apple ECG algorithm version is Observation.method; optional average heart rate is a separate LOINC 8867-4 Observation derived from the waveform. Each supplied symptom is converted through its existing HealthKit symptom Observation profile as a separate record, and the ECG hasMember carries that Observation's opaque source-output Identifier. Sampling frequency and reported count are validated against SampledData but are not duplicated on the wire. The adapter preserves source and waveform intervals, lead, offsets, and voltages without fetching or resampling."
     },
     {
       "sourceTypeIdentifier": "HKDataTypeIdentifierHeartbeatSeries",
@@ -2888,6 +2926,21 @@
       ]
     },
     {
+      "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeartRateVariabilityRMSSD",
+      "title": "Heart Rate Variability RMSSD",
+      "symbols": [
+        "HKQuantityTypeIdentifierHeartRateVariabilityRMSSD"
+      ],
+      "documentation": "https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartratevariabilityrmssd",
+      "status": "supported",
+      "measurementIDs": [
+        "heart-rate-variability-rmssd"
+      ],
+      "profiles": [
+        "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-heart-rate-variability-rmssd"
+      ]
+    },
+    {
       "sourceTypeIdentifier": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
       "title": "Heart Rate Variability SDNN",
       "symbols": [
@@ -3727,6 +3780,32 @@
     "emissionRule": "Apply structured clinical, device and other IG mappings first. Preserve supported source metadata not faithfully represented by those mappings on the primary output, including custom keys and conflicting source values. Do not duplicate already mapped values. The keys in excludedKeys are never metadata entries: the writer-record Identifier, the Grove Writer Record Version, and the optional readable sync Identifier represent them, and an output that can carry none of these reports both keys as withheld. A caller may explicitly limit disclosure; unsupported values and intentional exclusions must remain observable. Mapped clinical elements retain their own semantics and validation; metadata never overrides them. A clinical recording carries the extension on its wrapper, never by mutating the embedded source bytes.",
     "identityRule": "Metadata changes record content and therefore record version. It never changes source-record or source-output identity and does not mint another resource. The native HKObject.uuid is not automatically copied here; its governed identifier is independent.",
     "valueRule": "Use the declared typed FHIR values. Dates are full date-times with an offset. Numbers must be finite. Quantities use declared compatible UCUM units; an original HKQuantity unit is not exposed. Known quantity keys use the units specified in mapping.md; custom keys use its ordered compatible-unit fallback. Unsupported quantities and value classes are reported rather than stringified. Do not confuse a numeric one with a Boolean without source type evidence."
+  },
+  "sourceDocumentTimeExtension": {
+    "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-document-time",
+    "r4Context": "Provenance.entity",
+    "cardinality": "0..1",
+    "basisSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-document-time-basis",
+    "bases": [
+      {
+        "code": "clinical-record-download",
+        "sourceClass": "HKClinicalRecord",
+        "meaning": "HKSample.startDate and HKSample.endDate of a clinical record state when the system downloaded the FHIR data to the device and added the sample to Health; they are not taken from the FHIR data."
+      },
+      {
+        "code": "cda-document-app-supplied",
+        "sourceClass": "HKCDADocumentSample",
+        "meaning": "HKSample.startDate and HKSample.endDate of a CDA document sample are the start and end dates that the app creating the sample supplied for the document; no clinical service or download-time meaning is inferred."
+      }
+    ],
+    "members": [
+      "basis",
+      "period"
+    ],
+    "emissionRule": "Only the source entity of a HealthKit conversion Provenance carries it, at most once, and only for a clinical record or a CDA document sample. The basis follows the sample class. It describes the consumed source entity, not the care the original document describes.",
+    "periodRule": "valuePeriod carries HKSample.startDate and HKSample.endDate, both present, each a complete date-time with an offset, the end not before the start, under the HealthKit millisecond, half-even and numeric-offset rules. Equal endpoints are admitted. A supplied valid IANA time-zone name maps to the standard timezone extension on both endpoints, with the same name, and is not repeated in source metadata; a sample that carries HKTimeZone therefore emits this extension, so the zone always has a conformant place. Without one, neither endpoint carries a timezone extension.",
+    "prohibitions": "Never copy these dates into DocumentReference.context.period, DocumentReference.date, or the embedded source bytes, and never present them as the time of the care the document describes.",
+    "identityRule": "The extension mints no identity and changes no source-record, source-output, or writer-record Identifier. It is part of the conversion Provenance, so adding or changing it changes the record version."
   },
   "sourceRevisionExtension": {
     "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-revision",

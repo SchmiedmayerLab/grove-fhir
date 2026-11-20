@@ -116,6 +116,20 @@ class HealthKitMetadataTests(unittest.TestCase):
         validate_healthkit_metadata(resource, "clinical wrapper")
         self.assertEqual(resource, before)
 
+    def test_source_document_time_zone_is_not_repeated_in_metadata(self):
+        clinical = record([entry("HKMetadataKeyTimeZone", "valueString", "America/Los_Angeles")])
+        clinical["resourceType"] = "DocumentReference"
+        clinical["meta"]["profile"] = ["https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"]
+        cda = copy.deepcopy(clinical)
+        cda["meta"]["profile"] = ["https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document"]
+        cda["extension"].append({"url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type", "valueCode": "HKDocumentTypeIdentifierCDA"})
+        for name, resource in {"clinical record": clinical, "CDA document": cda}.items():
+            with self.subTest(document=name), self.assertRaisesRegex(ProducerValidationError, "HKMetadataKeyTimeZone"):
+                validate_healthkit_metadata(resource, name)
+        heartbeat = copy.deepcopy(cda)
+        heartbeat["extension"][-1]["valueCode"] = "HKDataTypeIdentifierHeartbeatSeries"
+        validate_healthkit_metadata(heartbeat, "other recording document")
+
     def test_unrelated_resources_cannot_claim_healthkit_metadata(self):
         resource = record([entry("key", "valueString", "value")])
         resource["meta"]["profile"] = ["https://example.org/observation"]

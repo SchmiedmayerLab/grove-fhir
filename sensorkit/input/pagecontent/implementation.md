@@ -81,6 +81,18 @@ No receiver capacity, authentication, storage, retention, or transport rule is d
 Emit a source-record-retracted Provenance in a Grove Mobile Retraction Bundle when the producer can establish that a prior SensorKit source record is no longer exposed; the [Mobile retraction contract](https://grovealliance.org/fhir/mobile/observations.html#retraction-bundles) governs its shape, target roles, and meaning.
 The SensorKit trigger is the acquisition-ledger record: one retraction addresses that whole source record, so a receiver suppresses every structured output and source artifact of every version of it; its targets are informative, and Devices are never retracted.
 
+### Sleep-session native identity
+
+`SRSleepSession.identifier` is the native identifier of a sleep session.
+It is optional and governed like every other source-native identifier.
+A deployment that has opted in to the [governed source identifier](https://grovealliance.org/fhir/mobile/observations.html#identity-and-deduplication) carries it exactly in one additional `Observation.identifier`, under an absolute deployment-governed namespace scoped to the source repository; a deployment that has not opted in omits it.
+The native identifier has no Grove identifier-role coding.
+It does not replace the acquisition-derived source-record or source-output identifier, change their preimages, or establish cross-install deduplication.
+Its namespace must remain stable across retries.
+Do not normalize the native string.
+
+`effectivePeriod.start` is `startDate`, `effectivePeriod.end` is `startDate + duration`, and the duration quantity is the exact source duration in seconds. A zero duration remains zero; it does not justify inventing an end event, sleep stage, efficiency, or quality.
+
 ### Dependencies and terminology notices
 
 The tables below list this guide's package dependencies and the notices for terminology used by its artifacts and examples.
