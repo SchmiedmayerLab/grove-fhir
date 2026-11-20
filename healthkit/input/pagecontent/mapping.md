@@ -105,6 +105,24 @@ Each symptom is its own record, with its own source record and conversion Proven
 The ECG groups the separately available observations with identifier-only `hasMember` references carrying the symptoms' opaque `source-output` Identifiers.
 Distinct equal-type samples remain distinct; `present` requires at least one distinct member, while `none` and `notSet` require none.
 
+### Audiogram sensitivity tests
+
+An `HKAudiogramSample` becomes one audiogram-panel Observation.
+Preserve its complete source interval: use `effectiveDateTime` for a point and `effectivePeriod` for a nonzero interval.
+Each sensitivity test becomes its own component, retaining the supplied dB hearing-level value.
+
+Use the catalog's ear-and-frequency LOINC code when it names that exact coordinate.
+For another frequency, retain the exact frequency and ear in the required `healthkit-audiogram-sensitivity-test` extension and use an explicit component text label; do not substitute the nearest catalog frequency.
+The same extension carries the air-conduction method, the masking state when the source API exposes it, and any source clamping bounds.
+Each ear retains its own masking state; a source sensitivity point has at most one test per ear.
+A coded component's extension fixes the frequency to the integer the catalog names, so write it without a fractional part (`250`, not `250.0`).
+Under `healthkit-audiogram-panel-1`, a component without one of the catalog's LOINC codings, whether text-only or coded in another system, never carries an ear and frequency that a catalog component names, and no two components carry the same ear and frequency. Both rules compare frequencies as whole millihertz (the value times 1000, truncated), so `250` and `250.0` are the same frequency.
+
+Clamping bounds describe the source's measurement limits.
+Preserve the supplied sensitivity without clamping it again or inventing a less-than or greater-than comparator.
+Emit only the ears and frequencies actually tested.
+The native sample UUID, source metadata, recording Device, writer attribution and conversion Provenance follow the common sample rules.
+
 ### Workouts
 
 An `HKWorkout` converts to exactly one session Observation and one segment Observation for every workout event and every workout activity.

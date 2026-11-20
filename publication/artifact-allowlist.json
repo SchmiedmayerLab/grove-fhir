@@ -2268,6 +2268,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "HealthKitAudiogramEarCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "healthkit-audiogram-ear",
+          "classification": "definition"
+        },
+        {
           "fshName": "HealthKitCervicalMucusQualityCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -2664,6 +2671,13 @@
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
           "id": "healthkit-wheelchair-use",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitAudiogramSensitivityTest",
+          "fshType": "Extension",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-audiogram-sensitivity-test",
           "classification": "definition"
         },
         {
@@ -4687,6 +4701,13 @@
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
           "id": "grove-symptom-severity",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitAudiogramEarVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "healthkit-audiogram-ear",
           "classification": "definition"
         },
         {
