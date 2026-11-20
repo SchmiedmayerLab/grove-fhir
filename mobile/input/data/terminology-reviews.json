@@ -1899,6 +1899,7 @@
       ],
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
+      "reviewRef": "pending-integration-commit",
       "notes": "NLM Clinical Tables returns zero LOINC concepts for RMSSD (only the SDNN codes 80404-7/76643-6 exist), so a Grove code is required to avoid mislabeling RMSSD as SDNN — the exact confusion the providers catalog flags ('RMSSD is distinct from SDNN'). Two sources evidence it: Health Connect HeartRateVariabilityRmssdRecord (an InstantaneousRecord) and the Google Health API rootMeanSquareOfSuccessiveDifferencesMilliseconds element. ms parses under pinned UCUM 2.2 with dimension {s:1}; effective dateTime matches both sources' instantaneous shape. HealthKit joins as a third source: HKQuantityTypeIdentifierHeartRateVariabilityRMSSD is declared in the iPhoneOS 27.2 SDK in ms as a discrete arithmetic quantity. A HealthKit sample states a start and an end, so the effective time admits a Period beside the instant; the code, unit, and dimension are unchanged. The previous digest was recorded as verified by the terminology sweep adversarial verifier; that verification does not cover this digest. Ratified by the repository owner on 2026-11-15."
     },
     "heart-rate-variability-sdnn": {
@@ -4556,6 +4557,7 @@
       ],
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
+      "reviewRef": "pending-integration-commit",
       "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierBleedingAfterMenopause is declared with HKCategoryValueVaginalBleeding in the iPhoneOS 27.2 SDK, and the five result codes match its five cases (unspecified, light, medium, heavy, none) one-to-one. The measurement mirrors bleeding-after-pregnancy and bleeding-during-pregnancy and stays distinct from menstrual flow and intermenstrual bleeding. Its effective time is the source instant (dateTime), as for those two siblings; the header gives no reason for an interval. Ratified by the repository owner on 2026-11-19."
     },
     "menopausal-state": {
@@ -4580,6 +4582,7 @@
       ],
       "reviewedOn": "2026-11-14",
       "recordedOn": "2026-11-14",
+      "reviewRef": "pending-integration-commit",
       "notes": "HealthKit-owned code and result code system; no external terminology concept is bound, so no LOINC or UCUM verification applies. HKCategoryTypeIdentifierMenopausalState is declared with HKCategoryValueMenopausalState in the iPhoneOS 27.2 SDK, and the three result codes match its three cases (menopause, perimenopause, none) one-to-one. The effective time is the source instant; no interval of the state is asserted. Ratified by the repository owner on 2026-11-19."
     }
   },
