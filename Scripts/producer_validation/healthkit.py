@@ -94,6 +94,98 @@ def validate_healthkit_source_type(resource: dict[str, Any], label: str) -> None
             f"{label} HealthKit source type does not match its exact direct profile claims"
         )
 
+def _extension_count(value: Any, url: str) -> int:
+    if isinstance(value, dict):
+        return int(value.get("url") == url) + sum(_extension_count(child, url) for child in value.values())
+    if isinstance(value, list):
+        return sum(_extension_count(child, url) for child in value)
+    return 0
+
+
+TIMEZONE_EXTENSION = "http://hl7.org/fhir/StructureDefinition/timezone"
+
+
+def validate_healthkit_source_document_time(resource: dict[str, Any], label: str) -> None:
+    """Admit the source document dates only on a HealthKit conversion source entity."""
+    catalog = read_json(CATALOG_ROOT / "healthkit-adapter.json")
+    contract = catalog["sourceDocumentTimeExtension"]
+    url = contract["url"]
+    total = _extension_count(resource, url)
+    if not total:
+        return
+
+    def fail(reason: str) -> None:
+        raise ProducerValidationError(f"{label} HealthKit source document time {reason}")
+
+    profiles = resource.get("meta", {}).get("profile", [])
+    entities = resource.get("entity", [])
+    if (
+        resource.get("resourceType") != "Provenance"
+        or profiles != [catalog["conversionProvenanceProfile"]]
+        or not isinstance(entities, list)
+    ):
+        fail("belongs only to the source entity of a HealthKit conversion Provenance")
+    found = 0
+    for entity in entities:
+        extensions = [
+            item for item in entity.get("extension", [])
+            if isinstance(item, dict) and item.get("url") == url
+        ] if isinstance(entity, dict) and isinstance(entity.get("extension", []), list) else []
+        if not extensions:
+            continue
+        if len(extensions) != 1 or entity.get("role") != "source":
+            fail("appears at most once, on the source entity")
+        found += 1
+        extension = extensions[0]
+        members = extension.get("extension")
+        member_urls = [
+            member.get("url") if isinstance(member, dict) else None for member in members
+        ] if isinstance(members, list) else None
+        if set(extension) != {"url", "extension"} or member_urls is None or sorted(
+            member_urls, key=str
+        ) != sorted(contract["members"]):
+            fail("carries exactly one basis and one period")
+        basis, period = (members[member_urls.index(name)] for name in ("basis", "period"))
+        if set(basis) != {"url", "valueCode"} or basis["valueCode"] not in {
+            item["code"] for item in contract["bases"]
+        }:
+            fail("basis must be one code of the source document time basis")
+        bounds = period.get("valuePeriod")
+        if set(period) != {"url", "valuePeriod"} or not isinstance(bounds, dict) or not {
+            "start", "end"
+        } <= set(bounds):
+            fail("period must state both endpoints")
+        start = parse_fhir_instant(bounds["start"], f"{label} source document time start")
+        end = parse_fhir_instant(bounds["end"], f"{label} source document time end")
+        if end < start:
+            fail("period must not end before it starts")
+        # One HKTimeZone describes the sample, so it is stated on both endpoints or on neither.
+        zones = []
+        for endpoint in ("start", "end"):
+            element = bounds.get(f"_{endpoint}")
+            if element is None:
+                zones.append(None)
+                continue
+            zone_extensions = element.get("extension") if isinstance(element, dict) else None
+            if (
+                not isinstance(element, dict)
+                or set(element) != {"extension"}
+                or not isinstance(zone_extensions, list)
+                or len(zone_extensions) != 1
+                or not isinstance(zone_extensions[0], dict)
+                or set(zone_extensions[0]) != {"url", "valueCode"}
+                or zone_extensions[0]["url"] != TIMEZONE_EXTENSION
+                or not isinstance(zone_extensions[0]["valueCode"], str)
+                or not zone_extensions[0]["valueCode"]
+            ):
+                fail(f"{endpoint} may carry only the standard timezone extension")
+            zones.append(zone_extensions[0]["valueCode"])
+        if zones[0] != zones[1]:
+            fail("time zone must be stated on both endpoints with the same name, or on neither")
+    if found != total:
+        fail("belongs only to the source entity of a HealthKit conversion Provenance")
+
+
 def validate_healthkit_resource_claims(resource: dict[str, Any], label: str) -> None:
     """Close HealthKit direct claims for native documents and structured-only outputs."""
     claims = read_json(CATALOG_ROOT / "profile-claims.json")

@@ -113,7 +113,7 @@
     "r4Element": "DocumentReference.context.period",
     "start": "HKSample.startDate",
     "end": "HKSample.endDate",
-    "rule": "Preserve the complete source interval with both endpoints, including equal endpoints. Apply the Mobile millisecond, half-even and numeric-offset rules; map a supplied valid IANA time-zone name to the standard timezone extension on both endpoints. Without a source zone, use UTC without a timezone extension. Refuse reversed or unrepresentable periods and invalid supplied time-zone names. Do not repeat the mapped time zone in source metadata or use DocumentReference.date as measurement time. Provider-issued clinical documents do not infer a service period from import or conversion timestamps; unmapped time-zone metadata remains on their wrapper."
+    "rule": "Preserve the complete source interval with both endpoints, including equal endpoints. Apply the Mobile millisecond, half-even and numeric-offset rules; map a supplied valid IANA time-zone name to the standard timezone extension on both endpoints. Without a source zone, use UTC without a timezone extension. Refuse reversed or unrepresentable periods and invalid supplied time-zone names. Do not repeat the mapped time zone in source metadata or use DocumentReference.date as measurement time. Provider-issued clinical documents do not infer a service period from import or conversion timestamps; the sample dates of a clinical record or CDA document sample and a supplied time-zone name belong to sourceDocumentTimeExtension."
   },
   "observationIssued": {
     "cardinality": "0..0",
@@ -3772,6 +3772,32 @@
     "emissionRule": "Apply structured clinical, device and other IG mappings first. Preserve supported source metadata not faithfully represented by those mappings on the primary output, including custom keys and conflicting source values. Do not duplicate already mapped values. The keys in excludedKeys are never metadata entries: the writer-record Identifier, the Grove Writer Record Version, and the optional readable sync Identifier represent them, and an output that can carry none of these reports both keys as withheld. A caller may explicitly limit disclosure; unsupported values and intentional exclusions must remain observable. Mapped clinical elements retain their own semantics and validation; metadata never overrides them. A clinical recording carries the extension on its wrapper, never by mutating the embedded source bytes.",
     "identityRule": "Metadata changes record content and therefore record version. It never changes source-record or source-output identity and does not mint another resource. The native HKObject.uuid is not automatically copied here; its governed identifier is independent.",
     "valueRule": "Use the declared typed FHIR values. Dates are full date-times with an offset. Numbers must be finite. Quantities use declared compatible UCUM units; an original HKQuantity unit is not exposed. Known quantity keys use the units specified in mapping.md; custom keys use its ordered compatible-unit fallback. Unsupported quantities and value classes are reported rather than stringified. Do not confuse a numeric one with a Boolean without source type evidence."
+  },
+  "sourceDocumentTimeExtension": {
+    "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-document-time",
+    "r4Context": "Provenance.entity",
+    "cardinality": "0..1",
+    "basisSystem": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-source-document-time-basis",
+    "bases": [
+      {
+        "code": "clinical-record-download",
+        "sourceClass": "HKClinicalRecord",
+        "meaning": "HKSample.startDate and HKSample.endDate of a clinical record state when the system downloaded the FHIR data to the device and added the sample to Health; they are not taken from the FHIR data."
+      },
+      {
+        "code": "cda-document-app-supplied",
+        "sourceClass": "HKCDADocumentSample",
+        "meaning": "HKSample.startDate and HKSample.endDate of a CDA document sample are the start and end dates that the app creating the sample supplied for the document; no clinical service or download-time meaning is inferred."
+      }
+    ],
+    "members": [
+      "basis",
+      "period"
+    ],
+    "emissionRule": "Only the source entity of a HealthKit conversion Provenance carries it, at most once, and only for a clinical record or a CDA document sample. The basis follows the sample class. It describes the consumed source entity, not the care the original document describes.",
+    "periodRule": "valuePeriod carries HKSample.startDate and HKSample.endDate, both present, each a complete date-time with an offset, the end not before the start, under the HealthKit millisecond, half-even and numeric-offset rules. Equal endpoints are admitted. A supplied valid IANA time-zone name maps to the standard timezone extension on both endpoints, with the same name, and is not repeated in source metadata; a sample that carries HKTimeZone therefore emits this extension, so the zone always has a conformant place. Without one, neither endpoint carries a timezone extension.",
+    "prohibitions": "Never copy these dates into DocumentReference.context.period, DocumentReference.date, or the embedded source bytes, and never present them as the time of the care the document describes.",
+    "identityRule": "The extension mints no identity and changes no source-record, source-output, or writer-record Identifier. It is part of the conversion Provenance, so adding or changing it changes the record version."
   },
   "sourceRevisionExtension": {
     "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-revision",

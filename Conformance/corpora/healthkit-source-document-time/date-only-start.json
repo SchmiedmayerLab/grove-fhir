@@ -1,0 +1,93 @@
+{
+  "resourceType": "Provenance",
+  "id": "date-only-start",
+  "meta": {
+    "profile": [
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance"
+    ]
+  },
+  "extension": [
+    {
+      "url": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-record-version",
+      "valueIdentifier": {
+        "type": {
+          "coding": [
+            {
+              "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+              "code": "record-version"
+            }
+          ]
+        },
+        "system": "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1",
+        "value": "v0:test-key:1:xjbzwZqYyBE1boHxzOoS09iLXEMrvo0o8dpxtlwPQhE"
+      }
+    }
+  ],
+  "target": [
+    {
+      "reference": "DocumentReference/HealthKitClinicalRecordDocumentExample"
+    }
+  ],
+  "occurredDateTime": "2026-08-20T17:05:00Z",
+  "recorded": "2026-08-20T17:05:01Z",
+  "activity": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle",
+        "code": "transform"
+      }
+    ]
+  },
+  "agent": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/provenance-participant-type",
+            "code": "assembler"
+          }
+        ]
+      },
+      "who": {
+        "reference": "Device/HealthKitApplicationDeviceExample"
+      }
+    }
+  ],
+  "entity": [
+    {
+      "extension": [
+        {
+          "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-document-time",
+          "extension": [
+            {
+              "url": "basis",
+              "valueCode": "clinical-record-download"
+            },
+            {
+              "url": "period",
+              "valuePeriod": {
+                "start": "2026-08-17",
+                "end": "2026-08-18T09:41:07.000-07:00"
+              }
+            }
+          ]
+        }
+      ],
+      "role": "source",
+      "what": {
+        "identifier": {
+          "type": {
+            "coding": [
+              {
+                "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+                "code": "source-record"
+              }
+            ]
+          },
+          "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+          "value": "v0:test-key:1:7lzhOmmKmafAWGACCH0NQSIFrryjPDGysIFmrg1_s8o"
+        }
+      }
+    }
+  ]
+}
