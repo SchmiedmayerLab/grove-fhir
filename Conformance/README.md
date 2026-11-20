@@ -53,7 +53,7 @@ It sends the three normative positive bases—the active Bundle of two records t
 ## Every committed fixture
 
 `Conformance/fixture-validator-manifest.json` is the all-fixtures lane.
-A guide's own worked examples are validated by the IG Publisher during its build and audited by `Scripts/check-guide-qa.py`; the fixtures under `Conformance/` and `questionnaire/fixtures/` are the ones no guide build ever sees.
+A guide's own worked examples are validated by the IG Publisher during its build and audited by `Scripts/check-guide-qa.py`; the fixtures under `Conformance/`, `questionnaire/fixtures/`, and `study/fixtures/` are the ones no guide build ever sees.
 The QA audit requires explicit nonnegative integer error, warning and hint counts; missing or malformed counts are not evidence of a clean build.
 
 ```sh
@@ -62,7 +62,8 @@ python3 Scripts/validate-fixtures.py \
   --package mobile=mobile/output/package.tgz \
   --package questionnaire=questionnaire/output/package.tgz \
   --package sensor=sensor/output/package.tgz \
-  --package healthkit=healthkit/output/package.tgz
+  --package healthkit=healthkit/output/package.tgz \
+  --package study=study/output/package.tgz
 ```
 
 Every JSON file beneath the declared roots is either validated here or excluded with a stated reason, so a fixture cannot be added without being classified.
@@ -73,6 +74,7 @@ The lane requires the control to pass and each case to fail for exactly the inva
 `Conformance/corpora/healthkit-audiogram` is its third: an audiogram panel whose text-only component at 125 Hz names a frequency the catalog does not code; the lane requires the Validator to accept that control and to reject, through `healthkit-audiogram-panel-1`, a component without a catalog coding at a catalog frequency (text-only, written as `250.0`, or coded in another code system) and a second component for the same ear and frequency.
 `Conformance/corpora/healthkit-source-document-time` is its fourth: a HealthKit conversion Provenance whose source document time has complete bounds and the same `timezone` extension on both; the lane requires the Validator to accept that control and to reject, through `healthkit-source-document-time-1`, a date-only start, a zone on one bound only, and two different zones.
 `Conformance/corpora/healthkit-ecg-symptoms` is its fifth: a HealthKit ECG with a present symptoms status whose symptom samples could not be read, stated as exactly one `hasMember` entry with only the `data-absent-reason` extension, code `unknown`; the lane requires the Validator to accept that control and to reject, through `healthkit-ecg-symptom-state-1`, the reason on a `none` status, beside a symptom member, on a member that also identifies a symptom, as a second data-absent member, with a `display`, and with any other code.
+`study/fixtures/structural` is its sixth: a completed study occurrence Task whose cases each break the Grove Study Questionnaire Task profile for one named reason, including a pending status, a result link that disagrees with the status, a reversed or date-only performance window, and unpinned canonicals.
 
 ## Positive and negative corpus
 
@@ -84,6 +86,10 @@ See [Receiver Lifecycle Sequences](corpora/receiver-lifecycle/README.md) for the
 
 The [multi-study attribution corpus](corpora/study-attribution/README.md) complements those sequences with exact protocol references, late receiver-owned association and isolated withdrawal.
 Its derived exports deliberately have new identities and omit the other study's membership; profile-valid policy counterexamples remain in the official fixture lane.
+
+`study/fixtures/graph` holds the study task delivery sequences: a single-arm daily check-in with its definitions and, per case, the deliveries a receiver applies in order with the outcome or graph rules expected for each.
+It covers assignment and completion, exact replay, conflicting reuse of an occurrence identifier, same-time occurrences, re-enrollment, a corrected result, a second completion, and responses that are profile-valid but name another participant, another instrument version, a pending status, a time outside the window, or a version the result link does not reach.
+Every delivery is in the official fixture lane; `Scripts/validate-study-graph.py` applies the cases and `Tests/test_study_graph.py` checks every expectation.
 
 `Conformance/corpora/mobile-exchange` is the normative producer corpus for the Mobile exchange graph.
 Its positive bases cover one active Bundle of two records that share their content-addressed nodes, each record one conversion Provenance, keyed by its record version, with the outputs it targets; and one dedicated retraction Bundle in each target form: one names the prior primary output through an exact typed target, and one names the whole source record through its sole, untyped source-record target.

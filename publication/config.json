@@ -67,6 +67,12 @@
       "canonicalPath": "google-health",
       "aliases": [],
       "representativeResource": "StructureDefinition/google-health-observation"
+    },
+    {
+      "source": "study",
+      "canonicalPath": "study",
+      "aliases": [],
+      "representativeResource": "StructureDefinition/grove-study-questionnaire-task"
     }
   ],
   "retiredPreviewPaths": [

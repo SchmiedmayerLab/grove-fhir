@@ -418,7 +418,7 @@ def stage(*, output: Path, evidence: Path, publication_date: str) -> Path:
                                   lambda _: notice, text, flags=re.S), encoding="utf-8")
     # Validate producer corpora against the final published packages too.
     package_args = []
-    for name in ("mobile", "questionnaire", "sensor", "healthkit"):
+    for name in ("mobile", "questionnaire", "sensor", "healthkit", "study"):
         package_args += ["--package", f"{name}={web / by_source[name]['canonicalPath'] / version / 'package.tgz'}"]
     subprocess.run(["python3", "Scripts/validate-fixtures.py", "--validator",
                     ".build/fhir-tools/validator_cli.jar", *package_args], cwd=ROOT, check=True)

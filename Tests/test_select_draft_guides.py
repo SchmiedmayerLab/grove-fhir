@@ -61,8 +61,9 @@ class DraftGuideSelectionTests(unittest.TestCase):
         )
         self.assertEqual(
             MODULE.select(["questionnaire/input/fsh/profiles.fsh"]),
-            ["questionnaire"],
+            ["questionnaire", "study"],
         )
+        self.assertEqual(MODULE.select(["study/fixtures/graph/cases.json"]), ["study"])
 
     def test_shared_build_or_unknown_catalog_change_builds_all(self) -> None:
         all_guides = [
@@ -76,6 +77,7 @@ class DraftGuideSelectionTests(unittest.TestCase):
             "withings",
             "oura",
             "google-health",
+            "study",
         ]
         self.assertEqual(MODULE.select(["Scripts/build-guides.sh"]), all_guides)
         self.assertEqual(MODULE.select(["catalog/profile-claims.json"]), all_guides)

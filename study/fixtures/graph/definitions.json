@@ -1,0 +1,221 @@
+{
+  "resourceType": "Bundle",
+  "id": "daily-check-in-definitions",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "https://example.org/fhir/PlanDefinition/daily-check-in-protocol",
+      "resource": {
+        "resourceType": "PlanDefinition",
+        "id": "daily-check-in-protocol",
+        "meta": {
+          "profile": [
+            "https://grovealliance.org/fhir/study/StructureDefinition/grove-study-protocol"
+          ]
+        },
+        "url": "https://example.org/fhir/PlanDefinition/daily-check-in-protocol",
+        "version": "1.0.0",
+        "name": "DailyCheckInProtocol",
+        "title": "Single-arm daily check-in protocol",
+        "status": "active",
+        "action": [
+          {
+            "title": "Daily check-in",
+            "definitionCanonical": "https://example.org/fhir/ActivityDefinition/daily-check-in|1.0.0",
+            "timingTiming": {
+              "repeat": {
+                "frequency": 1,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://example.org/fhir/ActivityDefinition/daily-check-in",
+      "resource": {
+        "resourceType": "ActivityDefinition",
+        "id": "daily-check-in",
+        "meta": {
+          "profile": [
+            "https://grovealliance.org/fhir/study/StructureDefinition/grove-study-questionnaire-activity"
+          ]
+        },
+        "url": "https://example.org/fhir/ActivityDefinition/daily-check-in",
+        "version": "1.0.0",
+        "name": "DailyCheckIn",
+        "title": "Daily check-in",
+        "status": "active",
+        "relatedArtifact": [
+          {
+            "type": "depends-on",
+            "resource": "https://example.org/fhir/Questionnaire/daily-check-in|1.0.0"
+          }
+        ],
+        "kind": "Task",
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/temp",
+              "code": "complete-questionnaire"
+            }
+          ]
+        },
+        "intent": "order"
+      }
+    },
+    {
+      "fullUrl": "https://example.org/fhir/Questionnaire/daily-check-in-1.0.0",
+      "resource": {
+        "resourceType": "Questionnaire",
+        "id": "daily-check-in-1.0.0",
+        "meta": {
+          "profile": [
+            "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+            "valueCoding": {
+              "system": "http://hl7.org/fhir/version-algorithm",
+              "code": "semver"
+            }
+          }
+        ],
+        "language": "en-US",
+        "url": "https://example.org/fhir/Questionnaire/daily-check-in",
+        "version": "1.0.0",
+        "name": "DailyCheckIn",
+        "title": "Daily Check-In",
+        "status": "active",
+        "subjectType": [
+          "Patient"
+        ],
+        "item": [
+          {
+            "linkId": "slept-well",
+            "text": "Did you sleep well last night?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "linkId": "energy",
+            "text": "How much energy do you have today, from 0 for none to 10 for plenty?",
+            "type": "integer",
+            "required": true
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://example.org/fhir/Questionnaire/daily-check-in-1.1.0",
+      "resource": {
+        "resourceType": "Questionnaire",
+        "id": "daily-check-in-1.1.0",
+        "meta": {
+          "profile": [
+            "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+            "valueCoding": {
+              "system": "http://hl7.org/fhir/version-algorithm",
+              "code": "semver"
+            }
+          }
+        ],
+        "language": "en-US",
+        "url": "https://example.org/fhir/Questionnaire/daily-check-in",
+        "version": "1.1.0",
+        "name": "DailyCheckIn",
+        "title": "Daily Check-In",
+        "status": "active",
+        "subjectType": [
+          "Patient"
+        ],
+        "item": [
+          {
+            "linkId": "slept-well",
+            "text": "Did you sleep well last night?",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "linkId": "energy",
+            "text": "How much energy do you have right now, from 0 for none to 10 for plenty?",
+            "type": "integer",
+            "required": true
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://example.org/fhir/ResearchSubject/enrollment-001",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "enrollment-001",
+        "identifier": [
+          {
+            "system": "https://example.org/research/enrollment-id",
+            "value": "enrollment-001"
+          }
+        ],
+        "status": "off-study",
+        "period": {
+          "start": "2026-08-18T08:00:00-07:00",
+          "end": "2026-08-25T08:00:00-07:00"
+        },
+        "study": {
+          "type": "ResearchStudy",
+          "identifier": {
+            "system": "https://example.org/research/study-id",
+            "value": "daily-check-in-study"
+          }
+        },
+        "individual": {
+          "type": "Patient",
+          "identifier": {
+            "system": "https://example.org/research/participant-id",
+            "value": "participant-001"
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "https://example.org/fhir/ResearchSubject/enrollment-002",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "enrollment-002",
+        "identifier": [
+          {
+            "system": "https://example.org/research/enrollment-id",
+            "value": "enrollment-002"
+          }
+        ],
+        "status": "on-study",
+        "period": {
+          "start": "2026-09-01T08:00:00-07:00"
+        },
+        "study": {
+          "type": "ResearchStudy",
+          "identifier": {
+            "system": "https://example.org/research/study-id",
+            "value": "daily-check-in-study"
+          }
+        },
+        "individual": {
+          "type": "Patient",
+          "identifier": {
+            "system": "https://example.org/research/participant-id",
+            "value": "participant-001"
+          }
+        }
+      }
+    }
+  ]
+}

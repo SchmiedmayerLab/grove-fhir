@@ -43,6 +43,7 @@ NORMATIVE_CORPUS_ROOTS = (
     "Conformance/corpora/mobile-semantics",
     "questionnaire/fixtures/pairs",
     "questionnaire/fixtures/validator",
+    "study/fixtures",
 )
 
 
