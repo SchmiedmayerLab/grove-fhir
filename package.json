@@ -28,7 +28,7 @@
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
     "fhir-package-loader": "^2.2.5",
-    "fsh-sushi": "^3.21.0",
+    "fsh-sushi": "^3.21.1",
     "tar-stream": "^3.2.2"
   },
   "engines": {

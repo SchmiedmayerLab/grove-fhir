@@ -14,7 +14,7 @@
       "sha256": "2686590539f0b3ba7683149b25d78249f6886c04e2c326e884c5049d8947df89"
     },
     "sushi": {
-      "version": "3.21.0"
+      "version": "3.21.1"
     },
     "template": {
       "packageId": "fhir2.base.template",
