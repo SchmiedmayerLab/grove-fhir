@@ -150,7 +150,15 @@ class ReceiverLifecycleTests(unittest.TestCase):
         )
         references = protocol["referencePolicy"]
         absent = references.pop("dataAbsentReferences")
-        self.assertEqual([(item["resourceType"], item["path"], item["codes"]) for item in absent], [("Observation", "hasMember", ["unknown"])])
+        self.assertEqual(len(absent), 1)
+        ecg_member = absent[0]
+        self.assertEqual(ecg_member["resourceType"], "Observation")
+        self.assertEqual(ecg_member["path"], "hasMember")
+        self.assertEqual(ecg_member["profiles"], [
+            "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
+        ])
+        self.assertEqual(ecg_member["extension"], "http://hl7.org/fhir/StructureDefinition/data-absent-reason")
+        self.assertEqual(ecg_member["codes"], ["unknown"])
         absent_shape = ", or, only where dataAbsentReferences admits it, a Reference that carries nothing but one data-absent-reason extension"
         self.assertIn(absent_shape, references["governedShape"])
         references["governedShape"] = references["governedShape"].replace(absent_shape, "")
