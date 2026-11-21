@@ -16,7 +16,7 @@ description: >-
   occurrences.
 status: draft
 experimental: true
-version: 0.8.2
+version: 0.8.3
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
@@ -34,7 +34,7 @@ dependencies:
   hl7.fhir.uv.sdc: 4.0.0
   hl7.fhir.uv.extensions.r4: 5.4.0
   org.grovealliance.fhir.questionnaire:
-    version: 0.8.2
+    version: 0.8.3
     uri: https://grovealliance.org/fhir/questionnaire/ImplementationGuide/org.grovealliance.fhir.questionnaire
 
 # Turtle serializations and their rendered views are omitted to keep the published site small.

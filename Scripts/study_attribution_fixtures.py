@@ -28,7 +28,7 @@ ROLE_SYSTEM = MOBILE + "CodeSystem/grove-identifier-role"
 PARTICIPANT = "https://study.example.org/fhir/identifiers/participant"
 # The IG revision the record-centric bases were cut from.
 BASE_SOURCE_REVISION = "be0e370cbc9e789f5ad30df18d3332713387a9c3"
-RELEASE_VERSION = "0.8.2"
+RELEASE_VERSION = "0.8.3"
 OUTPUT_POINTER = "/entry/2/resource"
 
 

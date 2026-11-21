@@ -17,7 +17,7 @@ Title: "Daily Check-In"
 Description: "The instrument the daily check-in component asks the participant to complete."
 * extension[versionAlgorithm].valueCoding = $versionAlgorithm#semver
 * url = "https://grovealliance.org/fhir/study/Questionnaire/GroveStudyDailyCheckInExample"
-* version = "0.8.2"
+* version = "0.8.3"
 * language = #en-US
 * name = "GroveStudyDailyCheckIn"
 * title = "Daily Check-In"
@@ -39,7 +39,7 @@ Usage: #example
 Title: "Daily Check-In Component"
 Description: "One revision of the daily check-in study component. It pins the exact instrument revision every occurrence of this component administers."
 * url = "https://grovealliance.org/fhir/study/ActivityDefinition/GroveStudyDailyCheckInComponentExample"
-* version = "0.8.2"
+* version = "0.8.3"
 * name = "GroveStudyDailyCheckInComponent"
 * title = "Daily check-in"
 * status = #active
@@ -48,7 +48,7 @@ Description: "One revision of the daily check-in study component. It pins the ex
 * intent = #order
 * code = $sdcTemp#complete-questionnaire
 * relatedArtifact[instrument].type = #depends-on
-* relatedArtifact[instrument].resource = "https://grovealliance.org/fhir/study/Questionnaire/GroveStudyDailyCheckInExample|0.8.2"
+* relatedArtifact[instrument].resource = "https://grovealliance.org/fhir/study/Questionnaire/GroveStudyDailyCheckInExample|0.8.3"
 
 Instance: GroveStudyWelcomeComponentExample
 InstanceOf: GroveStudyComponent
@@ -56,7 +56,7 @@ Usage: #example
 Title: "Welcome Component"
 Description: "One revision of an informational study component that shows the participant a welcome message. It defines no result, so its occurrences complete without an output."
 * url = "https://grovealliance.org/fhir/study/ActivityDefinition/GroveStudyWelcomeComponentExample"
-* version = "0.8.2"
+* version = "0.8.3"
 * name = "GroveStudyWelcomeComponent"
 * title = "Welcome"
 * status = #active
@@ -71,15 +71,15 @@ Usage: #example
 Title: "Single-Arm Daily Check-In Protocol"
 Description: "One revision of a single-arm protocol with two actions: an informational welcome component and the daily check-in."
 * url = "https://grovealliance.org/fhir/study/PlanDefinition/GroveStudyProtocolExample"
-* version = "0.8.2"
+* version = "0.8.3"
 * name = "GroveStudyDailyCheckInProtocol"
 * title = "Single-arm daily check-in protocol"
 * status = #active
 * experimental = true
 * action[0].title = "Welcome"
-* action[0].definitionCanonical = "https://grovealliance.org/fhir/study/ActivityDefinition/GroveStudyWelcomeComponentExample|0.8.2"
+* action[0].definitionCanonical = "https://grovealliance.org/fhir/study/ActivityDefinition/GroveStudyWelcomeComponentExample|0.8.3"
 * action[1].title = "Daily check-in"
-* action[1].definitionCanonical = "https://grovealliance.org/fhir/study/ActivityDefinition/GroveStudyDailyCheckInComponentExample|0.8.2"
+* action[1].definitionCanonical = "https://grovealliance.org/fhir/study/ActivityDefinition/GroveStudyDailyCheckInComponentExample|0.8.3"
 
 Instance: GroveStudyEnrollmentExample
 InstanceOf: ResearchSubject
@@ -100,7 +100,7 @@ Description: "The participant's enrollment in the study. The occurrences assigne
 RuleSet: GroveStudyOccurrence(component, occurrence, start, end)
 * identifier.system = "https://example.org/research/occurrence-id"
 * identifier.value = "{occurrence}"
-* instantiatesCanonical = "https://grovealliance.org/fhir/study/ActivityDefinition/{component}|0.8.2"
+* instantiatesCanonical = "https://grovealliance.org/fhir/study/ActivityDefinition/{component}|0.8.3"
 * intent = #order
 * for.type = "Patient"
 * for.identifier.system = "https://example.org/research/participant-id"
@@ -114,13 +114,13 @@ RuleSet: GroveStudyOccurrence(component, occurrence, start, end)
 * input[enrollment].valueReference.identifier.system = "https://example.org/research/enrollment-id"
 * input[enrollment].valueReference.identifier.value = "enrollment-001"
 * input[protocol].type = GroveStudyTaskInputCS#protocol
-* input[protocol].valueCanonical = "https://grovealliance.org/fhir/study/PlanDefinition/GroveStudyProtocolExample|0.8.2"
+* input[protocol].valueCanonical = "https://grovealliance.org/fhir/study/PlanDefinition/GroveStudyProtocolExample|0.8.3"
 
 RuleSet: GroveStudyDailyCheckInOccurrence(occurrence, start, end)
 * insert GroveStudyOccurrence(GroveStudyDailyCheckInComponentExample, {occurrence}, {start}, {end})
 * code = $sdcTemp#complete-questionnaire
 * input[questionnaire].type = $sdcTemp#questionnaire
-* input[questionnaire].valueCanonical = "https://grovealliance.org/fhir/study/Questionnaire/GroveStudyDailyCheckInExample|0.8.2"
+* input[questionnaire].valueCanonical = "https://grovealliance.org/fhir/study/Questionnaire/GroveStudyDailyCheckInExample|0.8.3"
 
 Instance: GroveStudyWelcomeTaskExample
 InstanceOf: GroveStudyTask
@@ -172,7 +172,7 @@ Title: "Daily Check-In Response"
 Description: "The accepted response that completes the first day's occurrence. It does not point back to the Task; the Task links it."
 * meta.versionId = "1"
 * language = #en-US
-* questionnaire = "https://grovealliance.org/fhir/study/Questionnaire/GroveStudyDailyCheckInExample|0.8.2"
+* questionnaire = "https://grovealliance.org/fhir/study/Questionnaire/GroveStudyDailyCheckInExample|0.8.3"
 * identifier.system = "https://example.org/research/questionnaire-response-id"
 * identifier.value = "daily-check-in-0001"
 * status = #completed
