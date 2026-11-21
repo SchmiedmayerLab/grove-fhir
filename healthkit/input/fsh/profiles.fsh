@@ -39,7 +39,7 @@ Severity: #error
 RuleSet: HealthKitSyncIdentifierSlice
 * obeys healthkit-sync-identifier-1
 * identifier contains syncIdentifier 0..1 MS
-* identifier[syncIdentifier] ^short = "Readable sync identifier, disclosed together with the readable HealthKit object identifier"
+* identifier[syncIdentifier] ^short = "Readable sync identifier, disclosed only beside the readable HealthKit object identifier"
 * identifier[syncIdentifier].type 1..1 MS
 * identifier[syncIdentifier].type = $healthKitIdentifierType#healthkit-sync-id
 * identifier[syncIdentifier].system 1..1 MS

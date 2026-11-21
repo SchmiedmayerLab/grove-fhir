@@ -194,7 +194,7 @@ Instance: HealthKitRevisedBodyWeightObservationExample
 InstanceOf: HealthKitObservation
 Usage: #example
 Title: "HealthKit Revised Body Weight"
-Description: "A body-weight sample a connected scale re-imported after correcting it. HealthKit replaced the earlier object, so this Observation carries a new object identifier, the unchanged sync identifier that names the measurement, and the higher sync version that supersedes the previous one. The deployment discloses readable native identifiers, so the object UUID and the sync identifier text appear beside the keyed identities, and the sync identifier's namespace names the writing application com.example.scale."
+Description: "A body-weight sample a connected scale re-imported after correcting it. HealthKit replaced the earlier object, so this Observation carries a new object identifier, the unchanged sync identifier that names the measurement, and the higher sync version that supersedes the previous one. The deployment discloses the object UUID and the readable sync identifier, so both appear beside the keyed identities, and the sync identifier's namespace names the writing application com.example.scale."
 * meta.profile[+] = "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight"
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
 * identifier[sourceRecord].value = "v0:test-key:1:nPJeEaz45T9YDxj5eDR9tH8vd_lY1wIaPN0YB24m9ms"
@@ -628,7 +628,7 @@ Instance: HealthKitHeartbeatSeriesRecordingExample
 InstanceOf: HealthKitRecordingDocument
 Usage: #example
 Title: "HealthKit Heartbeat Series Recording"
-Description: "A beat-to-beat interval series carried as its published column schema. Reducing the series to one Observation value would keep a single beat and discard the rest. The writing application assigned a sync identifier, so the document carries the keyed writer-record identity and its version; the deployment discloses readable native identifiers, so the object UUID and the sync identifier text appear beside them."
+Description: "A beat-to-beat interval series carried as its published column schema. Reducing the series to one Observation value would keep a single beat and discard the rest. The writing application assigned a sync identifier, so the document carries the keyed writer-record identity and its version; the deployment discloses the object UUID and the readable sync identifier, so both appear beside them."
 * meta.profile[+] = "https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document"
 * identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
 * identifier[sourceRecord].value = "v0:test-key:1:WcJEb3IdnPKltbqMjxoeo-kDcGnvOz7f6gW7_Nr55z4"
