@@ -47,7 +47,7 @@ Every occurrence carries these three inputs, once each:
 
 | Input | `type` | Value |
 |---|---|---|
-| `performanceWindow` | `performance-window` from [Grove Study Task Input](CodeSystem-grove-study-task-input.html) | `valuePeriod` with `start` and `end`, each with seconds and a time-zone offset, and `start` before `end` |
+| `performanceWindow` | `performance-window` from [Grove Study Task Input](CodeSystem-grove-study-task-input.html) | `valuePeriod` with a required `start` and optional `end`. Each includes seconds and a time-zone offset. An end follows the start |
 | `enrollment` | `enrollment` from Grove Study Task Input | `valueReference` to the ResearchSubject with its complete `identifier`; a literal reference may accompany it |
 | `protocol` | `protocol` from Grove Study Task Input | `valueCanonical` with the exact `url|version` of the protocol revision whose action assigned the occurrence |
 
@@ -61,7 +61,7 @@ The questionnaire Task adds one input and closes the slicing: it carries exactly
 The questionnaire input repeats the instrument of the component revision so a receiver can check a response against the Task alone.
 
 The performance window states when the participant is allowed to perform the occurrence.
-Its `end` is the last instant at which the occurrence can be performed, such as the last instant at which answers can be gathered for a questionnaire.
+Omit `end` for an occurrence with no deadline. When present, `end` is the last instant at which the occurrence can be performed, such as the last instant at which answers can be gathered for a questionnaire.
 `executionPeriod` records actual work and never changes the window.
 R4 `Task.restriction` is not used: R4 defines it for a Task that fulfills a request named in `focus`, and an occurrence has no such request.
 

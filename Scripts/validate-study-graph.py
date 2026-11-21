@@ -131,16 +131,22 @@ def identifier_keys(resource: dict[str, Any]) -> set[tuple[str, str]]:
     return {key for key in map(identifier_key, identifiers) if key}
 
 
-def instant(value: Any) -> datetime | None:
-    """A dateTime with seconds and an offset as an aware instant; anything less is no instant."""
-    if not isinstance(value, str) or not re.fullmatch(
-        r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})", value
-    ):
+# Compare offset-aware whole seconds first, then all supplied fractional digits.
+Instant = tuple[datetime, str]
+
+
+def instant(value: Any) -> Instant | None:
+    if not isinstance(value, str):
         return None
+    match = re.fullmatch(r"(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(?:\.(\d+))?(Z|[+-]\d{2}:\d{2})", value)
+    if match is None:
+        return None
+    seconds, fraction, offset = match.groups()
     try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+        whole = datetime.fromisoformat(seconds + offset.replace("Z", "+00:00"))
     except ValueError:
         return None
+    return whole, (fraction or "").rstrip("0")
 
 
 def member(node: Any, *path: str) -> Any:
@@ -203,7 +209,7 @@ class Occurrence:
     submission: tuple[str, str] | None
     result_id: str | None
     result_version: str | None
-    result_authored: datetime | None = None
+    result_authored: Instant | None = None
 
 
 @dataclass
@@ -396,10 +402,13 @@ def check_task(view: TaskView, index: Definitions, responses: Sequence[Resolved]
 
     window = typed_input(task, INPUT_SYSTEM, "performance-window").get("valuePeriod")
     start, end = instant(member(window, "start")), instant(member(window, "end"))
+    valid_window = start is not None and isinstance(window, dict) and (
+        "end" not in window or (end is not None and start < end)
+    )
     status = task.get("status")
     if status == "cancelled":
         stopped = instant(task.get("lastModified"))
-        if end is None or stopped is None or stopped > end:
+        if not valid_window or stopped is None or (end is not None and stopped > end):
             report("study-task-cancellation-window", "a cancelled occurrence was last modified after its window ended")
 
     # A component revision or a Task with the complete-questionnaire code makes the occurrence a
@@ -414,7 +423,7 @@ def check_task(view: TaskView, index: Definitions, responses: Sequence[Resolved]
         # Without a result, lastModified is when the status became completed.
         if status == "completed":
             completed = instant(task.get("lastModified"))
-            if start is None or end is None or completed is None or completed < start or completed > end:
+            if not valid_window or completed is None or completed < start or (end is not None and completed > end):
                 report("study-task-completion-window", "the occurrence was not completed within its performance window")
         if any(
             isinstance(coding, dict) and coding.get("system") == SDC_SYSTEM and coding.get("code") == "questionnaire"
@@ -422,7 +431,7 @@ def check_task(view: TaskView, index: Definitions, responses: Sequence[Resolved]
         ):
             report("study-task-instrument", "the component revision administers no instrument, so the occurrence carries no questionnaire input")
         return issues
-    issues.extend(check_questionnaire(view, component, index, responses, subject, start, end))
+    issues.extend(check_questionnaire(view, component, index, responses, subject, start if valid_window else None, end))
     return issues
 
 
@@ -432,8 +441,8 @@ def check_questionnaire(
     index: Definitions,
     responses: Sequence[Resolved],
     subject: tuple[str, str] | None,
-    start: datetime | None,
-    end: datetime | None,
+    start: Instant | None,
+    end: Instant | None,
 ) -> list[Issue]:
     """The instrument and result issues of one questionnaire occurrence."""
     task, label = view.resource, view.label
@@ -471,7 +480,7 @@ def check_questionnaire(
     # it can lie after the window, never before it opened.
     authored = instant(response.get("authored"))
     latest = end if response.get("status") != "amended" else None
-    if start is None or end is None or authored is None or authored < start or (latest is not None and authored > latest):
+    if start is None or authored is None or authored < start or (latest is not None and authored > latest):
         report("study-task-result-window", "the linked response was not authored within the performance window")
     if instrument is not None and response.get("questionnaire") == questionnaire_canonical:
         for issue in PAIR.validate_pair(instrument, response):
