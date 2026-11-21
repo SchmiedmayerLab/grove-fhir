@@ -33,7 +33,7 @@ OTHER_WRITER = [*SUBJECT, "https://study.example.org/apps", "another-writer", "h
 # The IG revision the record-centric bases were cut from, and its exchange protocol.
 BASE_SOURCE_REVISION = "be0e370cbc9e789f5ad30df18d3332713387a9c3"
 BASE_EXCHANGE_PROTOCOL_SHA256 = "fec45c4aaa7c9b63b2db25cfb0b82088a61f061ef404cbb17073025649072768"
-RELEASE_VERSION = "0.8.2"
+RELEASE_VERSION = "0.8.3"
 PRIMARY_NOTE = "Primary reading from the synthetic source record."
 OTHER_NOTE = "Other source content claiming the same writer version."
 REVISION_CANDIDATES = (
