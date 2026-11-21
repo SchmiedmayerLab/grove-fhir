@@ -128,9 +128,20 @@ class ReceiverLifecycleTests(unittest.TestCase):
         metadata["matchRule"] = "no-generic-carrier-admitted"
         metadata["enforcement"] = "closed-adapter-metadata-allowlists-and-no-grove-generic-extension"
         governed = protocol["governedSourceIdentifier"]
-        self.assertIn("discloses both or neither", governed.pop("writerAssignedIdentifier"))
+        self.assertIn("disclosed under its own deployment setting", governed.pop("writerAssignedIdentifier"))
         self.assertEqual(
             governed["validation"]["designatedNode"].pop("writerAssignedIdentifier")["maxPerPrimaryOutput"], 1
+        )
+        # A disclosure policy may withhold device facts; the pinned rule text predates that.
+        devices = protocol["recordingDevice"]
+        self.assertIn("disclosure policy may withhold any device fact or the whole Device", devices["deviceFacts"])
+        devices["deviceFacts"] = (
+            "A producer emits every device fact its source exposes, mapped as the adapter catalog's "
+            "recordingDeviceIdentity field mappings state. Consumers filter what they do not need; the source does not."
+        )
+        self.assertIn("unless the disclosure policy withholds it", devices["unitIdentity"])
+        devices["unitIdentity"] = devices["unitIdentity"].replace(
+            "still emits the Device, unless the disclosure policy withholds it, and", "still emits the Device and"
         )
         selection = protocol["lifecycle"]["active"]["versionSelection"]
         self.assertIn("only on Observation and DocumentReference.", selection["writerEvidence"])

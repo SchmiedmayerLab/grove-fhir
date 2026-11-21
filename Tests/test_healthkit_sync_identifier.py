@@ -53,7 +53,7 @@ class HealthKitSyncIdentifierTests(unittest.TestCase):
         self.catalog = json.loads((ROOT / "catalog/healthkit-adapter.json").read_text(encoding="utf-8"))
         self.contract = self.catalog["identity"]["writerRecord"]["revision"]["readableIdentifier"]
 
-    def test_contract_names_one_type_under_the_native_identifier_setting(self):
+    def test_contract_names_one_type_beside_the_native_identifier_setting(self):
         allowance = context.EXCHANGE_PROTOCOL["governedSourceIdentifier"]["validation"]["designatedNode"]
         self.assertEqual(allowance["maxPerPrimaryOutput"], 1)
         self.assertEqual(
@@ -73,7 +73,7 @@ class HealthKitSyncIdentifierTests(unittest.TestCase):
         terminology = (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(encoding="utf-8")
         types = terminology.split("CodeSystem: HealthKitIdentifierTypeCS\n", 1)[1].split("\n\n", 1)[0]
         self.assertIn(f"* #{self.contract['typeCode']} ", types)
-        self.assertIn("no separate setting exists", self.contract["disclosureRule"])
+        self.assertIn("A separate exporter setting discloses this Identifier", self.contract["disclosureRule"])
         self.assertIn("writing application's bundle identifier", self.contract["disclosureRule"])
         self.assertEqual(self.contract["writerSegment"], "bundle-identifier")
         self.assertIn("withholds the readable Identifier", self.contract["nonConformingWriterRule"])
@@ -81,11 +81,10 @@ class HealthKitSyncIdentifierTests(unittest.TestCase):
         self.assertIn("/healthkit-sync-identifier/" + self.contract["writerSegmentPattern"][1:], profiles)
         mapping = (ROOT / "healthkit/input/pagecontent/mapping.md").read_text(encoding="utf-8")
         for sentence in (
-            "The same opt-in setting also discloses the [readable sync identifier](#readable-sync-identifier) "
-            "of a sample that carries a sync pair; no separate setting exists.",
-            "Enabling the setting therefore discloses the bundle identifier of the application that wrote "
-            "such a sample",
-            "With the setting off, the sync identifier text is not exported in any element",
+            "A second opt-in setting discloses the [readable sync identifier](#readable-sync-identifier) "
+            "of a sample that carries a sync pair. This setting takes effect only while the `HKObject.uuid` Identifier is disclosed.",
+            "With both settings on, the bundle identifier of the application that wrote such a sample is disclosed",
+            "With either setting off, the sync identifier text is not exported in any element",
             "withhold the readable sync identifier for its samples",
             "report `HKMetadataKeySyncIdentifier` as a withheld key under `mobile-omission.unmodeled-metadata`",
             "A deployment configures one native identifier system",
@@ -145,7 +144,7 @@ class HealthKitSyncIdentifierTests(unittest.TestCase):
             ):
                 with self.subTest(fixture=name, missing=label), self.assertRaises(ProducerValidationError):
                     validate(mutated)
-            # Writer evidence without the readable value stays conformant: the setting is off.
+            # Writer evidence without the readable value stays conformant: the sync identifier setting is off.
             keyed_only = copy.deepcopy(resource)
             keyed_only["identifier"].remove(sync_identifier(keyed_only))
             keyed_only["identifier"].remove(native_identifier(keyed_only))
