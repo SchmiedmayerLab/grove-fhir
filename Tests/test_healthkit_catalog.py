@@ -112,7 +112,7 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             provenance["targetAdapterProfiles"], sorted(active_healthkit_profiles)
         )
-        self.assertEqual(len(active_healthkit_profiles), 119)
+        self.assertEqual(len(active_healthkit_profiles), 120)
 
         single_profiles = {
             profile
@@ -138,6 +138,15 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             self.claims["healthKitClinicalRecordDocumentClaim"]["profiles"],
             [prefix + "healthkit-clinical-record-document"],
+        )
+        attachment_claim = self.claims["healthKitClinicalRecordAttachmentClaim"]
+        self.assertEqual(
+            attachment_claim["profiles"], [prefix + "healthkit-clinical-record-attachment"]
+        )
+        self.assertEqual(attachment_claim["cardinality"], 1)
+        self.assertEqual(
+            attachment_claim["requiredIdentifierRoles"],
+            ["source-record", "source-output", "source-artifact"],
         )
         self.assertEqual(
             {

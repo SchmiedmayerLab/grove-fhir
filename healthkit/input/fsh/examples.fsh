@@ -621,6 +621,74 @@ Description: "The converter byte-preserved one provider-issued DSTU2 resource in
 * entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
 * entity.what.identifier.value = "v0:test-key:1:UW5bJTkRJ0UKkw7krpXqdxuXronFcrv0fcxncHrqDsQ"
 
+Instance: HealthKitClinicalNoteRecordDocumentExample
+InstanceOf: HealthKitClinicalRecordDocument
+Usage: #example
+Title: "HealthKit Clinical Note Record Pass-Through"
+Description: "One provider-issued R4 clinical note surfaced by HealthKit. The note's PDF, which HealthKit downloaded and stores with the record, travels beside it as a HealthKit Clinical Record Attachment; this document and its payload are the same whether or not the record has attachments."
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:WCHLQJl3_yvxX9eGPFbc8juRED05Tt7F6dB3Ilwzr88"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:rvSyW-erZnLWI7PuzkPypjigbUOS6yOct2uqPkKWSD0"
+* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1"
+* identifier[sourceArtifact].value = "v0:test-key:1:DT8ZbVYH6deAKsRcqi2ETvrGU1oISY7NsVCnFWUSec4"
+* extension[healthKitSourceType].valueCode = #HKClinicalTypeIdentifierClinicalNoteRecord
+* status = #current
+* type = HealthKitClinicalRecordTypeCS#clinical-note-record "Clinical note record"
+* subject = Reference(HealthKitPatientExample)
+* date = "2026-08-20T17:07:01Z"
+* content.attachment.contentType = #"application/fhir+json; fhirVersion=4.0"
+* content.format = $recordingFormat#fhir-resource "FHIR Resource"
+* content.attachment.title = "Provider-issued DocumentReference"
+* content.attachment.data = "eyJyZXNvdXJjZVR5cGUiOiJEb2N1bWVudFJlZmVyZW5jZSIsImlkIjoicHJvdmlkZXItbm90ZS0xIiwic3RhdHVzIjoiY3VycmVudCIsInR5cGUiOnsidGV4dCI6IlByb2dyZXNzIG5vdGUifSwic3ViamVjdCI6eyJyZWZlcmVuY2UiOiJQYXRpZW50L3BhcnRpY2lwYW50LWhrLTAwMSJ9LCJjb250ZW50IjpbeyJhdHRhY2htZW50Ijp7ImNvbnRlbnRUeXBlIjoiYXBwbGljYXRpb24vcGRmIiwidXJsIjoiQmluYXJ5L3Byb3ZpZGVyLW5vdGUtMS1wZGYiLCJ0aXRsZSI6IlZpc2l0IG5vdGUifX1dfQ=="
+* content.attachment.size = 280
+* content.attachment.hash = "CCikA8JrveoJzUhyHAyEYwSJt5I="
+
+Instance: HealthKitClinicalRecordAttachmentExample
+InstanceOf: HealthKitClinicalRecordAttachment
+Usage: #example
+Title: "HealthKit Clinical Record Attachment"
+Description: "The PDF that HealthKit stores with the clinical note record, carried exactly as stored and named by its path in the upload archive that also carries the record's Bundle. It appends to the record's clinical-record document, which does not point back to it."
+* identifier[sourceRecord].system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* identifier[sourceRecord].value = "v0:test-key:1:WCHLQJl3_yvxX9eGPFbc8juRED05Tt7F6dB3Ilwzr88"
+* identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
+* identifier[sourceOutput].value = "v0:test-key:1:7r8vh7Vju_J5yydSrq1l1QVtsBTdP8t15bUqHsPts_A"
+* identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1"
+* identifier[sourceArtifact].value = "v0:test-key:1:j2LQarBZO53vb9832PjKG4ij6sCXlBbZqWWQwdNvVpw"
+* extension[healthKitSourceType].valueCode = #HKClinicalTypeIdentifierClinicalNoteRecord
+* type = HealthKitClinicalRecordTypeCS#clinical-note-record "Clinical note record"
+* subject = Reference(HealthKitPatientExample)
+* date = "2026-08-20T17:07:01Z"
+* relatesTo.code = #appends
+* relatesTo.target = Reference(HealthKitClinicalNoteRecordDocumentExample)
+* content.format = $recordingFormat#source-file "Source File"
+* content.attachment.contentType = #application/pdf
+* content.attachment.url = "recordings/50cd9bb4234b61635e892290a431ec36c3dedf389c9b538d07d21c3a5ffc9dd8.pdf"
+* content.attachment.size = 112
+* content.attachment.hash = "Nr47nTDanS+zEuOEesL4SWU4Ef0="
+* content.attachment.title = "Visit note.pdf"
+* content.attachment.creation = "2026-08-20T09:30:00-07:00"
+
+Instance: HealthKitClinicalNoteRecordProvenanceExample
+InstanceOf: HealthKitConversionProvenance
+Usage: #example
+Title: "HealthKit Clinical Note Record Source Provenance"
+Description: "One conversion of a clinical note record with one attachment: the record's single Provenance targets both its clinical-record document and its attachment document."
+* extension[recordVersion].valueIdentifier.type = $groveIdentifierRole#record-version "Record version"
+* extension[recordVersion].valueIdentifier.system = "https://study.example.org/fhir/NamingSystem/grove-record-version-v0/test-key/1"
+* extension[recordVersion].valueIdentifier.value = "v0:test-key:1:SaOrsmaa3u6S2OvKsvXyAfF388gOw5YOZvxDXrqfd3A"
+* target[+] = Reference(HealthKitClinicalNoteRecordDocumentExample)
+* target[+] = Reference(HealthKitClinicalRecordAttachmentExample)
+* occurredDateTime = "2026-08-20T17:07:00Z"
+* recorded = "2026-08-20T17:07:01Z"
+* activity = $recordLifecycleEvent#transform "Transform/Translate Record Lifecycle Event"
+* agent[assembler].type = $provenanceParticipantType#assembler "Assembler"
+* agent[assembler].who = Reference(HealthKitApplicationDeviceExample)
+* entity.role = #source
+* entity.what.identifier.type = $groveIdentifierRole#source-record "Source record"
+* entity.what.identifier.system = "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1"
+* entity.what.identifier.value = "v0:test-key:1:WCHLQJl3_yvxX9eGPFbc8juRED05Tt7F6dB3Ilwzr88"
+
 Instance: HealthKitHeartbeatSeriesRecordingExample
 InstanceOf: HealthKitRecordingDocument
 Usage: #example

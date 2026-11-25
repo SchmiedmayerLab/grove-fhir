@@ -38,6 +38,7 @@ class FormatRegistryTests(unittest.TestCase):
                 "fhir-collection-bundle",
                 "fhir-resource",
                 "clinical-document",
+                "source-file",
                 "native-recording",
                 "provider-recording",
                 "photoplethysmogram-samples",
@@ -47,7 +48,9 @@ class FormatRegistryTests(unittest.TestCase):
             self.assertEqual(fmt["status"], "active", code)
             self.assertTrue(fmt["title"], code)
             self.assertEqual(
-                ("contentType" in fmt) + ("contentTypes" in fmt),
+                ("contentType" in fmt)
+                + ("contentTypes" in fmt)
+                + ("contentTypeRule" in fmt),
                 1,
                 code,
             )
@@ -63,6 +66,7 @@ class FormatRegistryTests(unittest.TestCase):
         expected = {
             content_type
             for fmt in REGISTRY["formats"].values()
+            if "contentTypeRule" not in fmt
             for content_type in fmt.get("contentTypes", [fmt.get("contentType")])
         }
         for content_type in expected:
@@ -212,6 +216,47 @@ class FormatRegistryTests(unittest.TestCase):
         ]["scope"]
         self.assertIn("strict JSON syntax", provider_scope)
         self.assertIn("provider-domain schema", provider_scope)
+
+    def test_source_file_admits_any_source_declared_media_type_and_nothing_else(self) -> None:
+        source_file = REGISTRY["formats"]["source-file"]
+        self.assertEqual(source_file["contentTypeRule"], "source-declared")
+        self.assertEqual(source_file["defaultContentType"], "application/octet-stream")
+        self.assertIn(source_file["defaultContentType"], REGISTRY["mediaTypes"])
+        pattern = re.compile(source_file["contentTypePattern"])
+        for admitted in (
+            "application/pdf",
+            "image/jpeg",
+            "text/rtf",
+            "application/octet-stream",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "text/plain; charset=utf-8",
+            'text/plain; charset="utf-8"',
+        ):
+            with self.subTest(admitted=admitted):
+                self.assertIsNotNone(pattern.fullmatch(admitted))
+        for rejected in (
+            "",
+            "pdf",
+            "Application/PDF",
+            "application/pdf;charset=utf-8",
+            "application/pdf; Charset=utf-8",
+            "application/ pdf",
+            "application/pdf ",
+            "*/*",
+        ):
+            with self.subTest(rejected=rejected):
+                self.assertIsNone(pattern.fullmatch(rejected))
+        specification = source_file["specification"]
+        self.assertIn("never opens", specification["validationScope"])
+        self.assertIn("enumerates no media type", specification["mediaType"])
+        self.assertIn("exactly one file", specification["scope"])
+
+        page = (ROOT / "sensor/input/pagecontent/formats.md").read_text(encoding="utf-8")
+        self.assertIn("### `source-file` — Source File", page)
+        terminology = (ROOT / "sensor/input/fsh/generated-recording-mime-types.fsh").read_text(
+            encoding="utf-8"
+        )
+        self.assertNotIn("application/pdf", terminology)
 
     def test_ppg_integer_signedness_is_explicit(self) -> None:
         specification = REGISTRY["formats"]["photoplethysmogram-samples"]["specification"]

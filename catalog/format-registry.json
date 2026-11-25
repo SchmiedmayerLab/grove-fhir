@@ -6,7 +6,7 @@
   "canonical": "https://grovealliance.org/fhir/sensor",
   "codeSystem": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
   "valueSet": "https://grovealliance.org/fhir/sensor/ValueSet/grove-recording-format",
-  "description": "The complete registry of payload formats a Grove recording DocumentReference may carry. Every content entry declares exactly one registry format in DocumentReference.content.format, and an unregistered payload format is nonconformant. Each format defines what Grove format validation checks and which FHIR/profile, CDA, provider-domain, or binary semantic validations remain producer or receiver responsibilities. Most format codes name a source-neutral payload schema. The native-recording code instead names only a generic JSON object-or-array envelope; the carrying document's source type supplies the source category and meaning, not a per-stream field schema. The encoding is carried by the entry's media type, and the producing platform by the carrying document's source type.",
+  "description": "The complete registry of payload formats a Grove recording DocumentReference may carry. Every content entry declares exactly one registry format in DocumentReference.content.format, and an unregistered payload format is nonconformant. Each format defines what Grove format validation checks and which FHIR/profile, CDA, provider-domain, or binary semantic validations remain producer or receiver responsibilities. Most format codes name a source-neutral payload schema. The native-recording code instead names only a generic JSON object-or-array envelope; the carrying document's source type supplies the source category and meaning, not a per-stream field schema. The encoding is carried by the entry's media type, and the producing platform by the carrying document's source type. The source-file code is the one format that enumerates no media type: it carries one file exactly as its source stored it, under the media type the source declares.",
   "encodings": {
     "csv": {
       "encoding": "UTF-8 without a byte-order mark.",
@@ -570,6 +570,19 @@
       "status": "active",
       "specification": {
         "file": "One HL7 Clinical Document Architecture Release 2 document, byte-preserved exactly as the source platform delivered it. Grove never rewrites, reserializes, or asserts conformance over another issuer's document; the carrying document records the issuer."
+      }
+    },
+    "source-file": {
+      "title": "Source File",
+      "contentTypeRule": "source-declared",
+      "contentTypePattern": "^[a-z0-9][a-z0-9!#$&^_.+-]{0,126}/[a-z0-9][a-z0-9!#$&^_.+-]{0,126}(; [a-z0-9][a-z0-9!#$&^_.+-]{0,126}=([^\\s\";]+|\"[^\"]*\"))*$",
+      "defaultContentType": "application/octet-stream",
+      "status": "active",
+      "specification": {
+        "file": "One file exactly as the source platform stored it, in any format. Grove never opens, rewrites, reserializes, or interprets the file.",
+        "mediaType": "Attachment.contentType is the file's IANA media type as the source platform declares it, with the type, subtype, and parameter names in lowercase, or `application/octet-stream` when the source declares none. The registry enumerates no media type for this format: any value that matches its contentTypePattern is admitted, and a receiver must not reject a file for an unfamiliar media type.",
+        "validationScope": "Grove format validation checks only the size and SHA-1 hash of embedded bytes, as for every recording attachment; it never opens or interprets the file. A URL payload is resolved by the deployment, not by Grove.",
+        "scope": "One document carries exactly one file. Only a profile that names this format carries it; no Sensor recording document does."
       }
     },
     "native-recording": {

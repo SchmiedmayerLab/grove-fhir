@@ -9,7 +9,7 @@
     "mobile/input/fsh/terminology.fsh",
     "mobile/input/fsh/profiles.fsh"
   ],
-  "groundTruthDigest": "sha256:5693461a76d76e11759da272a477e0c54684cc230f3c6f4860ec564ce71ecb83",
+  "groundTruthDigest": "sha256:d8700f0d5e23144ad6b88231e85e35bc203bed73d09ca408a3e6468329d24b1f",
   "valueDomainReview": {
     "status": "prepared-pending-release-ratification",
     "preparedOn": "2026-08-27",
@@ -4648,6 +4648,15 @@
       "measurementImpact": "None. The changes are confined to the exchange Bundle, lifecycle Provenance, Device, and identifier-role definitions; no measurement code, binding, or per-measurement digest changes.",
       "review": "Pending pull-request review of the record-centric exchange.",
       "approvedOn": "2026-11-06"
+    },
+    {
+      "from": "sha256:5693461a76d76e11759da272a477e0c54684cc230f3c6f4860ec564ce71ecb83",
+      "to": "sha256:d8700f0d5e23144ad6b88231e85e35bc203bed73d09ca408a3e6468329d24b1f",
+      "baseCommit": "9e51eb8",
+      "change": "Admitted the HealthKit Clinical Record Attachment as a single-profile document mode in the grove-active-document-profile-1 Bundle invariant, so a clinical record can carry one attachment document per file HealthKit stores with it.",
+      "measurementImpact": "None. The change is confined to the exchange Bundle's document-profile invariant; no measurement code, binding, or per-measurement digest changes.",
+      "review": "Pending pull-request review of clinical-record attachments.",
+      "approvedOn": "2026-11-25"
     }
   ]
 }

@@ -51,6 +51,11 @@ Description: "The clinical attachment declares DSTU2 or R4 with the standard FHI
 Expression: "content.attachment.contentType.all($this = 'application/fhir+json; fhirVersion=1.0' or $this = 'application/fhir+json; fhirVersion=4.0')"
 Severity: #error
 
+Invariant: healthkit-clinical-attachment-payload-1
+Description: "A clinical-record attachment carries its file in exactly one of embedded data or an immutable, version-specific URL."
+Expression: "data.exists() xor url.exists()"
+Severity: #error
+
 RuleSet: HealthKitOutputIdentitySlices
 * obeys healthkit-writer-record-1
 * identifier 2..* MS
@@ -208,7 +213,7 @@ Title: "HealthKit Conversion Provenance"
 Description: "Provenance for transforming or byte-preserving one HealthKit object into every admitted HealthKit adapter output without fetching source data."
 * obeys healthkit-source-revision-writer-1
 * target 1..* MS
-* target only Reference(HealthKitObservation or HealthKitRecordingDocument or HealthKitVisionPrescription or HealthKitMedicationDoseEvent or HealthKitUserAnnotatedMedication)
+* target only Reference(HealthKitObservation or HealthKitRecordingDocument or HealthKitClinicalRecordAttachment or HealthKitVisionPrescription or HealthKitMedicationDoseEvent or HealthKitUserAnnotatedMedication)
 * entity 1..1 MS
 * entity.role = #source
 * entity.what.reference 0..0
@@ -253,6 +258,60 @@ Description: "A pass-through envelope for one provider-issued clinical FHIR reso
 * content.attachment.size 1..1 MS
 * content.attachment.hash 1..1 MS
 * obeys healthkit-clinical-fhir-content-type-1
+
+Profile: HealthKitClinicalRecordAttachment
+Parent: DocumentReference
+Id: healthkit-clinical-record-attachment
+Title: "HealthKit Clinical Record Attachment"
+Description: "One file that HealthKit stores with a clinical record, such as a clinical note's PDF, read through HKAttachmentStore and carried exactly as HealthKit stored it. It is an output of its clinical record's record beside the HealthKit Clinical Record Document, which it appends to; that document and its provider-issued payload stay unchanged. The file's media type is whatever the source declares, so this profile does not derive from the Sensor recording document, whose media types are a closed list."
+* extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
+* extension[sourceMetadata] ^short = "The attachment's own HKAttachment.metadata"
+* extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
+* identifier 3..3 MS
+* identifier ^slicing.discriminator.type = #pattern
+* identifier ^slicing.discriminator.path = "type"
+* identifier ^slicing.rules = #closed
+* identifier contains sourceRecord 1..1 MS and sourceOutput 1..1 MS and sourceArtifact 1..1 MS
+* identifier[sourceRecord].type = $groveIdentifierRole#source-record
+* identifier[sourceRecord].system 1..1 MS
+* identifier[sourceRecord].value 1..1 MS
+* identifier[sourceRecord].value obeys healthkit-opaque-identifier-value-1
+* identifier[sourceOutput].type = $groveIdentifierRole#source-output
+* identifier[sourceOutput].system 1..1 MS
+* identifier[sourceOutput].value 1..1 MS
+* identifier[sourceOutput].value obeys healthkit-opaque-identifier-value-1
+* identifier[sourceArtifact].type = $groveIdentifierRole#source-artifact
+* identifier[sourceArtifact].system 1..1 MS
+* identifier[sourceArtifact].value 1..1 MS
+* identifier[sourceArtifact].value obeys healthkit-opaque-identifier-value-1
+* status = #current (exactly)
+* type 1..1 MS
+* type from HealthKitClinicalRecordTypeVS (required)
+* subject 1..1 MS
+* subject only Reference(Patient)
+* date 1..1 MS
+* relatesTo 1..1 MS
+* relatesTo ^short = "The clinical record's document this file appends to"
+* relatesTo.code = #appends (exactly)
+* relatesTo.target only Reference(HealthKitClinicalRecordDocument)
+* relatesTo.target.reference 1..1 MS
+* relatesTo.target.identifier 0..0
+* content 1..1 MS
+* content.format 1..1 MS
+* content.format = $recordingFormat#source-file
+// The stable CodeSystem and code identify the registered format. IG release versions do not
+// travel in payload Coding values.
+* content.format.version 0..0
+* content.attachment obeys healthkit-clinical-attachment-payload-1
+* content.attachment.contentType 1..1 MS
+* content.attachment.url ^short = "Immutable, version-specific location of the file; may be relative to the transport unit that carries the Bundle"
+* content.attachment.size 1..1 MS
+* content.attachment.hash 1..1 MS
+* content.attachment.title 0..1 MS
+* content.attachment.title ^short = "HKAttachment.name"
+* content.attachment.creation 0..1 MS
+* content.attachment.creation ^short = "HKAttachment.creationDate"
+* context.related MS
 
 
 

@@ -348,8 +348,6 @@ def offline_mime_error_count(
             if path_match is None or message_match is None:
                 continue
             code = message_match.group("code")
-            if code not in media_types:
-                continue
             index = int(path_match.group("index"))
             content = resource.get("content")
             if not isinstance(content, list) or index >= len(content):
@@ -365,13 +363,19 @@ def offline_mime_error_count(
             registered_format = formats.get(format_code)
             if not isinstance(registered_format, dict):
                 continue
-            registered_content_types = registered_format.get(
-                "contentTypes", [registered_format.get("contentType")]
-            )
+            if registered_format.get("contentTypeRule") == "source-declared":
+                # A source-declared format enumerates no media type; the code only has to be
+                # one its registry pattern admits.
+                admitted = re.fullmatch(registered_format["contentTypePattern"], code) is not None
+            else:
+                registered_content_types = registered_format.get(
+                    "contentTypes", [registered_format.get("contentType")]
+                )
+                admitted = code in media_types and code in registered_content_types
             if (
                 attachment.get("contentType") != code
                 or format_coding.get("system") != format_system
-                or code not in registered_content_types
+                or not admitted
             ):
                 continue
             count += 1

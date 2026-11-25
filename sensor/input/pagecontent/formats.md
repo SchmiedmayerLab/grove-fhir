@@ -281,6 +281,14 @@ One document carries exactly one clinical record's FHIR payload. Grove format va
 Media type: `application/hl7-cda+xml`.
 One HL7 Clinical Document Architecture Release 2 document, byte-preserved exactly as the source platform delivered it. Grove never rewrites, reserializes, or asserts conformance over another issuer's document; the carrying document records the issuer.
 
+### `source-file` — Source File
+
+Media type: the one the source declares, matching `^[a-z0-9][a-z0-9!#$&^_.+-]{0,126}/[a-z0-9][a-z0-9!#$&^_.+-]{0,126}(; [a-z0-9][a-z0-9!#$&^_.+-]{0,126}=([^\s";]+|"[^"]*"))*$`; `application/octet-stream` when it declares none.
+Attachment.contentType is the file's IANA media type as the source platform declares it, with the type, subtype, and parameter names in lowercase, or `application/octet-stream` when the source declares none. The registry enumerates no media type for this format: any value that matches its contentTypePattern is admitted, and a receiver must not reject a file for an unfamiliar media type.
+Grove format validation checks only the size and SHA-1 hash of embedded bytes, as for every recording attachment; it never opens or interprets the file. A URL payload is resolved by the deployment, not by Grove.
+One document carries exactly one file. Only a profile that names this format carries it; no Sensor recording document does.
+One file exactly as the source platform stored it, in any format. Grove never opens, rewrites, reserializes, or interprets the file.
+
 ### `native-recording` — Native Recording
 
 Media type: `application/json`.

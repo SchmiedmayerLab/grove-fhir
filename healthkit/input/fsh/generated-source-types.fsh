@@ -255,31 +255,31 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKCharacteristicTypeIdentifierWheelchairUse "Wheelchair Use" "The HealthKit HKCharacteristicTypeIdentifierWheelchairUse source type. Grove converts it to healthkit-wheelchair-use."
 * #HKCharacteristicTypeIdentifierWheelchairUse ^property[0].code = #documentation
 * #HKCharacteristicTypeIdentifierWheelchairUse ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkcharacteristictypeidentifier/wheelchairuse"
-* #HKClinicalTypeIdentifierAllergyRecord "Allergy Record" "The HealthKit HKClinicalTypeIdentifierAllergyRecord source type. Grove converts it to healthkit-clinical-record-document."
+* #HKClinicalTypeIdentifierAllergyRecord "Allergy Record" "The HealthKit HKClinicalTypeIdentifierAllergyRecord source type. Grove converts it to healthkit-clinical-record-document and healthkit-clinical-record-attachment."
 * #HKClinicalTypeIdentifierAllergyRecord ^property[0].code = #documentation
 * #HKClinicalTypeIdentifierAllergyRecord ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/allergyrecord"
-* #HKClinicalTypeIdentifierClinicalNoteRecord "Clinical Note Record" "The HealthKit HKClinicalTypeIdentifierClinicalNoteRecord source type. Grove converts it to healthkit-clinical-record-document."
+* #HKClinicalTypeIdentifierClinicalNoteRecord "Clinical Note Record" "The HealthKit HKClinicalTypeIdentifierClinicalNoteRecord source type. Grove converts it to healthkit-clinical-record-document and healthkit-clinical-record-attachment."
 * #HKClinicalTypeIdentifierClinicalNoteRecord ^property[0].code = #documentation
 * #HKClinicalTypeIdentifierClinicalNoteRecord ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/clinicalnoterecord"
-* #HKClinicalTypeIdentifierConditionRecord "Condition Record" "The HealthKit HKClinicalTypeIdentifierConditionRecord source type. Grove converts it to healthkit-clinical-record-document."
+* #HKClinicalTypeIdentifierConditionRecord "Condition Record" "The HealthKit HKClinicalTypeIdentifierConditionRecord source type. Grove converts it to healthkit-clinical-record-document and healthkit-clinical-record-attachment."
 * #HKClinicalTypeIdentifierConditionRecord ^property[0].code = #documentation
 * #HKClinicalTypeIdentifierConditionRecord ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/conditionrecord"
-* #HKClinicalTypeIdentifierCoverageRecord "Coverage Record" "The HealthKit HKClinicalTypeIdentifierCoverageRecord source type. Grove converts it to healthkit-clinical-record-document."
+* #HKClinicalTypeIdentifierCoverageRecord "Coverage Record" "The HealthKit HKClinicalTypeIdentifierCoverageRecord source type. Grove converts it to healthkit-clinical-record-document and healthkit-clinical-record-attachment."
 * #HKClinicalTypeIdentifierCoverageRecord ^property[0].code = #documentation
 * #HKClinicalTypeIdentifierCoverageRecord ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/coveragerecord"
-* #HKClinicalTypeIdentifierImmunizationRecord "Immunization Record" "The HealthKit HKClinicalTypeIdentifierImmunizationRecord source type. Grove converts it to healthkit-clinical-record-document."
+* #HKClinicalTypeIdentifierImmunizationRecord "Immunization Record" "The HealthKit HKClinicalTypeIdentifierImmunizationRecord source type. Grove converts it to healthkit-clinical-record-document and healthkit-clinical-record-attachment."
 * #HKClinicalTypeIdentifierImmunizationRecord ^property[0].code = #documentation
 * #HKClinicalTypeIdentifierImmunizationRecord ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/immunizationrecord"
-* #HKClinicalTypeIdentifierLabResultRecord "Lab Result Record" "The HealthKit HKClinicalTypeIdentifierLabResultRecord source type. Grove converts it to healthkit-clinical-record-document."
+* #HKClinicalTypeIdentifierLabResultRecord "Lab Result Record" "The HealthKit HKClinicalTypeIdentifierLabResultRecord source type. Grove converts it to healthkit-clinical-record-document and healthkit-clinical-record-attachment."
 * #HKClinicalTypeIdentifierLabResultRecord ^property[0].code = #documentation
 * #HKClinicalTypeIdentifierLabResultRecord ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/labresultrecord"
-* #HKClinicalTypeIdentifierMedicationRecord "Medication Record" "The HealthKit HKClinicalTypeIdentifierMedicationRecord source type. Grove converts it to healthkit-clinical-record-document."
+* #HKClinicalTypeIdentifierMedicationRecord "Medication Record" "The HealthKit HKClinicalTypeIdentifierMedicationRecord source type. Grove converts it to healthkit-clinical-record-document and healthkit-clinical-record-attachment."
 * #HKClinicalTypeIdentifierMedicationRecord ^property[0].code = #documentation
 * #HKClinicalTypeIdentifierMedicationRecord ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/medicationrecord"
-* #HKClinicalTypeIdentifierProcedureRecord "Procedure Record" "The HealthKit HKClinicalTypeIdentifierProcedureRecord source type. Grove converts it to healthkit-clinical-record-document."
+* #HKClinicalTypeIdentifierProcedureRecord "Procedure Record" "The HealthKit HKClinicalTypeIdentifierProcedureRecord source type. Grove converts it to healthkit-clinical-record-document and healthkit-clinical-record-attachment."
 * #HKClinicalTypeIdentifierProcedureRecord ^property[0].code = #documentation
 * #HKClinicalTypeIdentifierProcedureRecord ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/procedurerecord"
-* #HKClinicalTypeIdentifierVitalSignRecord "Vital Sign Record" "The HealthKit HKClinicalTypeIdentifierVitalSignRecord source type. Grove converts it to healthkit-clinical-record-document."
+* #HKClinicalTypeIdentifierVitalSignRecord "Vital Sign Record" "The HealthKit HKClinicalTypeIdentifierVitalSignRecord source type. Grove converts it to healthkit-clinical-record-document and healthkit-clinical-record-attachment."
 * #HKClinicalTypeIdentifierVitalSignRecord ^property[0].code = #documentation
 * #HKClinicalTypeIdentifierVitalSignRecord ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkclinicaltypeidentifier/vitalsignrecord"
 * #HKCorrelationTypeIdentifierBloodPressure "Blood Pressure" "The HealthKit HKCorrelationTypeIdentifierBloodPressure source type. Grove converts it to grove-mobile-blood-pressure."

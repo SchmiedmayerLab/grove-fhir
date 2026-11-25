@@ -147,6 +147,31 @@ class ReceiverLifecycleTests(unittest.TestCase):
         selection["writerEvidence"] = selection["writerEvidence"].replace(
             "only on Observation and DocumentReference.", "only on Observation."
         )
+        # Clinical-record attachment documents are additive: a new graph rule, and a profile that
+        # is never primary. Remove exactly those to keep guarding every other rule.
+        attachment_profile = (
+            "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
+            "healthkit-clinical-record-attachment"
+        )
+        diagnostics = protocol["producerDiagnostics"]
+        attachment_rules = [
+            rule for rule in diagnostics if rule["code"] == "healthkit-clinical.attachment-graph"
+        ]
+        self.assertEqual(len(attachment_rules), 1)
+        diagnostics.remove(attachment_rules[0])
+        validation = protocol["governedSourceIdentifier"]["validation"]
+        validation["neverProfiles"].remove(attachment_profile)
+        validation["designatedNode"]["adapterSelectors"]["healthkit"]["excludedProfiles"].remove(
+            attachment_profile
+        )
+        self.assertIn(
+            "other than outputs of a neverProfiles profile, such as a clinical record's attachment documents",
+            validation["recordingDocumentRule"],
+        )
+        validation["recordingDocumentRule"] = validation["recordingDocumentRule"].replace(
+            " other than outputs of a neverProfiles profile, such as a clinical record's attachment documents",
+            "",
+        )
         rules = json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(rules).hexdigest(), "860fd192e0164b867c63aa13408b21537da0fa3685d04f618e342dd5dd407223")
         for name, digest in {

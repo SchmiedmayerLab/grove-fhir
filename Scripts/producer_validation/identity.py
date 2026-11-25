@@ -605,7 +605,14 @@ def validate_governed_source_identifiers(
             raise ProducerValidationError(
                 f"{label} governed source Identifier is not allowed on a secondary or support output"
             )
-        if resource_type == "DocumentReference" and len(outputs_by_source[source]) != 1:
+        # An output that can never be primary, such as a clinical record's attachment document,
+        # does not make the record's one source document a companion.
+        never_profiles = set(policy["neverProfiles"])
+        eligible_outputs = [
+            output for output in outputs_by_source[source]
+            if not set(output.get("meta", {}).get("profile", [])) & never_profiles
+        ]
+        if resource_type == "DocumentReference" and len(eligible_outputs) != 1:
             raise ProducerValidationError(
                 f"{label} companion source artifact must not carry the governed source Identifier"
             )

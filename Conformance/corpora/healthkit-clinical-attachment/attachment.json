@@ -1,0 +1,92 @@
+{
+  "resourceType": "DocumentReference",
+  "id": "clinical-note-record-attachment",
+  "meta": {
+    "profile": [
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"
+    ]
+  },
+  "extension": [
+    {
+      "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type",
+      "valueCode": "HKClinicalTypeIdentifierClinicalNoteRecord"
+    }
+  ],
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-record"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+      "value": "v0:test-key:1:WCHLQJl3_yvxX9eGPFbc8juRED05Tt7F6dB3Ilwzr88"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-output"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+      "value": "v0:test-key:1:7r8vh7Vju_J5yydSrq1l1QVtsBTdP8t15bUqHsPts_A"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-artifact"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1",
+      "value": "v0:test-key:1:j2LQarBZO53vb9832PjKG4ij6sCXlBbZqWWQwdNvVpw"
+    }
+  ],
+  "status": "current",
+  "type": {
+    "coding": [
+      {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-clinical-record-type",
+        "code": "clinical-note-record",
+        "display": "Clinical note record"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "Patient/HealthKitPatientExample"
+  },
+  "date": "2026-08-20T17:07:01Z",
+  "relatesTo": [
+    {
+      "code": "appends",
+      "target": {
+        "reference": "DocumentReference/clinical-note-record"
+      }
+    }
+  ],
+  "content": [
+    {
+      "attachment": {
+        "contentType": "application/pdf",
+        "url": "recordings/50cd9bb4234b61635e892290a431ec36c3dedf389c9b538d07d21c3a5ffc9dd8.pdf",
+        "size": 112,
+        "hash": "Nr47nTDanS+zEuOEesL4SWU4Ef0=",
+        "title": "Visit note.pdf",
+        "creation": "2026-08-20T09:30:00-07:00"
+      },
+      "format": {
+        "system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
+        "code": "source-file",
+        "display": "Source File"
+      }
+    }
+  ]
+}

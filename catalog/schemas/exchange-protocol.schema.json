@@ -423,7 +423,7 @@
         "catalog": { "const": "catalog/healthkit-adapter.json" }, "rowCollection": { "const": "rows" }, "rowKey": { "const": "sourceTypeIdentifier" },
         "sourceMarker": { "$ref": "#/$defs/governedExtensionMarker" },
         "strategy": { "const": "unique-output-intersecting-source-row-profiles" },
-        "excludedProfiles": { "const": ["https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-average-heart-rate-observation", "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout-segment"] }
+        "excludedProfiles": { "const": ["https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-average-heart-rate-observation", "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-workout-segment", "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"] }
       }
     },
     "governedHealthConnectSelector": {

@@ -201,6 +201,9 @@ HEALTHKIT_RECORDING_PROFILE = HEALTHKIT_PROFILE_PREFIX + "healthkit-recording-do
 HEALTHKIT_CLINICAL_RECORD_PROFILE = (
     HEALTHKIT_PROFILE_PREFIX + "healthkit-clinical-record-document"
 )
+HEALTHKIT_CLINICAL_ATTACHMENT_PROFILE = (
+    HEALTHKIT_PROFILE_PREFIX + "healthkit-clinical-record-attachment"
+)
 HEALTHKIT_ECG_PROFILE = HEALTHKIT_PROFILE_PREFIX + "healthkit-ecg-observation"
 HEALTHKIT_ECG_AVERAGE_HEART_RATE_PROFILE = (
     HEALTHKIT_PROFILE_PREFIX + "healthkit-ecg-average-heart-rate-observation"

@@ -2800,6 +2800,27 @@
           "classification": "example"
         },
         {
+          "fshName": "HealthKitClinicalNoteRecordDocumentExample",
+          "fshType": "Instance",
+          "resourceType": "DocumentReference",
+          "id": "HealthKitClinicalNoteRecordDocumentExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitClinicalNoteRecordProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "HealthKitClinicalNoteRecordProvenanceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "HealthKitClinicalRecordAttachmentExample",
+          "fshType": "Instance",
+          "resourceType": "DocumentReference",
+          "id": "HealthKitClinicalRecordAttachmentExample",
+          "classification": "example"
+        },
+        {
           "fshName": "HealthKitClinicalRecordDocumentExample",
           "fshType": "Instance",
           "resourceType": "DocumentReference",
@@ -3791,6 +3812,13 @@
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "healthkit-application-device",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitClinicalRecordAttachment",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-clinical-record-attachment",
           "classification": "definition"
         },
         {

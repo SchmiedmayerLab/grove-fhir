@@ -316,6 +316,7 @@ DOCUMENT_REFERENCE_CLAIM_KEYS = (
     "sensorRecordingDocumentClaim",
     "healthKitRecordingDocumentClaim",
     "healthKitClinicalRecordDocumentClaim",
+    "healthKitClinicalRecordAttachmentClaim",
     "sensorKitRecordingDocumentClaim",
     "providerRecordingDocumentClaim",
 )
@@ -711,8 +712,11 @@ def validate_adapter_conversion_provenance(
 
 def validate_recording_format(resource: dict[str, Any], label: str) -> None:
     """Require one registered payload format per recording content entry."""
-    if admitted_document_reference_claim(resource) is None:
+    claim = admitted_document_reference_claim(resource)
+    if claim is None:
         return
+    claims = read_json(CATALOG_ROOT / "profile-claims.json")
+    source_declared_claims = (claims["healthKitClinicalRecordAttachmentClaim"],)
     registry = read_json(CATALOG_ROOT / "format-registry.json")
     formats = registry["formats"]
     contents = resource.get("content", [])
@@ -755,7 +759,28 @@ def validate_recording_format(resource: dict[str, Any], label: str) -> None:
             )
         attachment = content.get("attachment")
         content_type = attachment.get("contentType") if isinstance(attachment, dict) else None
-        admitted_content_types = entry.get("contentTypes", [entry.get("contentType")])
+        source_declared = entry.get("contentTypeRule") == "source-declared"
+        if source_declared != (claim in source_declared_claims):
+            raise contract_failure(
+                rule,
+                f"{format_location}.code",
+                f"{label} content[{index}] format {code} is admitted only on a document "
+                "profile that carries a source-declared file, and such a profile admits only it",
+            )
+        if source_declared:
+            if (
+                not isinstance(content_type, str)
+                or re.fullmatch(entry["contentTypePattern"], content_type) is None
+            ):
+                raise contract_failure(
+                    rule,
+                    f"DocumentReference.content[{index}].attachment.contentType",
+                    f"{label} content[{index}] contentType {content_type!r} is not a "
+                    f"lowercase IANA media type as registry format {code} requires",
+                )
+            admitted_content_types = [content_type]
+        else:
+            admitted_content_types = entry.get("contentTypes", [entry.get("contentType")])
         if content_type not in admitted_content_types:
             rendered_content_types = ", ".join(admitted_content_types)
             raise contract_failure(

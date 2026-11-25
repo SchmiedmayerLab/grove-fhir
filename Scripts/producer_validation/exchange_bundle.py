@@ -40,6 +40,7 @@ from .health_connect import (
     validate_health_connect_source_type, validate_health_connect_specimen_claim,
 )
 from .healthkit import (
+    validate_healthkit_clinical_attachment_graph,
     validate_healthkit_ecg_contract, validate_healthkit_ecg_output_graph,
     validate_healthkit_resource_claims, validate_healthkit_source_type,
 )
@@ -1185,6 +1186,9 @@ def validate_exchange_bundle(
         validate_governed_source_identifiers(entry_resources, label)
         validate_health_connect_output_graph(entry_resources, resources_by_full_url, label)
         validate_healthkit_ecg_output_graph(entry_resources, resources_by_full_url, label)
+        validate_healthkit_clinical_attachment_graph(
+            entry_resources, resources_by_full_url, label
+        )
         validate_adapter_provenance_graph(entry_resources, resources_by_full_url, label)
     else:
         if not retractions or transforms or unclassified:
