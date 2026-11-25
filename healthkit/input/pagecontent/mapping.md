@@ -218,7 +218,8 @@ A record whose attachments cannot be read is not emitted without them; it is con
 
 The clinical-record DocumentReference and its provider-issued payload do not change when a record has attachments, and nothing in them points to the attachments.
 Instead, each attachment document relates to it with `relatesTo.code` = `appends` and one literal `relatesTo.target` reference to the clinical-record DocumentReference of its own record in the same Bundle.
-It carries the same source-record Identifier, source type, type coding, and subject as that document, and it is a target of the record's one conversion Provenance like every output.
+It carries the same source-record Identifier, source type, type coding, subject, `date`, `author`, and study `context.related` as that document: where the document names no recording Device or no study, the attachment names none either.
+It is a target of the record's one conversion Provenance like every output.
 
 | Element | Content |
 |---|---|

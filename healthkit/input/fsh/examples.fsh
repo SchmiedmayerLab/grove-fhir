@@ -637,6 +637,7 @@ Description: "One provider-issued R4 clinical note surfaced by HealthKit. The no
 * type = HealthKitClinicalRecordTypeCS#clinical-note-record "Clinical note record"
 * subject = Reference(HealthKitPatientExample)
 * date = "2026-08-20T17:07:01Z"
+* context.related = Reference(HealthKitResearchStudyExample)
 * content.attachment.contentType = #"application/fhir+json; fhirVersion=4.0"
 * content.format = $recordingFormat#fhir-resource "FHIR Resource"
 * content.attachment.title = "Provider-issued DocumentReference"
@@ -659,6 +660,7 @@ Description: "The PDF that HealthKit stores with the clinical note record, carri
 * type = HealthKitClinicalRecordTypeCS#clinical-note-record "Clinical note record"
 * subject = Reference(HealthKitPatientExample)
 * date = "2026-08-20T17:07:01Z"
+* context.related = Reference(HealthKitResearchStudyExample)
 * relatesTo.code = #appends
 * relatesTo.target = Reference(HealthKitClinicalNoteRecordDocumentExample)
 * content.format = $recordingFormat#source-file "Source File"

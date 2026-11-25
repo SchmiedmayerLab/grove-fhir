@@ -64,6 +64,13 @@
     "reference": "Patient/HealthKitPatientExample"
   },
   "date": "2026-08-20T17:07:01Z",
+  "context": {
+    "related": [
+      {
+        "reference": "ResearchStudy/HealthKitResearchStudyExample"
+      }
+    ]
+  },
   "relatesTo": [
     {
       "code": "appends",

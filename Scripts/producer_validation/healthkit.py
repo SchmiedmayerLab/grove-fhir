@@ -318,6 +318,38 @@ def validate_healthkit_clinical_attachment_graph(
             return None
         return frozenset((coding.get("system"), coding.get("code")) for coding in codings)
 
+    def named_targets(value: Any) -> tuple[tuple[Any, ...], ...] | None:
+        """What a list of References names, ignoring order, Reference.type, and display text.
+
+        Absent and empty both name nothing; a malformed list is None and never equals anything.
+        """
+        if value is None:
+            return ()
+        if not isinstance(value, list) or any(not isinstance(item, dict) for item in value):
+            return None
+        targets = []
+        for item in value:
+            identifier = item.get("identifier")
+            if identifier is not None and not isinstance(identifier, dict):
+                return None
+            targets.append((
+                item.get("reference"),
+                (identifier or {}).get("system"),
+                (identifier or {}).get("value"),
+            ))
+        return tuple(sorted(targets, key=repr))
+
+    def studies(resource: dict[str, Any]) -> tuple[tuple[Any, ...], ...] | None:
+        context = resource.get("context")
+        if context is None:
+            return ()
+        return named_targets(context.get("related")) if isinstance(context, dict) else None
+
+    def stated_instant(resource: dict[str, Any], name: str) -> Any:
+        """The exact instant of DocumentReference.date, so equal instants in other lexemes match."""
+        value = resource.get("date")
+        return None if value is None else parse_fhir_instant(value, f"{name}.date")
+
     outputs_by_attachment_source: dict[tuple[str, str], set[tuple[str, str]]] = {}
     for resource in resources:
         profiles = resource.get("meta", {}).get("profile", [])
@@ -369,6 +401,30 @@ def validate_healthkit_clinical_attachment_graph(
                 rule, "DocumentReference.type",
                 f"{label} HealthKit clinical-record attachment must carry the type coding of "
                 "its clinical-record document",
+            )
+        if (
+            stated_instant(resource, f"{label} clinical attachment") is None
+            or stated_instant(resource, f"{label} clinical attachment")
+            != stated_instant(document, f"{label} clinical-record document")
+        ):
+            raise contract_failure(
+                rule, "DocumentReference.date",
+                f"{label} HealthKit clinical-record attachment must state the date of its "
+                "clinical-record document",
+            )
+        attachment_authors = named_targets(resource.get("author"))
+        if attachment_authors is None or attachment_authors != named_targets(document.get("author")):
+            raise contract_failure(
+                rule, "DocumentReference.author",
+                f"{label} HealthKit clinical-record attachment must name exactly the authors of "
+                "its clinical-record document, and none where that document names none",
+            )
+        attachment_studies = studies(resource)
+        if attachment_studies is None or attachment_studies != studies(document):
+            raise contract_failure(
+                rule, "DocumentReference.context.related",
+                f"{label} HealthKit clinical-record attachment must name exactly the studies of "
+                "its clinical-record document, and none where that document names none",
             )
         # The subject needs no check here: mobile-exchange.single-subject already holds every
         # output of the Bundle to one subject, comparing what each reference resolves to rather

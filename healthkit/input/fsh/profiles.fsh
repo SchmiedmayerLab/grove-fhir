@@ -263,7 +263,7 @@ Profile: HealthKitClinicalRecordAttachment
 Parent: DocumentReference
 Id: healthkit-clinical-record-attachment
 Title: "HealthKit Clinical Record Attachment"
-Description: "One file that HealthKit stores with a clinical record, such as a clinical note's PDF, read through HKAttachmentStore and carried exactly as HealthKit stored it. It is an output of its clinical record's record beside the HealthKit Clinical Record Document, which it appends to; that document and its provider-issued payload stay unchanged. The file's media type is whatever the source declares, so this profile does not derive from the Sensor recording document, whose media types are a closed list."
+Description: "One file that HealthKit stores with a clinical record, such as a clinical note's PDF, read through HKAttachmentStore and carried exactly as HealthKit stored it. It is an output of its clinical record's record beside the HealthKit Clinical Record Document, which it appends to; that document and its provider-issued payload stay unchanged. Its type coding, source type, subject, date, author, and study context.related equal those of that document, and where the document states no author or no study, neither does the attachment. The file's media type is whatever the source declares, so this profile does not derive from the Sensor recording document, whose media types are a closed list."
 * extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
 * extension[sourceMetadata] ^short = "The attachment's own HKAttachment.metadata"
 * extension contains HealthKitSourceType named healthKitSourceType 1..1 MS

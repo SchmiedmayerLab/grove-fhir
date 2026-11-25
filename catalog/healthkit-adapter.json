@@ -116,7 +116,7 @@
         "creation": "HKAttachment.creationDate",
         "sourceMetadata": "HKAttachment.metadata"
       },
-      "rule": "Carry every HKAttachment that HealthKit stores with an admitted clinical record as its own HealthKit Clinical Record Attachment output of the same record, exactly as HealthKit stored it. Never skip a file for its size, never open, convert, or rewrite it, and never change the clinical record's own DocumentReference or provider-issued payload because a file exists. A record whose attachments cannot be read is not emitted without them."
+      "rule": "Carry every HKAttachment that HealthKit stores with an admitted clinical record as its own HealthKit Clinical Record Attachment output of the same record, exactly as HealthKit stored it. Never skip a file for its size, never open, convert, or rewrite it, and never change the clinical record's own DocumentReference or provider-issued payload because a file exists. Each attachment document states the type coding, source type, subject, date, author, and study context.related of the clinical-record document it appends to, and states no author or study where that document states none. A record whose attachments cannot be read is not emitted without them."
     }
   },
   "conversionProvenanceProfile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",

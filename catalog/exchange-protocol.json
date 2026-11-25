@@ -107,7 +107,7 @@
     },
     {
       "code": "healthkit-clinical.attachment-graph",
-      "reason": "A HealthKit clinical-record attachment document relates by appends to exactly the clinical-record document of its own record in the same Bundle, with the same source-record identity, source type, and type coding, and every attachment of one record has its own source-output identity; mobile-exchange.single-subject holds it to the Bundle's one subject.",
+      "reason": "A HealthKit clinical-record attachment document relates by appends to exactly the clinical-record document of its own record in the same Bundle, with the same source-record identity, source type, type coding, date, author, and study context.related, including stating none where that document states none, and every attachment of one record has its own source-output identity; mobile-exchange.single-subject holds it to the Bundle's one subject.",
       "emittedBy": "conformance-kit"
     },
     {

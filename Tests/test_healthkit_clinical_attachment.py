@@ -283,6 +283,77 @@ class HealthKitClinicalAttachmentTests(unittest.TestCase):
         onto_attachment[DOCUMENT_URL] = copy.deepcopy(self.attachment)
         failing(onto_attachment, "clinical-record document in the same Bundle")
 
+    def test_attachments_state_the_date_authors_and_studies_of_their_document(self) -> None:
+        study = {"reference": "ResearchStudy/HealthKitResearchStudyExample"}
+        other_study = {"reference": "ResearchStudy/another-study"}
+        device = {"reference": "Device/recording-device"}
+        other_device = {"reference": "Device/another-device"}
+
+        def pair(**document_fields: Any) -> tuple[dict[str, Any], dict[str, Any]]:
+            document = copy.deepcopy(self.document)
+            attachment = copy.deepcopy(self.attachment)
+            for name in ("author", "context"):
+                document.pop(name, None)
+                attachment.pop(name, None)
+            document.update(copy.deepcopy(document_fields))
+            attachment.update(copy.deepcopy(document_fields))
+            return document, attachment
+
+        def failing(document: dict[str, Any], attachment: dict[str, Any], message: str) -> None:
+            with self.assertRaises(ProducerValidationError) as raised:
+                validate_graph(bundled(document, attachment))
+            self.assertEqual(
+                raised.exception.diagnostic["code"], "healthkit-clinical.attachment-graph"
+            )
+            self.assertIn(message, str(raised.exception))
+
+        # Equal fields pass, and so do fields both documents leave out.
+        validate_graph(bundled(*pair()))
+        validate_graph(bundled(*pair(author=[device], context={"related": [study]})))
+
+        # Equal means naming the same targets: order, Reference.type, display, and the lexeme
+        # of an equal instant do not matter.
+        document, attachment = pair(
+            author=[device, other_device], context={"related": [study, other_study]}
+        )
+        attachment["author"] = [{**other_device, "display": "Watch"}, {**device, "type": "Device"}]
+        attachment["context"]["related"] = [other_study, study]
+        attachment["date"] = "2026-08-20T19:07:01.000+02:00"
+        self.assertEqual(document["date"], "2026-08-20T17:07:01Z")
+        validate_graph(bundled(document, attachment))
+
+        document, attachment = pair()
+        attachment["date"] = "2026-08-20T17:07:02Z"
+        failing(document, attachment, "date of its clinical-record document")
+
+        document, attachment = pair()
+        del attachment["date"]
+        failing(document, attachment, "date of its clinical-record document")
+
+        document, attachment = pair(author=[device])
+        attachment["author"] = [other_device]
+        failing(document, attachment, "authors of its clinical-record document")
+
+        document, attachment = pair(author=[device])
+        del attachment["author"]
+        failing(document, attachment, "authors of its clinical-record document")
+
+        document, attachment = pair()
+        attachment["author"] = [device]
+        failing(document, attachment, "authors of its clinical-record document")
+
+        document, attachment = pair(context={"related": [study]})
+        attachment["context"]["related"] = [other_study]
+        failing(document, attachment, "studies of its clinical-record document")
+
+        document, attachment = pair(context={"related": [study]})
+        del attachment["context"]
+        failing(document, attachment, "studies of its clinical-record document")
+
+        document, attachment = pair()
+        attachment["context"] = {"related": [study]}
+        failing(document, attachment, "studies of its clinical-record document")
+
 
 if __name__ == "__main__":
     unittest.main()
