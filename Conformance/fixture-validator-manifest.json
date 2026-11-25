@@ -33,6 +33,8 @@
     {"path": "Conformance/corpora/healthkit-metadata/observation.json", "profiles": ["https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-insulin-delivery"]},
     {"path": "Conformance/corpora/healthkit-sync-identifier/observation.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-body-weight", "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-observation"]},
     {"path": "Conformance/corpora/healthkit-sync-identifier/document.json", "profiles": ["https://grovealliance.org/fhir/sensor/StructureDefinition/grove-sensor-recording-document", "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document"]},
+    {"path": "Conformance/corpora/healthkit-clinical-attachment/document.json", "profiles": ["https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"]},
+    {"path": "Conformance/corpora/healthkit-clinical-attachment/attachment.json", "profiles": ["https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/changed-source-record.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/mixed-admission.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},
     {"path": "Conformance/corpora/receiver-lifecycle/resources/multi-v1.json", "profiles": ["https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle"]},

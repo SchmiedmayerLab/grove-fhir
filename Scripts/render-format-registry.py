@@ -59,7 +59,13 @@ MIME_EXPANSION_TIMESTAMP = "2026-08-20T00:00:00Z"
 
 
 def format_content_types(fmt: dict) -> list[str]:
-    """Return every exact Attachment.contentType admitted by one format."""
+    """Return every exact Attachment.contentType one format enumerates.
+
+    A source-declared format enumerates none: it admits whatever media type its source declares
+    that matches its pattern, so it contributes nothing to the closed recording MIME value set.
+    """
+    if fmt.get("contentTypeRule") == "source-declared":
+        return []
     if "contentTypes" in fmt:
         return fmt["contentTypes"]
     return [fmt["contentType"]]
@@ -213,7 +219,12 @@ def render_page(registry: dict) -> str:
         lines.append(f"### `{code}` — {fmt['title']}")
         lines.append("")
         content_types = format_content_types(fmt)
-        if len(content_types) == 1:
+        if fmt.get("contentTypeRule") == "source-declared":
+            lines.append(
+                "Media type: the one the source declares, matching "
+                f"`{fmt['contentTypePattern']}`; `{fmt['defaultContentType']}` when it declares none."
+            )
+        elif len(content_types) == 1:
             lines.append(f"Media type: `{content_types[0]}`.")
         else:
             rendered = ", ".join(f"`{content_type}`" for content_type in content_types)
@@ -222,6 +233,7 @@ def render_page(registry: dict) -> str:
             "encoding",
             "structure",
             "fhirVersion",
+            "mediaType",
             "schema",
             "rowTerminator",
             "separator",

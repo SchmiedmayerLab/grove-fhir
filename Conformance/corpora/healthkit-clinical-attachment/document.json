@@ -1,0 +1,94 @@
+{
+  "resourceType": "DocumentReference",
+  "id": "clinical-note-record",
+  "meta": {
+    "profile": [
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+    ]
+  },
+  "extension": [
+    {
+      "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type",
+      "valueCode": "HKClinicalTypeIdentifierClinicalNoteRecord"
+    }
+  ],
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-record"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+      "value": "v0:test-key:1:WCHLQJl3_yvxX9eGPFbc8juRED05Tt7F6dB3Ilwzr88"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-output"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+      "value": "v0:test-key:1:rvSyW-erZnLWI7PuzkPypjigbUOS6yOct2uqPkKWSD0"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-artifact"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1",
+      "value": "v0:test-key:1:DT8ZbVYH6deAKsRcqi2ETvrGU1oISY7NsVCnFWUSec4"
+    },
+    {
+      "system": "https://study.example.org/fhir/NamingSystem/healthkit-store/1f5c58aa-6ec6-4e79-a682-829a9debd3f5/healthkit-native-record",
+      "value": "5d1f3c2a-8b4e-4f6a-9c7d-2e0b1a3c4d5e"
+    }
+  ],
+  "status": "current",
+  "type": {
+    "coding": [
+      {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-clinical-record-type",
+        "code": "clinical-note-record",
+        "display": "Clinical note record"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "Patient/HealthKitPatientExample"
+  },
+  "date": "2026-08-20T17:07:01Z",
+  "context": {
+    "related": [
+      {
+        "reference": "ResearchStudy/HealthKitResearchStudyExample"
+      }
+    ]
+  },
+  "content": [
+    {
+      "attachment": {
+        "contentType": "application/fhir+json; fhirVersion=4.0",
+        "data": "eyJyZXNvdXJjZVR5cGUiOiJEb2N1bWVudFJlZmVyZW5jZSIsImlkIjoicHJvdmlkZXItbm90ZS0xIiwic3RhdHVzIjoiY3VycmVudCIsInR5cGUiOnsidGV4dCI6IlByb2dyZXNzIG5vdGUifSwic3ViamVjdCI6eyJyZWZlcmVuY2UiOiJQYXRpZW50L3BhcnRpY2lwYW50LWhrLTAwMSJ9LCJjb250ZW50IjpbeyJhdHRhY2htZW50Ijp7ImNvbnRlbnRUeXBlIjoiYXBwbGljYXRpb24vcGRmIiwidXJsIjoiQmluYXJ5L3Byb3ZpZGVyLW5vdGUtMS1wZGYiLCJ0aXRsZSI6IlZpc2l0IG5vdGUifX1dfQ==",
+        "title": "Provider-issued DocumentReference",
+        "size": 280,
+        "hash": "CCikA8JrveoJzUhyHAyEYwSJt5I="
+      },
+      "format": {
+        "system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
+        "code": "fhir-resource",
+        "display": "FHIR Resource"
+      }
+    }
+  ]
+}

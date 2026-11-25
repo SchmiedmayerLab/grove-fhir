@@ -29,13 +29,17 @@ SPEC.loader.exec_module(CHECK)
 
 
 def registered_media_types() -> set[str]:
-    """Every media type the format registry admits, read from the registry itself."""
+    """Every media type the format registry enumerates, read from the registry itself.
+
+    A source-declared format enumerates none, so it adds nothing to the closed MIME value set.
+    """
     registry = json.loads(
         (ROOT / "catalog/format-registry.json").read_text(encoding="utf-8")
     )
     return {
         content_type
         for fmt in registry["formats"].values()
+        if fmt.get("contentTypeRule") != "source-declared"
         for content_type in fmt.get("contentTypes", [fmt.get("contentType")])
     }
 
@@ -474,6 +478,37 @@ class GuideQATests(unittest.TestCase):
                     {"errs": 1, "warnings": 0}, {}, unregistered_count
                 ).unsuppressed_errors,
                 1,
+            )
+
+            # A source-declared format enumerates no media type: any code its pattern admits is
+            # the same defect, and a code outside the pattern is not.
+            source_file = json.loads(json.dumps(document))
+            source_file["content"][0]["attachment"]["contentType"] = "application/pdf"
+            source_file["content"][0]["format"]["code"] = "source-file"
+            self.assertEqual(
+                write_case(
+                    qa_html(finding=message.replace("application/json", "application/pdf")),
+                    source_file,
+                ),
+                1,
+            )
+            malformed = json.loads(json.dumps(source_file))
+            malformed["content"][0]["attachment"]["contentType"] = "Application/PDF"
+            self.assertEqual(
+                write_case(
+                    qa_html(finding=message.replace("application/json", "Application/PDF")),
+                    malformed,
+                ),
+                0,
+            )
+            mismatched = json.loads(json.dumps(source_file))
+            mismatched["content"][0]["attachment"]["contentType"] = "image/png"
+            self.assertEqual(
+                write_case(
+                    qa_html(finding=message.replace("application/json", "application/pdf")),
+                    mismatched,
+                ),
+                0,
             )
 
             observation_name = "Observation-Example"

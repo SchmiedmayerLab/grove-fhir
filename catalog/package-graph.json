@@ -189,6 +189,7 @@
         "healthkit-bleeding-during-pregnancy",
         "healthkit-blood-alcohol-content",
         "healthkit-blood-type",
+        "healthkit-clinical-record-attachment",
         "healthkit-clinical-record-document",
         "healthkit-contraceptive-use",
         "healthkit-conversion-provenance",

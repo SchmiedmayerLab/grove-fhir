@@ -275,6 +275,18 @@
       "source-artifact"
     ]
   },
+  "healthKitClinicalRecordAttachmentClaim": {
+    "cardinality": 1,
+    "profiles": [
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"
+    ],
+    "otherProfilesAllowed": false,
+    "requiredIdentifierRoles": [
+      "source-record",
+      "source-output",
+      "source-artifact"
+    ]
+  },
   "healthKitPlatformExclusiveResourceClaims": [
     {
       "resourceType": "VisionPrescription",
@@ -422,6 +434,7 @@
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-during-pregnancy",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-alcohol-content",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-type",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-contraceptive-use",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-cycling-functional-threshold-power",

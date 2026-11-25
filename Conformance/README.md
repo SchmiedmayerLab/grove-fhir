@@ -137,7 +137,7 @@ Every adapter output uses one of the permitted direct Grove profile-claim sets i
 - A SensorKit ECG Observation claims exactly the source-neutral Sensor ECG profile and the SensorKit ECG profile, and includes its required linked native Recording Document in the same graph.
 - A source-neutral Sensor Recording Document claims exactly its Sensor profile.
   A raw HealthKit, SensorKit, or Provider DocumentReference claims exactly that source-neutral profile and its adapter Recording Document profile.
-  A HealthKit clinical-record envelope claims only its exact child profile, which inherits the Sensor contract; HealthKit VisionPrescription, MedicationAdministration, and MedicationStatement outputs likewise claim only their exact adapter child.
+  A HealthKit clinical-record envelope claims only its exact child profile, which inherits the Sensor contract; a HealthKit clinical-record attachment claims only its own profile, which derives from DocumentReference because its media type is the one its source declares; HealthKit VisionPrescription, MedicationAdministration, and MedicationStatement outputs likewise claim only their exact adapter child.
 - Adapter conversion Provenance claims exactly its adapter conversion profile.
   Its targets close over every active output profile for that adapter, including child-only and non-Observation HealthKit outputs.
 

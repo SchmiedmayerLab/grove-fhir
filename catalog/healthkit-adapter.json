@@ -94,7 +94,30 @@
     "rejectedFHIRReleases": [
       "unknown"
     ],
-    "rule": "Admit a HealthKit clinical record only when HKFHIRVersion.fhirRelease is exactly dstu2 or r4, then set Attachment.contentType to its matching versioned FHIR JSON media type. Reject an unknown, missing, or future release before emission; preserve the provider-issued payload bytes exactly and never convert, re-encode, or infer their release from JSON shape."
+    "rule": "Admit a HealthKit clinical record only when HKFHIRVersion.fhirRelease is exactly dstu2 or r4, then set Attachment.contentType to its matching versioned FHIR JSON media type. Reject an unknown, missing, or future release before emission; preserve the provider-issued payload bytes exactly and never convert, re-encode, or infer their release from JSON shape. Carry every file HealthKit stores with the record as its own HealthKit Clinical Record Attachment, as the attachments contract states.",
+    "attachments": {
+      "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment",
+      "source": "HKAttachmentStore.attachments(for:) of the admitted HKClinicalRecord",
+      "cardinality": "0..*",
+      "payloadFormat": "source-file",
+      "outputRole": "clinical-record-attachment",
+      "outputDiscriminator": "The lowercase canonical text of HKAttachment.identifier.",
+      "artifactPartIndex": "The zero-based position of the attachment among the record's attachments ordered by HKAttachment.creationDate, then by the lowercase canonical text of HKAttachment.identifier.",
+      "relationship": {
+        "r4Path": "DocumentReference.relatesTo",
+        "code": "appends",
+        "target": "The record's HealthKit Clinical Record Document in the same Bundle, by one literal reference.",
+        "direction": "attachment-to-clinical-record-only"
+      },
+      "contentType": "UTType.preferredMIMEType of HKAttachment.contentType in lowercase, else application/octet-stream.",
+      "payload": "Attachment.data with the exact file bytes, or Attachment.url naming an immutable, version-specific location that may be relative to the transport unit carrying the Bundle; size and SHA-1 hash cover the exact file bytes either way.",
+      "fields": {
+        "title": "HKAttachment.name",
+        "creation": "HKAttachment.creationDate",
+        "sourceMetadata": "HKAttachment.metadata"
+      },
+      "rule": "Carry every HKAttachment that HealthKit stores with an admitted clinical record as its own HealthKit Clinical Record Attachment output of the same record, exactly as HealthKit stored it. Never skip a file for its size, never open, convert, or rewrite it, and never change the clinical record's own DocumentReference or provider-issued payload because a file exists. Each attachment document states the type coding, source type, subject, date, author, and study context.related of the clinical-record document it appends to, and states no author or study where that document states none. A record whose attachments cannot be read is not emitted without them."
+    }
   },
   "conversionProvenanceProfile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
   "statusVocabulary": {
@@ -1429,7 +1452,8 @@
       "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"
       ]
     },
     {
@@ -1443,7 +1467,8 @@
       "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"
       ]
     },
     {
@@ -1457,7 +1482,8 @@
       "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"
       ]
     },
     {
@@ -1471,7 +1497,8 @@
       "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"
       ]
     },
     {
@@ -1485,7 +1512,8 @@
       "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"
       ]
     },
     {
@@ -1499,7 +1527,8 @@
       "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"
       ]
     },
     {
@@ -1513,7 +1542,8 @@
       "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"
       ]
     },
     {
@@ -1527,7 +1557,8 @@
       "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"
       ]
     },
     {
@@ -1541,7 +1572,8 @@
       "clinicalAdmissionContract": "clinicalRecordAdmission",
       "measurementIDs": [],
       "profiles": [
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"
       ]
     },
     {
@@ -3724,7 +3756,7 @@
       "HKMetadataKeySyncVersion"
     ],
     "keyEncoding": "Each entry has url entry and two children in order: key with the exact runtime key in valueString, then value with one typed value. Do not normalize Unicode. Keys occur once, ordered by the unsigned bytes of their UTF-8 encoding.",
-    "emissionRule": "Apply structured clinical, device and other IG mappings first. Preserve supported source metadata not faithfully represented by those mappings on the primary output, including custom keys and conflicting source values. Do not duplicate already mapped values. The keys in excludedKeys are never metadata entries: the writer-record Identifier, the Grove Writer Record Version, and the optional readable sync Identifier represent them, and an output that can carry none of these reports both keys as withheld. A caller may explicitly limit disclosure; unsupported values and intentional exclusions must remain observable. Mapped clinical elements retain their own semantics and validation; metadata never overrides them. A clinical recording carries the extension on its wrapper, never by mutating the embedded source bytes.",
+    "emissionRule": "Apply structured clinical, device and other IG mappings first. Preserve supported source metadata not faithfully represented by those mappings on the primary output, including custom keys and conflicting source values. Do not duplicate already mapped values. The keys in excludedKeys are never metadata entries: the writer-record Identifier, the Grove Writer Record Version, and the optional readable sync Identifier represent them, and an output that can carry none of these reports both keys as withheld. A caller may explicitly limit disclosure; unsupported values and intentional exclusions must remain observable. Mapped clinical elements retain their own semantics and validation; metadata never overrides them. A clinical recording carries the extension on its wrapper, never by mutating the embedded source bytes. A clinical-record attachment document carries the metadata of its own HKAttachment the same way.",
     "identityRule": "Metadata changes record content and therefore record version. It never changes source-record or source-output identity and does not mint another resource. The native HKObject.uuid is not automatically copied here; its governed identifier is independent.",
     "valueRule": "Use the declared typed FHIR values. Dates are full date-times with an offset. Numbers must be finite. Quantities use declared compatible UCUM units; an original HKQuantity unit is not exposed. Known quantity keys use the units specified in mapping.md; custom keys use its ordered compatible-unit fallback. Unsupported quantities and value classes are reported rather than stringified. Do not confuse a numeric one with a Boolean without source type evidence."
   },
@@ -3777,7 +3809,7 @@
         "output-role",
         "output-discriminator"
       ],
-      "outputRoleRule": "Use the exact measurement id, native-recording, clinical-record, or other output role declared by the catalog row.",
+      "outputRoleRule": "Use the exact measurement id, native-recording, clinical-record, clinical-record-attachment, or other output role declared by the catalog row or its admission contract.",
       "outputDiscriminatorRule": "Use single for a sole output. Multi-output rows use their exact catalog output discriminator plus canonical source coordinates; stable source coordinates take precedence over array order."
     },
     "writerRecord": {
@@ -3818,7 +3850,7 @@
           "systemRule": "Identifier.system is the Identifier.system of the native HKObject.uuid Identifier on the same output, followed by the path segment healthkit-sync-identifier and one final segment that is HKSource.bundleIdentifier exactly as HealthKit states it, without trimming, case-folding, normalization, encoding, truncation, or hashing. A deployment therefore configures one native identifier system and no second namespace. An Apple bundle identifier consists only of ASCII letters, digits, hyphens, and periods. Equal sync identifier text under another writing application or another participant store has another system.",
           "nonConformingWriterRule": "A source whose bundle identifier is empty or contains any other character has no conforming namespace. The producer withholds the readable Identifier for its samples, never escapes, encodes, or substitutes the value, and reports HKMetadataKeySyncIdentifier as a withheld key under mobile-omission.unmodeled-metadata; the writer-record Identifier and the Grove Writer Record Version are still carried.",
           "valueRule": "Identifier.value is the exact HKMetadataKeySyncIdentifier text that the writer-record Identifier was derived from.",
-          "placementRule": "Only the catalog-designated primary output carries it, on the output that also carries the native HKObject.uuid Identifier, the writer-record Identifier, and the Grove Writer Record Version: an Observation, or the sole DocumentReference of a workout route, heartbeat series, or clinical record. Workout segments, the electrocardiogram's average-heart-rate Observation, companion artifacts, Devices, and Provenance never carry it.",
+          "placementRule": "Only the catalog-designated primary output carries it, on the output that also carries the native HKObject.uuid Identifier, the writer-record Identifier, and the Grove Writer Record Version: an Observation, the sole DocumentReference of a workout route or heartbeat series, or the HealthKit Clinical Record Document of a clinical record. Workout segments, the electrocardiogram's average-heart-rate Observation, clinical-record attachment documents, companion artifacts, Devices, and Provenance never carry it.",
           "disclosureRule": "A separate exporter setting discloses this Identifier, and it takes effect only while the native HKObject.uuid Identifier is disclosed. With either setting off, the sync identifier text is not exported in any element and the writer-record Identifier alone represents it. With both settings on, the Identifier.system states the writing application's bundle identifier in clear text, also for a record whose writer attribution is otherwise withheld.",
           "identityRule": "It mints no Grove identity and changes no source-record, source-output, or writer-record Identifier. Bundle entry keys, version selection, deduplication, receipts, and retractions never read it. Adding or withholding it changes record content and therefore the record version."
         }
@@ -3836,7 +3868,7 @@
         "format-code",
         "part-index"
       ],
-      "rule": "A clinical or native recording uses its registered format code and zero-based part index in addition to the source-record coordinates."
+      "rule": "A clinical or native recording, and each clinical-record attachment, uses its registered format code and zero-based part index in addition to the source-record coordinates. A clinical record's attachments number their parts under source-file in the order clinicalRecordAdmission.attachments.artifactPartIndex states."
     },
     "sourceContext": {
       "identityKind": "source-context",

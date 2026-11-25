@@ -59,8 +59,8 @@ A sample with neither sync field omits writer identity and writer version.
 It still carries mandatory source-record and source-output identities.
 Do not synthesize writer identity: a writer that did not assign one has not promised cross-revision correlation.
 
-The `writer-record` Identifier and the Grove Writer Record Version are carried by every Observation output and by the sole DocumentReference of a heartbeat series, a workout route, or a clinical record.
-The clinical record's wrapper carries them; the embedded clinical source bytes are never altered.
+The `writer-record` Identifier and the Grove Writer Record Version are carried by every Observation output, by the sole DocumentReference of a heartbeat series or a workout route, and by the clinical-record DocumentReference of a clinical record.
+The clinical record's wrapper carries them; the embedded clinical source bytes are never altered, and the record's attachment documents carry neither.
 A vision prescription, a medication dose event, and a tracked medication cannot carry the version and therefore carry neither.
 
 The sample-type identifier dispatches converter code and is preserved as exactly one `healthkit-source-type` value.
@@ -83,8 +83,8 @@ A source whose bundle identifier is empty or contains any other character has no
 A deployment configures one native identifier system, and the sync identifier's system is derived from it. For the `HKObject.uuid` system `https://study.example.org/fhir/NamingSystem/healthkit-store/7d0f3c52/healthkit-native-record` and the writer `com.example.scale`, the system is `https://study.example.org/fhir/NamingSystem/healthkit-store/7d0f3c52/healthkit-native-record/healthkit-sync-identifier/com.example.scale`.
 Sync identifier text is unique only for one writing application in one HealthKit store, so equal text under another writer or another participant has another system.
 
-The readable sync identifier appears only beside the `HKObject.uuid` Identifier, the `writer-record` Identifier, and the Grove Writer Record Version of the same output: an Observation, or the sole DocumentReference of a heartbeat series, a workout route, or a clinical record.
-Workout segments, the electrocardiogram's average-heart-rate Observation, companion artifacts, Devices, and Provenance never carry it.
+The readable sync identifier appears only beside the `HKObject.uuid` Identifier, the `writer-record` Identifier, and the Grove Writer Record Version of the same output: an Observation, the sole DocumentReference of a heartbeat series or a workout route, or the clinical-record DocumentReference of a clinical record.
+Workout segments, the electrocardiogram's average-heart-rate Observation, clinical-record attachment documents, companion artifacts, Devices, and Provenance never carry it.
 With either setting off, the sync identifier text is not exported in any element, and the `writer-record` Identifier alone represents it.
 
 The readable sync identifier is traceability, not identity.
@@ -208,6 +208,31 @@ Carry the provider-issued bytes under the release-neutral `fhir-resource` format
 Do not parse and reserialize, relabel, upgrade, downgrade, or otherwise rewrite those bytes.
 Grove validation checks that an inline attachment is strict UTF-8 JSON containing one `resourceType`-bearing object, but it does not apply R4 rules to a DSTU2 payload or assert conformance to the issuer's FHIR release.
 The R4 envelope asserts the exact source release, payload integrity, identity, and provenance—not that Grove has validated or endorsed the provider's clinical content.
+
+#### Clinical record attachments
+
+HealthKit can store files with a clinical record, such as the PDF of a clinical note that it downloaded from the provider, and exposes them through `HKAttachmentStore`.
+Carry every such `HKAttachment` of an admitted clinical record as one [HealthKit Clinical Record Attachment](StructureDefinition-healthkit-clinical-record-attachment.html), an additional output of the same record.
+Never skip a file because of its size, and never open, convert, or rewrite it.
+A record whose attachments cannot be read is not emitted without them; it is converted again once they can be read.
+
+The clinical-record DocumentReference and its provider-issued payload do not change when a record has attachments, and nothing in them points to the attachments.
+Instead, each attachment document relates to it with `relatesTo.code` = `appends` and one literal `relatesTo.target` reference to the clinical-record DocumentReference of its own record in the same Bundle.
+It carries the same source-record Identifier, source type, type coding, subject, `date`, `author`, and study `context.related` as that document: where the document names no recording Device or no study, the attachment names none either.
+It is a target of the record's one conversion Provenance like every output.
+
+| Element | Content |
+|---|---|
+| `source-output` | output role `clinical-record-attachment`, discriminator the lowercase canonical `HKAttachment.identifier` |
+| `source-artifact` | format `source-file` and a zero-based part index over the record's attachments ordered by `HKAttachment.creationDate`, then by identifier |
+| `content.format` | `source-file` from the [format registry](https://grovealliance.org/fhir/sensor/formats.html) |
+| `content.attachment.contentType` | the attachment `UTType`'s preferred MIME type in lowercase, else `application/octet-stream` |
+| `content.attachment.data` or `url` | the exact file bytes, or an immutable, version-specific location of them, which may be relative to the transport unit that carries the Bundle, such as `recordings/<sha256>.pdf` in an upload archive |
+| `content.attachment.size`, `hash` | the byte count and SHA-1 of the exact file bytes |
+| `content.attachment.title`, `creation` | `HKAttachment.name` and `HKAttachment.creationDate` |
+| [HealthKit Source Metadata](StructureDefinition-metadata.html) | `HKAttachment.metadata`, under the same rules as sample metadata |
+
+An attachment document is never the record's primary output: it carries no `writer-record` Identifier, Grove Writer Record Version, readable sync identifier, or `HKObject.uuid` Identifier.
 
 ### Values, units, and time
 
