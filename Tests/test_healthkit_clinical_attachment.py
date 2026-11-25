@@ -252,9 +252,27 @@ class HealthKitClinicalAttachmentTests(unittest.TestCase):
         )
         failing(other_type, "source type")
 
-        other_subject = bundled(self.document, copy.deepcopy(self.attachment))
-        other_subject[ATTACHMENT_URL]["subject"] = {"reference": "Patient/someone-else"}
-        failing(other_subject, "subject")
+        other_document_type = bundled(self.document, copy.deepcopy(self.attachment))
+        other_document_type[ATTACHMENT_URL]["type"] = {
+            "coding": [{
+                "system": self.document["type"]["coding"][0]["system"],
+                "code": "allergy-record",
+            }]
+        }
+        self.assertNotEqual(self.document["type"]["coding"][0]["code"], "allergy-record")
+        failing(other_document_type, "type coding")
+
+        untyped = bundled(self.document, copy.deepcopy(self.attachment))
+        del untyped[ATTACHMENT_URL]["type"]
+        failing(untyped, "type coding")
+
+        # The subject is the Bundle's single-subject rule's to judge, by what each reference
+        # resolves to; optional Reference.type and display text never make two subjects differ.
+        annotated_subject = bundled(self.document, copy.deepcopy(self.attachment))
+        annotated_subject[ATTACHMENT_URL]["subject"] = {
+            **self.document["subject"], "type": "Patient", "display": "Participant",
+        }
+        validate_graph(annotated_subject)
 
         duplicate = bundled(
             self.document, copy.deepcopy(self.attachment), copy.deepcopy(self.attachment)

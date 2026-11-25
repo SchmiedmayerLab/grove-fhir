@@ -308,6 +308,16 @@ def validate_healthkit_clinical_attachment_graph(
         ]
         return codes[0] if len(codes) == 1 else None
 
+    def type_codes(resource: dict[str, Any]) -> frozenset[tuple[Any, Any]] | None:
+        """The system and code pairs of the document's type, ignoring display text."""
+        value = resource.get("type")
+        codings = value.get("coding") if isinstance(value, dict) else None
+        if not isinstance(codings, list) or not codings:
+            return None
+        if any(not isinstance(coding, dict) for coding in codings):
+            return None
+        return frozenset((coding.get("system"), coding.get("code")) for coding in codings)
+
     outputs_by_attachment_source: dict[tuple[str, str], set[tuple[str, str]]] = {}
     for resource in resources:
         profiles = resource.get("meta", {}).get("profile", [])
@@ -354,12 +364,15 @@ def validate_healthkit_clinical_attachment_graph(
                 f"{label} HealthKit clinical-record attachment must carry the source type of "
                 "its clinical-record document",
             )
-        if resource.get("subject") != document.get("subject"):
+        if type_codes(resource) is None or type_codes(resource) != type_codes(document):
             raise contract_failure(
-                rule, "DocumentReference.subject",
-                f"{label} HealthKit clinical-record attachment must name the subject of its "
-                "clinical-record document",
+                rule, "DocumentReference.type",
+                f"{label} HealthKit clinical-record attachment must carry the type coding of "
+                "its clinical-record document",
             )
+        # The subject needs no check here: mobile-exchange.single-subject already holds every
+        # output of the Bundle to one subject, comparing what each reference resolves to rather
+        # than its JSON, so an optional Reference.type or display never decides it.
         output = identities.get("source-output")
         outputs = outputs_by_attachment_source.setdefault(source, set())
         if (
