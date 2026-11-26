@@ -3,18 +3,18 @@
   "fhirVersion": "4.0.1",
   "producer": {
     "name": "Grove FHIR multi-study source fixture",
-    "version": "0.8.2"
+    "version": "0.8.3"
   },
   "packages": [
     {
       "alias": "mobile",
       "packageId": "org.grovealliance.fhir.mobile",
-      "version": "0.8.2"
+      "version": "0.8.3"
     },
     {
       "alias": "questionnaire",
       "packageId": "org.grovealliance.fhir.questionnaire",
-      "version": "0.8.2"
+      "version": "0.8.3"
     }
   ],
   "resources": [
