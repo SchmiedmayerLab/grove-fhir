@@ -26,7 +26,7 @@ Use the Grove Recording Device profile when recording hardware is included as a 
 
 Collect every device fact the source exposes: name, type, manufacturer, model, serial number, UDI, lot number, device identifiers, and every hardware, firmware, software, and operating-system version.
 Each adapter catalog lists its source fields and the R4 element each maps to in `recordingDeviceIdentity.fieldMappings`.
-The source does not filter its facts; a consumer filters what it does not need, and a deployment that shares or exports data applies its own policy to the sensitive ones, such as a globally linkable serial number or a name a person gave the device.
+Every fact is carried by default, and a consumer filters what it does not need. A deployment that shares or exports data applies its own policy to the sensitive ones, such as a globally linkable serial number or a name a person gave the device: its disclosure policy may withhold any device fact, or the whole Device. As for every omission a disclosure policy chooses, that is not reported, and a Device with no fact left is not emitted.
 Every populated version has a type; the type remains open to an appropriate terminology.
 Device identifiers must be complete `(system, value)` pairs.
 A host-local device identifier that the source exposes, such as HealthKit's `HKDevice.localIdentifier` or SensorKit's `SRSourceDevice.localIdentifier`, is carried clear in the recording Device's `localIdentifier` slice: type `device-local-identifier`, under the deployment's own system.

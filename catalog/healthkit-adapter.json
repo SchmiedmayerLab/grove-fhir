@@ -2,7 +2,7 @@
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
   "schemaVersion": 0,
   "fhirVersion": "4.0.1",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "source": {
     "platform": "Apple HealthKit",
     "sdkBaseline": {
@@ -3671,7 +3671,7 @@
       "HKDevice.hardwareVersion",
       "HKDevice.softwareVersion"
     ],
-    "snapshot": "Every HealthKit object with a non-nil HKDevice or a recognized nonblank device metadata string yields a recording Device. Observation.device references it and DocumentReference.author includes it. Device metadata supplements absent HKDevice facts for both output kinds. The Device always carries one content device-snapshot v0 identifier over its complete rendered content and carries a recording-device v0 identifier only when a governed stable per-unit token exists. Descriptive and version fields are snapshot data; equal snapshots never prove one physical unit.",
+    "snapshot": "Every HealthKit object with a non-nil HKDevice or a recognized nonblank device metadata string yields a recording Device, unless a disclosure policy withholds every fact of it. Observation.device references it and DocumentReference.author includes it. Device metadata supplements absent HKDevice facts for both output kinds. The Device always carries one content device-snapshot v0 identifier over its complete rendered content and carries a recording-device v0 identifier only when a governed stable per-unit token exists. Descriptive and version fields are snapshot data; equal snapshots never prove one physical unit.",
     "fieldMappings": [
       {"source": "HKDevice.name", "r4Element": "Device.deviceName with type user-friendly-name", "rule": "The name may be one a person gave the device."},
       {"source": "HKDevice.manufacturer", "r4Element": "Device.manufacturer"},
@@ -3740,7 +3740,7 @@
     ],
     "emissionRule": "When the writer rules state no author agent for the source entity of a HealthKit conversion Provenance, because the caller did not classify the source or classified it as something those rules cannot state, that source entity carries this extension; it never appears beside an author agent. Only the source entity of a conversion Provenance carries it, and only for a record with an HKSourceRevision. It describes the consumed object, not an actor: it adds no agent, participant type, or Device, and no source is classified from its members.",
     "valueRule": "Each member is one valueString, at most once, in the order of members. A string fact is copied exactly, and a member whose string fact HealthKit does not supply, or supplies empty, is left out. operatingSystemVersion is majorVersion, minorVersion, and patchVersion, each the canonical decimal text of its integer without a leading zero and with a minus sign only before a negative value, joined by full stops; all three always appear, 0.0.0 included.",
-    "disclosureRule": "Every member is carried by default: the producer emits every source fact, and consumers filter what they do not need. A disclosure policy may withhold any member or the whole extension, which is not reported, and an extension with no member left is not emitted.",
+    "disclosureRule": "Every member is carried by default: the producer emits every source fact, and consumers filter what they do not need. A disclosure policy may withhold any member or the whole extension, which is not reported, and an extension with no member left is not emitted. Apart from withholding the whole extension, a policy may withhold sourceBundleIdentifier only where its value is com.apple.health. followed by a UUID in hyphenated hexadecimal form; this classifies no source, and the value is never shortened or rewritten.",
     "identityRule": "The extension mints no identity, and no business identity is derived from it: adding or withholding it, or any of its members, changes no source-record, source-output, or writer-record Identifier. It is part of the conversion Provenance, so a record delivered again with the extension or any of its members added or withheld is changed content: it changes the record version and is a new version of the source record. For a sample from every source, whatever the caller's classification, the writing-application Identifier pair of the writer-record Identifier is the Apple Bundle Identifier system with HKSource.bundleIdentifier."
   },
   "identity": {
@@ -3819,7 +3819,7 @@
           "nonConformingWriterRule": "A source whose bundle identifier is empty or contains any other character has no conforming namespace. The producer withholds the readable Identifier for its samples, never escapes, encodes, or substitutes the value, and reports HKMetadataKeySyncIdentifier as a withheld key under mobile-omission.unmodeled-metadata; the writer-record Identifier and the Grove Writer Record Version are still carried.",
           "valueRule": "Identifier.value is the exact HKMetadataKeySyncIdentifier text that the writer-record Identifier was derived from.",
           "placementRule": "Only the catalog-designated primary output carries it, on the output that also carries the native HKObject.uuid Identifier, the writer-record Identifier, and the Grove Writer Record Version: an Observation, or the sole DocumentReference of a workout route, heartbeat series, or clinical record. Workout segments, the electrocardiogram's average-heart-rate Observation, companion artifacts, Devices, and Provenance never carry it.",
-          "disclosureRule": "The exporter setting that discloses the native HKObject.uuid Identifier also discloses this Identifier; no separate setting exists. With the setting off, the sync identifier text is not exported in any element and the writer-record Identifier alone represents it. With the setting on, the Identifier.system states the writing application's bundle identifier in clear text, also for a record whose writer attribution is otherwise withheld.",
+          "disclosureRule": "A separate exporter setting discloses this Identifier, and it takes effect only while the native HKObject.uuid Identifier is disclosed. With either setting off, the sync identifier text is not exported in any element and the writer-record Identifier alone represents it. With both settings on, the Identifier.system states the writing application's bundle identifier in clear text, also for a record whose writer attribution is otherwise withheld.",
           "identityRule": "It mints no Grove identity and changes no source-record, source-output, or writer-record Identifier. Bundle entry keys, version selection, deduplication, receipts, and retractions never read it. Adding or withholding it changes record content and therefore the record version."
         }
       }

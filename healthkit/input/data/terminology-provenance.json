@@ -1,6 +1,6 @@
 {
   "schemaVersion": 0,
-  "package": "org.grovealliance.fhir.healthkit#0.8.2",
+  "package": "org.grovealliance.fhir.healthkit#0.8.3",
   "extractionDate": "2026-08-21",
   "source": {
     "framework": "Apple HealthKit",

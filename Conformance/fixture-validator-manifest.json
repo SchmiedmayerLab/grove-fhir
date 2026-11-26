@@ -11,28 +11,28 @@
     {
       "alias": "mobile",
       "packageId": "org.grovealliance.fhir.mobile",
-      "version": "0.8.2"
+      "version": "0.8.3"
     },
     {
       "alias": "questionnaire",
       "packageId": "org.grovealliance.fhir.questionnaire",
-      "version": "0.8.2"
+      "version": "0.8.3"
     }
  ,
     {
       "alias": "sensor",
       "packageId": "org.grovealliance.fhir.sensor",
-      "version": "0.8.2"
+      "version": "0.8.3"
     },
     {
       "alias": "healthkit",
       "packageId": "org.grovealliance.fhir.healthkit",
-      "version": "0.8.2"
+      "version": "0.8.3"
     },
     {
       "alias": "study",
       "packageId": "org.grovealliance.fhir.study",
-      "version": "0.8.2"
+      "version": "0.8.3"
     }
   ],
   "resources": [
