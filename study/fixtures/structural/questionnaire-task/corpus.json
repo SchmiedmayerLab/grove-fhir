@@ -1,6 +1,6 @@
 {
   "schemaVersion": 0,
-  "purpose": "One completed daily check-in occurrence per way a Grove Study Questionnaire Task can break its profile or the Grove Study Task profile it derives from. The official Validator must accept the control and reject each case for exactly the declared reason: a pending status, a result link on a ready or cancelled Task or none on a completed one, a status reason on a completed Task, a reversed or date-only performance window or one without a start, an unpinned component or instrument canonical, a result link without a version, an incomplete occurrence identifier, and an enrollment input without the ResearchSubject identifier. A pending status also fails the required status binding, and a reversed window also fails the core Period rule per-1.",
+  "purpose": "One completed daily check-in occurrence per way a Grove Study Questionnaire Task can break its profile or the Grove Study Task profile it derives from. The official Validator must accept the control and reject each case for exactly the declared reason: a pending status, a result link on a ready or cancelled Task or none on a completed one, a status reason on a completed Task, a reversed or date-only performance window, one that ends before it starts only below the millisecond, or one without a start, an unpinned component or instrument canonical, a result link without a version, an incomplete occurrence identifier, and an enrollment input without the ResearchSubject identifier. A pending status also fails the required status binding, and a reversed window also fails the core Period rule per-1.",
   "profile": "https://grovealliance.org/fhir/study/StructureDefinition/grove-study-questionnaire-task",
   "control": "control.json",
   "cases": [
@@ -23,6 +23,7 @@
     },
     {"path": "missing-window-start.json", "expectedInvariant": "grove-study-task-window-1"},
     {"path": "window-date-only.json", "expectedInvariant": "grove-study-task-window-1"},
+    {"path": "fractional-window-reversed.json", "expectedInvariant": "grove-study-task-window-1"},
     {"path": "unpinned-component.json", "expectedInvariant": "grove-study-task-pinned-1"},
     {"path": "unpinned-instrument.json", "expectedInvariant": "grove-study-task-pinned-1"},
     {"path": "unversioned-result.json", "expectedInvariant": "grove-study-questionnaire-task-result-1"},
