@@ -11,7 +11,7 @@ The resulting Observation follows [HealthKit Observation](StructureDefinition-he
 Preserve the facts HealthKit states; do not infer hardware, capture mode, clinical meaning, or study membership from an API type alone.
 
 The normative status-vocabulary definitions live on the [guide family page](https://grovealliance.org/fhir/mobile/guides.html#status-vocabulary).
-The [authoritative status matrix](status-matrix.html) lists all 218 source-type identifiers in the published adapter contract, including every admitted and fail-closed row.
+The [authoritative status matrix](status-matrix.html) lists all 221 source-type identifiers in the published adapter contract, including every admitted and fail-closed row.
 The [walkthrough](walkthrough.html) applies the rules below to one concrete heart-rate sample, from `HKQuantitySample` to the operational exchange Bundle.
 
 ### Source-record and output identity

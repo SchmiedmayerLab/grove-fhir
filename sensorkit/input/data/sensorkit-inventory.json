@@ -1,14 +1,16 @@
 {
   "oracle": {
-    "headers": {},
+    "headers": {
+      "SRSensors.h": "2734296625016a8fa2a1c24cb096f724f719c859143dae8da07a7fcd06424977"
+    },
     "kind": "apple-runtime-identifiers",
     "method": "Every SensorKit identifier constant declared by the SDK baseline, resolved inside an iOS simulator on that baseline, plus the sample types Apple exposes only through a class accessor. Documentation pages come from Apple's published symbol index.",
-    "retrieved": "2026-08-21",
+    "retrieved": "2026-11-14",
     "sdkBaseline": {
       "platform": "iPhoneOS",
-      "version": "26.5",
-      "xcodeBuild": "17F113",
-      "xcodeVersion": "26.6"
+      "version": "27.2",
+      "xcodeBuild": "27B52",
+      "xcodeVersion": "27.2"
     }
   },
   "schemaVersion": 0,
@@ -40,6 +42,14 @@
     "SRSensorFaceMetrics": {
       "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/facemetrics",
       "identifier": "com.apple.SensorKit.faceMetrics"
+    },
+    "SRSensorHeadphoneMotion": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/headphonemotion",
+      "identifier": "com.apple.SensorKit.motion.headphone"
+    },
+    "SRSensorHeadphoneSettings": {
+      "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/headphonesettings",
+      "identifier": "com.apple.SensorKit.hearing.headphoneSettings"
     },
     "SRSensorHeartRate": {
       "documentation": "https://developer.apple.com/documentation/sensorkit/srsensor/heartrate",
