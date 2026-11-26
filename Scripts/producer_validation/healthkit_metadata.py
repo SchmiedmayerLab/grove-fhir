@@ -17,6 +17,9 @@ from .io import read_json
 from .payloads import parse_fhir_instant
 from .references import extensions_with_url
 
+# The runtime key that HKMetadataKeyTimeZone holds, as the mapping's runtime key table records it.
+TIME_ZONE_KEY = "HKTimeZone"
+
 
 def validate_healthkit_metadata(resource: dict[str, Any], label: str) -> None:
     """Keep source values typed without admitting arbitrary nested FHIR content."""
@@ -61,8 +64,8 @@ def validate_healthkit_metadata(resource: dict[str, Any], label: str) -> None:
             fail("keys must be nonempty and unique")
         if key in contract["excludedKeys"]:
             fail(f"must not carry {key}, which the writer-record identity represents")
-        if key == "HKMetadataKeyTimeZone" and _is_source_document(resource, adapter):
-            fail("must not carry HKMetadataKeyTimeZone on a clinical record or CDA document; the source document time carries it")
+        if key == TIME_ZONE_KEY and _is_source_document(resource, adapter):
+            fail(f"must not carry {TIME_ZONE_KEY} on a clinical record or CDA document; the source document time carries it")
         try:
             ordered_key = key.encode("utf-8", errors="strict")
         except UnicodeError:
