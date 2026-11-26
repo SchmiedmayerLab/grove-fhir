@@ -72,7 +72,7 @@ Every JSON file beneath the declared roots is either validated here or excluded 
 The lane requires the control to pass and each case to fail for exactly the invariant key or value set its `corpus.json` declares, so a rule dropped from the base profile fails here instead of only in a guide build.
 `Conformance/corpora/healthkit-insulin-delivery` is its second negative corpus: an Insulin Delivery Observation whose delivery-reason component stands without the dose it qualifies, which the lane requires the Validator to reject for exactly the missing `Observation.value[x]`, so a component never substitutes for the root result.
 `study/fixtures/structural/questionnaire-task` is its third: a completed questionnaire occurrence Task whose cases each break the Grove Study Questionnaire Task profile, or the Grove Study Task profile it derives from, for one named reason, including a pending status, a result link that disagrees with the status, a reversed or date-only performance window, and unpinned canonicals.
-`study/fixtures/structural/task` is its fourth: an assigned welcome occurrence Task that claims only the Grove Study Task profile, whose cases break that profile with an output on a ready Task and without its participant.
+`study/fixtures/structural/task` is its fourth: an assigned welcome occurrence Task that claims only the Grove Study Task profile, whose cases break that profile with an output on a ready Task, a missing participant, and a Period input without an end that is not the performance window.
 
 ## Positive and negative corpus
 

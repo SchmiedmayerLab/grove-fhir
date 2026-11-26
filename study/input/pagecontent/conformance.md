@@ -107,7 +107,8 @@ The receiving application decides permission, consent, eligibility, and acceptan
 The source repository's [`study/fixtures`](https://github.com/SchmiedmayerLab/grove-fhir/tree/main/study/fixtures) directory holds the shared fixtures.
 The graph fixtures are a single-arm protocol with an informational welcome component and a daily check-in questionnaire, its definitions, and a sequence of deliveries per case: an assigned and then completed occurrence, an exact replay, a conflicting reuse of an occurrence identifier, two occurrences at the same time, a re-enrollment, a corrected result, an informational occurrence completed without an output and one completed after its window, and Tasks that are structurally valid but name another participant, another instrument version, a pending response, a result reference that does not resolve, or complete a questionnaire occurrence without a result.
 Every graph fixture passes structural validation, and the expected graph outcome of each case is recorded beside it.
-The structural fixtures are a valid questionnaire Task and questionnaire Tasks the official FHIR Validator rejects for one named reason each, including a pending status and invalid window and status mappings.
+The structural fixtures in `structural/questionnaire-task` are a valid questionnaire Task, valid variants whose performance window has no end or bounds that differ only in their fractional seconds, and questionnaire Tasks the official FHIR Validator rejects for one named reason each, including a pending status and invalid window and status mappings.
+Those in `structural/task` are a valid Task that claims only the Grove Study Task profile and Tasks the Validator rejects for an output on a ready Task, a missing participant, or a Period input without an end that is not the performance window.
 
 ### Dependencies and terminology notices
 
