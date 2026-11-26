@@ -52,7 +52,7 @@ A cancelled Task's `lastModified` is at or before the end of its performance win
 
 A consumer that reports completion evaluates each Task at one stated projection instant `T`:
 
-| Projected state | Task |
+| Completion state | Task |
 |---|---|
 | completed | `status` is `completed` |
 | excused | `status` is `cancelled` and `statusReason` is `excused` |
@@ -60,8 +60,8 @@ A consumer that reports completion evaluates each Task at one stated projection 
 | missed | `status` is `ready` and the performance window ended at or before `T` |
 | open | `status` is `ready` and the performance window ends after `T` |
 
-Each occurrence has exactly one projected state at `T`.
+Each occurrence has exactly one completion state at `T`.
 Comparisons use the instants the window's time-zone offsets denote.
-A report states `T` beside its projected states, because a `ready` occurrence moves from open to missed as `T` passes its window end.
+A report states `T` beside its completion states, because a `ready` occurrence moves from open to missed as `T` passes its window end.
 
 The [excused occurrence](Task-GroveStudyExcusedTaskExample.html) was cancelled with the `excused` reason before its window opened.
