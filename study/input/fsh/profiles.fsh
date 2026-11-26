@@ -27,7 +27,7 @@ Severity: #error
 Expression: "instantiatesCanonical.all(matches('^https?://[^\\\\s|#]+[|][^\\\\s|#]+$')) and input.value.ofType(canonical).all(matches('^https?://[^\\\\s|#]+[|][^\\\\s|#]+$'))"
 
 Invariant: grove-study-task-window-1
-Description: "Period inputs start at a timestamp with seconds and an offset. An end uses the same precision and follows the start. A performance window may omit the end when the occurrence has no deadline."
+Description: "Period inputs start at a timestamp with seconds and an offset. An end has the same format and follows the start. A performance window may omit the end when the occurrence has no deadline."
 Severity: #error
 // Some R4 engines compare dateTime values at millisecond precision. Break ties using the exact fraction.
 Expression: "input.value.ofType(Period).all(start.exists() and start.toString().matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([.][0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$') and (end.empty() or (end.toString().matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([.][0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$') and (start < end or (start = end and start.toString().substring(19).replaceMatches('^[.]|[Z+-].*$', '').replaceMatches('0+$', '') < end.toString().substring(19).replaceMatches('^[.]|[Z+-].*$', '').replaceMatches('0+$', '')))))) and input.where(type.coding.where(system = 'https://grovealliance.org/fhir/study/CodeSystem/grove-study-task-input' and code = 'performance-window').empty()).value.ofType(Period).all(end.exists())"
