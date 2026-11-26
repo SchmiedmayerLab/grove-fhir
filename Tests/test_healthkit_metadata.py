@@ -12,13 +12,27 @@ import unittest
 from decimal import Decimal
 
 from Scripts.producer_validation.diagnostics import ProducerValidationError
-from Scripts.producer_validation.healthkit_metadata import validate_healthkit_metadata
+from Scripts.producer_validation.healthkit_metadata import TIME_ZONE_KEY, validate_healthkit_metadata
 from Tests.producer_validation_test_support import (
     active_base, entry_key, provenances, rekey_records, single_record,
 )
 
 
 URL = "https://grovealliance.org/fhir/core/StructureDefinition/metadata"
+MAPPING = Path(__file__).parents[1] / "healthkit/input/pagecontent/mapping.md"
+
+
+def runtime_key(constant):
+    """The runtime key that the mapping's runtime key table records for an SDK constant."""
+    section = MAPPING.read_text(encoding="utf-8").split("### Withheld metadata\n", 1)[1].split("\n#", 1)[0]
+    keys = [
+        cells[0].strip("`")
+        for line in section.splitlines() if line.startswith("| `")
+        for cells in [[cell.strip() for cell in line.strip("|").split("|")]]
+        if cells[1] == f"`{constant}`"
+    ]
+    assert len(keys) == 1, constant
+    return keys[0]
 
 
 def record(entries):
@@ -115,6 +129,28 @@ class HealthKitMetadataTests(unittest.TestCase):
         before = copy.deepcopy(resource)
         validate_healthkit_metadata(resource, "clinical wrapper")
         self.assertEqual(resource, before)
+
+    def test_source_document_time_zone_is_not_repeated_in_metadata(self):
+        # A metadata dictionary holds the runtime key, which differs from the SDK constant's name.
+        key = runtime_key("HKMetadataKeyTimeZone")
+        self.assertEqual(key, "HKTimeZone")
+        self.assertEqual(TIME_ZONE_KEY, key)
+        clinical = record([entry(key, "valueString", "America/Los_Angeles")])
+        clinical["resourceType"] = "DocumentReference"
+        clinical["meta"]["profile"] = ["https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"]
+        cda = copy.deepcopy(clinical)
+        cda["meta"]["profile"] = ["https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document"]
+        cda["extension"].append({"url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type", "valueCode": "HKDocumentTypeIdentifierCDA"})
+        for name, resource in {"clinical record": clinical, "CDA document": cda}.items():
+            with self.subTest(document=name), self.assertRaisesRegex(ProducerValidationError, key):
+                validate_healthkit_metadata(resource, name)
+            # The constant's name is not a runtime key, so an entry under it is an ordinary custom key.
+            constant_named = copy.deepcopy(resource)
+            constant_named["extension"][0] = record([entry("HKMetadataKeyTimeZone", "valueString", "America/Los_Angeles")])["extension"][0]
+            validate_healthkit_metadata(constant_named, f"{name} with a custom key")
+        heartbeat = copy.deepcopy(cda)
+        heartbeat["extension"][-1]["valueCode"] = "HKDataTypeIdentifierHeartbeatSeries"
+        validate_healthkit_metadata(heartbeat, "other recording document")
 
     def test_unrelated_resources_cannot_claim_healthkit_metadata(self):
         resource = record([entry("key", "valueString", "value")])

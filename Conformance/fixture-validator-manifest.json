@@ -170,7 +170,8 @@
   "negativeCorpora": [
     "Conformance/corpora/mobile-profile-invariants/corpus.json",
     "Conformance/corpora/healthkit-insulin-delivery/corpus.json",
-    "Conformance/corpora/healthkit-audiogram/corpus.json"
+    "Conformance/corpora/healthkit-audiogram/corpus.json",
+    "Conformance/corpora/healthkit-source-document-time/corpus.json"
   ],
   "excluded": [
     {

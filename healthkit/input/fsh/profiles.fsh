@@ -217,6 +217,7 @@ Description: "Provenance for transforming or byte-preserving one HealthKit objec
 * entity.what.identifier.system 1..1 MS
 * entity.what.identifier.value 1..1 MS
 * entity.extension contains HealthKitSourceRevision named sourceRevision 0..1 MS
+* entity.extension contains HealthKitSourceDocumentTime named sourceDocumentTime 0..1 MS
 
 Profile: HealthKitRecordingDocument
 Parent: GroveSensorRecordingDocument

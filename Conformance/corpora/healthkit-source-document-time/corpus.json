@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 0,
+  "purpose": "A HealthKit conversion Provenance whose source entity carries the source document time with complete bounds and the same timezone extension on both. The official Validator must accept the control and reject, through healthkit-source-document-time-1, a date-only start, a timezone on one bound only, and two different timezones. Its opaque identities reuse the published test vectors record-version-heart-rate-72 and healthkit-insulin-delivery-example-source-record; they exercise the profile and describe no real record.",
+  "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-conversion-provenance",
+  "control": "control.json",
+  "cases": [
+    {
+      "path": "date-only-start.json",
+      "expectedInvariant": "healthkit-source-document-time-1"
+    },
+    {
+      "path": "one-sided-zone.json",
+      "expectedInvariant": "healthkit-source-document-time-1"
+    },
+    {
+      "path": "different-zones.json",
+      "expectedInvariant": "healthkit-source-document-time-1"
+    }
+  ]
+}

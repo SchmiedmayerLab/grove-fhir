@@ -845,7 +845,10 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             {key: source_types for key, source_types in table.items() if source_types not in {every, devices}},
             {
-                "HKTimeZone": "every type with an Observation output; heartbeat series and workout routes",
+                "HKTimeZone": (
+                    "every type with an Observation output; heartbeat series, workout routes, "
+                    "clinical records and CDA documents"
+                ),
                 "HKMetadataKeyHeartRateMotionContext": "HKQuantityTypeIdentifierHeartRate",
                 "HKHeartRateEventThreshold": (
                     "HKCategoryTypeIdentifierHighHeartRateEvent, "
@@ -959,7 +962,7 @@ class HealthKitCatalogTests(unittest.TestCase):
             for name in headings
         }
         links = {part.split(")", 1)[0] for part in section.split("](#")[1:]}
-        self.assertEqual(len(links), 6)
+        self.assertEqual(len(links), 7)
         self.assertLessEqual(links, anchors)
 
     def test_insulin_delivery_reason_is_a_required_component_coded_by_its_key(self) -> None:
