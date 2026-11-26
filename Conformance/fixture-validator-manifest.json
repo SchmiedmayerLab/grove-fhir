@@ -173,6 +173,8 @@
       ]
     },
     {"path": "study/fixtures/graph/definitions.json", "profiles": []},
+    {"path": "study/fixtures/structural/questionnaire-task/open-ended.json", "profiles": ["https://grovealliance.org/fhir/study/StructureDefinition/grove-study-questionnaire-task"]},
+    {"path": "study/fixtures/structural/questionnaire-task/fractional-window.json", "profiles": ["https://grovealliance.org/fhir/study/StructureDefinition/grove-study-questionnaire-task"]},
     {"path": "study/fixtures/graph/deliveries/assigned.json", "profiles": []},
     {"path": "study/fixtures/graph/deliveries/completed-after-window.json", "profiles": []},
     {"path": "study/fixtures/graph/deliveries/completed.json", "profiles": []},

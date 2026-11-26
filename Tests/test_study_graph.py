@@ -255,6 +255,37 @@ class StudyGraphCaseTests(unittest.TestCase):
             {"rejected": ["study-task-status-transition"]},
         )
 
+    def test_performance_windows_without_a_deadline(self) -> None:
+        for name in ("assigned", "excused", "informational-completed", "completed"):
+            with self.subTest(delivery=name):
+                delivery = self.delivery(name)
+                task = delivery["entry"][0]["resource"]
+                window = next(entry["valuePeriod"] for entry in task["input"] if "valuePeriod" in entry)
+                del window["end"]
+                result = self.receiver().apply(graph.resources_of(delivery))
+                self.assertFalse(result.rejected, result.issues)
+
+    def test_fractional_window_bounds_across_offsets(self) -> None:
+        delivery = self.delivery("completed")
+        task, response = (entry["resource"] for entry in delivery["entry"])
+        window = next(entry["valuePeriod"] for entry in task["input"] if "valuePeriod" in entry)
+        window.update(start="2026-08-19T08:00:00.1234567Z", end="2026-08-19T08:00:00.1234568Z")
+        response["authored"] = "2026-08-19T01:00:00.123456700-07:00"
+        self.assertFalse(self.receiver().apply(graph.resources_of(delivery)).rejected)
+        del window["end"]
+        response["authored"] = "2026-08-19T01:00:00.1234566-07:00"
+        self.assertIn("study-task-result-window", outcome(self.receiver().apply(graph.resources_of(delivery)))["rejected"])
+
+    def test_no_deadline_preserves_start_and_rejects_malformed_end(self) -> None:
+        delivery = self.delivery("completed")
+        task, response = (entry["resource"] for entry in delivery["entry"])
+        window = next(entry["valuePeriod"] for entry in task["input"] if "valuePeriod" in entry)
+        window["end"] = "invalid"
+        self.assertIn("study-task-result-window", outcome(self.receiver().apply(graph.resources_of(delivery)))["rejected"])
+        del window["end"]
+        response["authored"] = "2026-01-01T00:00:00Z"
+        self.assertIn("study-task-result-window", outcome(self.receiver().apply(graph.resources_of(delivery)))["rejected"])
+
     def test_an_occurrence_without_a_result_is_completed_within_its_window(self) -> None:
         for last_modified in ("2026-08-17T23:59:59-07:00", "2026-08-25T08:00:01-07:00"):
             with self.subTest(last_modified=last_modified):

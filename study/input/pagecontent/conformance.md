@@ -35,7 +35,7 @@ It checks base R4 and the Grove profiles of each resource on its own:
 - cardinalities, fixed values, and the input and output slicing, which the questionnaire profiles close;
 - the required status and status-reason bindings;
 - exact `url|version` syntax of the component, protocol, and instrument canonicals (`grove-study-task-pinned-1`, `grove-study-protocol-pinned-1`, `grove-study-component-pinned-1`);
-- every Period input, including the performance window, with offsets and a start before its end (`grove-study-task-window-1`);
+- every Period input, including the performance window, with an offset-qualified start and any end later than the start. Only the performance window may omit its end (`grove-study-task-window-1`);
 - an output on a completed Task only (`grove-study-task-output-1`) and a status reason on a cancelled Task only (`grove-study-task-status-reason-1`); and
 - for a questionnaire Task, a result link on every completed Task (`grove-study-questionnaire-task-completed-1`) that is a version-specific reference (`grove-study-questionnaire-task-result-1`).
 

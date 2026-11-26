@@ -97,7 +97,7 @@ Description: "The participant's enrollment in the study. The occurrences assigne
 * individual.identifier.system = "https://example.org/research/participant-id"
 * individual.identifier.value = "participant-001"
 
-RuleSet: GroveStudyOccurrence(component, occurrence, start, end)
+RuleSet: GroveStudyOccurrence(component, occurrence, start)
 * identifier.system = "https://example.org/research/occurrence-id"
 * identifier.value = "{occurrence}"
 * instantiatesCanonical = "https://grovealliance.org/fhir/study/ActivityDefinition/{component}|0.8.3"
@@ -108,7 +108,6 @@ RuleSet: GroveStudyOccurrence(component, occurrence, start, end)
 * authoredOn = "2026-08-18T08:00:00-07:00"
 * input[performanceWindow].type = GroveStudyTaskInputCS#performance-window
 * input[performanceWindow].valuePeriod.start = "{start}"
-* input[performanceWindow].valuePeriod.end = "{end}"
 * input[enrollment].type = GroveStudyTaskInputCS#enrollment
 * input[enrollment].valueReference.type = "ResearchSubject"
 * input[enrollment].valueReference.identifier.system = "https://example.org/research/enrollment-id"
@@ -117,7 +116,8 @@ RuleSet: GroveStudyOccurrence(component, occurrence, start, end)
 * input[protocol].valueCanonical = "https://grovealliance.org/fhir/study/PlanDefinition/GroveStudyProtocolExample|0.8.3"
 
 RuleSet: GroveStudyDailyCheckInOccurrence(occurrence, start, end)
-* insert GroveStudyOccurrence(GroveStudyDailyCheckInComponentExample, {occurrence}, {start}, {end})
+* insert GroveStudyOccurrence(GroveStudyDailyCheckInComponentExample, {occurrence}, {start})
+* input[performanceWindow].valuePeriod.end = "{end}"
 * code = $sdcTemp#complete-questionnaire
 * input[questionnaire].type = $sdcTemp#questionnaire
 * input[questionnaire].valueCanonical = "https://grovealliance.org/fhir/study/Questionnaire/GroveStudyDailyCheckInExample|0.8.3"
@@ -126,8 +126,8 @@ Instance: GroveStudyWelcomeTaskExample
 InstanceOf: GroveStudyTask
 Usage: #example
 Title: "Completed Informational Occurrence"
-Description: "The welcome occurrence after the participant viewed the message. Its component defines no result, so the completed Task carries no output."
-* insert GroveStudyOccurrence(GroveStudyWelcomeComponentExample, welcome-0001, 2026-08-18T08:00:00-07:00, 2026-08-25T08:00:00-07:00)
+Description: "The welcome occurrence has no deadline. The participant viewed the message. Its component defines no result, so the completed Task carries no output."
+* insert GroveStudyOccurrence(GroveStudyWelcomeComponentExample, welcome-0001, 2026-08-18T08:00:00-07:00)
 * status = #completed
 * lastModified = "2026-08-18T08:05:12-07:00"
 * executionPeriod.start = "2026-08-18T08:04:30-07:00"
