@@ -69,7 +69,7 @@ Preserve system and code, not only display.
 
 When `repeats=true` on a question, the corresponding response item may contain multiple answers of the question's declared type.
 When `repeats=true` on a group, the response represents each repetition as a separate group-item occurrence.
-The paired validator evaluates descendants within their nearest group or answer occurrence so values from one repetition do not affect another.
+When the question an `enableWhen` refers to occurs more than once, the condition reads its nearest occurrence, as [Responses](responses.html#enablement-required-items-and-repetition) describes.
 
 ### Portable constraints
 

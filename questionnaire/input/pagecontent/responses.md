@@ -122,7 +122,10 @@ Calculated answers are recomputed at `authored` before a completed or amended re
 
 When `repeats` is false or absent, a question has at most one answer and a group has at most one response occurrence in its parent context.
 A repeating question carries multiple answers in one response item.
-A repeating group is represented by multiple group-item occurrences; each occurrence evaluates its descendants against answers in that occurrence rather than answers from another repetition.
+A repeating group is represented by multiple group-item occurrences.
+When the question an `enableWhen` refers to occurs more than once, the condition reads the nearest occurrence reachable by tracing first the ancestor axis, then the preceding axis, then the following axis, as the [R4 definition of `enableWhen.question`](https://hl7.org/fhir/R4/questionnaire-definitions.html#Questionnaire.item.enableWhen.question) specifies.
+A question that precedes the item in the same repetition and is answered there is therefore read from that repetition.
+A question that follows the item, or has no occurrence in that repetition, can be read from another repetition.
 For enabled items, `questionnaire-maxOccurs` always limits occurrences; `questionnaire-minOccurs` is enforced when the response is `completed` or `amended`.
 An option marked exclusive cannot be combined with another answer.
 
