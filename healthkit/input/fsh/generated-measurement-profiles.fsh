@@ -854,119 +854,165 @@ Profile: HealthkitAudiogramPanel
 Parent: HealthKitObservation
 Id: healthkit-audiogram-panel
 Title: "Audiogram Panel"
-Description: "HKAudiogramSample: a hearing test reporting an air conduction threshold per ear at each frequency it measured. The thresholds are parts of one test rather than results that stand alone, so they are components. Every component is optional: a test states the frequencies it measured and no others, and a frequency outside this set is carried by its own component keyed to the frequency rather than forced onto a neighbouring code."
+Description: "HKAudiogramSample: an air conduction hearing test preserving its complete source interval and each ear/frequency sensitivity test. Known frequencies use the declared LOINC components; other frequencies use an explicit text-only component code and their exact frequency in HealthKit Audiogram Sensitivity Test, never a neighbouring frequency code. Each sensitivity test retains its available masking state. Every emitted component carries its source test details, including available masking and clamping bounds; no unmeasured frequency or absent ear is invented."
+* obeys healthkit-audiogram-panel-1
 * code = $loinc#89015-2
-* effective[x] only dateTime
+* effective[x] only dateTime or Period
 * value[x] 0..0
+* component.extension contains HealthKitAudiogramSensitivityTest named sensitivityTest 1..1 MS
 * component ^slicing.discriminator.type = #pattern
 * component ^slicing.discriminator.path = "code"
 * component ^slicing.rules = #open
 * component contains left-250 0..1 MS and right-250 0..1 MS and left-500 0..1 MS and right-500 0..1 MS and left-750 0..1 MS and right-750 0..1 MS and left-1000 0..1 MS and right-1000 0..1 MS and left-1500 0..1 MS and right-1500 0..1 MS and left-2000 0..1 MS and right-2000 0..1 MS and left-3000 0..1 MS and right-3000 0..1 MS and left-4000 0..1 MS and right-4000 0..1 MS and left-5000 0..1 MS and right-5000 0..1 MS and left-6000 0..1 MS and right-6000 0..1 MS and left-8000 0..1 MS and right-8000 0..1 MS
+* component[left-250].extension[sensitivityTest].extension[frequency].valueQuantity.value = 250 (exactly)
+* component[left-250].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-250].code = $loinc#91375-6
 * component[left-250].value[x] only Quantity
 * component[left-250].valueQuantity.value 1..1 MS
 * component[left-250].valueQuantity.system = $ucum (exactly)
 * component[left-250].valueQuantity.code = #dB (exactly)
+* component[right-250].extension[sensitivityTest].extension[frequency].valueQuantity.value = 250 (exactly)
+* component[right-250].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-250].code = $loinc#91374-9
 * component[right-250].value[x] only Quantity
 * component[right-250].valueQuantity.value 1..1 MS
 * component[right-250].valueQuantity.system = $ucum (exactly)
 * component[right-250].valueQuantity.code = #dB (exactly)
+* component[left-500].extension[sensitivityTest].extension[frequency].valueQuantity.value = 500 (exactly)
+* component[left-500].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-500].code = $loinc#89024-4
 * component[left-500].value[x] only Quantity
 * component[left-500].valueQuantity.value 1..1 MS
 * component[left-500].valueQuantity.system = $ucum (exactly)
 * component[left-500].valueQuantity.code = #dB (exactly)
+* component[right-500].extension[sensitivityTest].extension[frequency].valueQuantity.value = 500 (exactly)
+* component[right-500].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-500].code = $loinc#89025-1
 * component[right-500].value[x] only Quantity
 * component[right-500].valueQuantity.value 1..1 MS
 * component[right-500].valueQuantity.system = $ucum (exactly)
 * component[right-500].valueQuantity.code = #dB (exactly)
+* component[left-750].extension[sensitivityTest].extension[frequency].valueQuantity.value = 750 (exactly)
+* component[left-750].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-750].code = $loinc#91379-8
 * component[left-750].value[x] only Quantity
 * component[left-750].valueQuantity.value 1..1 MS
 * component[left-750].valueQuantity.system = $ucum (exactly)
 * component[left-750].valueQuantity.code = #dB (exactly)
+* component[right-750].extension[sensitivityTest].extension[frequency].valueQuantity.value = 750 (exactly)
+* component[right-750].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-750].code = $loinc#91378-0
 * component[right-750].value[x] only Quantity
 * component[right-750].valueQuantity.value 1..1 MS
 * component[right-750].valueQuantity.system = $ucum (exactly)
 * component[right-750].valueQuantity.code = #dB (exactly)
+* component[left-1000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 1000 (exactly)
+* component[left-1000].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-1000].code = $loinc#89016-0
 * component[left-1000].value[x] only Quantity
 * component[left-1000].valueQuantity.value 1..1 MS
 * component[left-1000].valueQuantity.system = $ucum (exactly)
 * component[left-1000].valueQuantity.code = #dB (exactly)
+* component[right-1000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 1000 (exactly)
+* component[right-1000].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-1000].code = $loinc#89017-8
 * component[right-1000].value[x] only Quantity
 * component[right-1000].valueQuantity.value 1..1 MS
 * component[right-1000].valueQuantity.system = $ucum (exactly)
 * component[right-1000].valueQuantity.code = #dB (exactly)
+* component[left-1500].extension[sensitivityTest].extension[frequency].valueQuantity.value = 1500 (exactly)
+* component[left-1500].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-1500].code = $loinc#91373-1
 * component[left-1500].value[x] only Quantity
 * component[left-1500].valueQuantity.value 1..1 MS
 * component[left-1500].valueQuantity.system = $ucum (exactly)
 * component[left-1500].valueQuantity.code = #dB (exactly)
+* component[right-1500].extension[sensitivityTest].extension[frequency].valueQuantity.value = 1500 (exactly)
+* component[right-1500].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-1500].code = $loinc#91372-3
 * component[right-1500].value[x] only Quantity
 * component[right-1500].valueQuantity.value 1..1 MS
 * component[right-1500].valueQuantity.system = $ucum (exactly)
 * component[right-1500].valueQuantity.code = #dB (exactly)
+* component[left-2000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 2000 (exactly)
+* component[left-2000].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-2000].code = $loinc#89018-6
 * component[left-2000].value[x] only Quantity
 * component[left-2000].valueQuantity.value 1..1 MS
 * component[left-2000].valueQuantity.system = $ucum (exactly)
 * component[left-2000].valueQuantity.code = #dB (exactly)
+* component[right-2000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 2000 (exactly)
+* component[right-2000].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-2000].code = $loinc#89019-4
 * component[right-2000].value[x] only Quantity
 * component[right-2000].valueQuantity.value 1..1 MS
 * component[right-2000].valueQuantity.system = $ucum (exactly)
 * component[right-2000].valueQuantity.code = #dB (exactly)
+* component[left-3000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 3000 (exactly)
+* component[left-3000].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-3000].code = $loinc#89020-2
 * component[left-3000].value[x] only Quantity
 * component[left-3000].valueQuantity.value 1..1 MS
 * component[left-3000].valueQuantity.system = $ucum (exactly)
 * component[left-3000].valueQuantity.code = #dB (exactly)
+* component[right-3000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 3000 (exactly)
+* component[right-3000].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-3000].code = $loinc#89021-0
 * component[right-3000].value[x] only Quantity
 * component[right-3000].valueQuantity.value 1..1 MS
 * component[right-3000].valueQuantity.system = $ucum (exactly)
 * component[right-3000].valueQuantity.code = #dB (exactly)
+* component[left-4000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 4000 (exactly)
+* component[left-4000].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-4000].code = $loinc#89022-8
 * component[left-4000].value[x] only Quantity
 * component[left-4000].valueQuantity.value 1..1 MS
 * component[left-4000].valueQuantity.system = $ucum (exactly)
 * component[left-4000].valueQuantity.code = #dB (exactly)
+* component[right-4000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 4000 (exactly)
+* component[right-4000].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-4000].code = $loinc#89023-6
 * component[right-4000].value[x] only Quantity
 * component[right-4000].valueQuantity.value 1..1 MS
 * component[right-4000].valueQuantity.system = $ucum (exactly)
 * component[right-4000].valueQuantity.code = #dB (exactly)
+* component[left-5000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 5000 (exactly)
+* component[left-5000].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-5000].code = $loinc#91377-2
 * component[left-5000].value[x] only Quantity
 * component[left-5000].valueQuantity.value 1..1 MS
 * component[left-5000].valueQuantity.system = $ucum (exactly)
 * component[left-5000].valueQuantity.code = #dB (exactly)
+* component[right-5000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 5000 (exactly)
+* component[right-5000].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-5000].code = $loinc#91376-4
 * component[right-5000].value[x] only Quantity
 * component[right-5000].valueQuantity.value 1..1 MS
 * component[right-5000].valueQuantity.system = $ucum (exactly)
 * component[right-5000].valueQuantity.code = #dB (exactly)
+* component[left-6000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 6000 (exactly)
+* component[left-6000].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-6000].code = $loinc#89026-9
 * component[left-6000].value[x] only Quantity
 * component[left-6000].valueQuantity.value 1..1 MS
 * component[left-6000].valueQuantity.system = $ucum (exactly)
 * component[left-6000].valueQuantity.code = #dB (exactly)
+* component[right-6000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 6000 (exactly)
+* component[right-6000].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-6000].code = $loinc#89027-7
 * component[right-6000].value[x] only Quantity
 * component[right-6000].valueQuantity.value 1..1 MS
 * component[right-6000].valueQuantity.system = $ucum (exactly)
 * component[right-6000].valueQuantity.code = #dB (exactly)
+* component[left-8000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 8000 (exactly)
+* component[left-8000].extension[sensitivityTest].extension[ear].valueCode = #left (exactly)
 * component[left-8000].code = $loinc#89028-5
 * component[left-8000].value[x] only Quantity
 * component[left-8000].valueQuantity.value 1..1 MS
 * component[left-8000].valueQuantity.system = $ucum (exactly)
 * component[left-8000].valueQuantity.code = #dB (exactly)
+* component[right-8000].extension[sensitivityTest].extension[frequency].valueQuantity.value = 8000 (exactly)
+* component[right-8000].extension[sensitivityTest].extension[ear].valueCode = #right (exactly)
 * component[right-8000].code = $loinc#89029-3
 * component[right-8000].value[x] only Quantity
 * component[right-8000].valueQuantity.value 1..1 MS
@@ -2617,6 +2663,11 @@ Description: "Apple's 1-10 workout effort rating over the associated workout's e
 * valueQuantity.code 1..1 MS
 * valueQuantity.code = #{score} (exactly)
 
+Invariant: healthkit-audiogram-panel-1
+Description: "A component without a catalog coding does not carry the frequency and ear of a catalog component, and no two components carry the same frequency and ear; quantities compare as whole thousandths of their unit."
+Severity: #error
+Expression: "component.where(code.coding.where((system = 'http://loinc.org' and code in ('91375-6' | '91374-9' | '89024-4' | '89025-1' | '91379-8' | '91378-0' | '89016-0' | '89017-8' | '91373-1' | '91372-3' | '89018-6' | '89019-4' | '89020-2' | '89021-0' | '89022-8' | '89023-6' | '91377-2' | '91376-4' | '89026-9' | '89027-7' | '89028-5' | '89029-3'))).empty()).select(((extension.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test').extension.where(url = 'frequency').value.value.first() * 1000).truncate().toString()) + '@' + (extension.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test').extension.where(url = 'ear').value.first().toString())).intersect('250000@left' | '250000@right' | '500000@left' | '500000@right' | '750000@left' | '750000@right' | '1000000@left' | '1000000@right' | '1500000@left' | '1500000@right' | '2000000@left' | '2000000@right' | '3000000@left' | '3000000@right' | '4000000@left' | '4000000@right' | '5000000@left' | '5000000@right' | '6000000@left' | '6000000@right' | '8000000@left' | '8000000@right').empty() and component.select(((extension.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test').extension.where(url = 'frequency').value.value.first() * 1000).truncate().toString()) + '@' + (extension.where(url = 'https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-audiogram-sensitivity-test').extension.where(url = 'ear').value.first().toString())).isDistinct()"
+
 Instance: HealthkitAppleExerciseTimeExample
 InstanceOf: HealthkitAppleExerciseTime
 Usage: #example
@@ -2718,8 +2769,16 @@ Description: "A conformant Audiogram Panel instance."
 * effectiveDateTime = "2026-08-19T10:30:00-07:00"
 * component[left-250].code = $loinc#91375-6
 * component[left-250].valueQuantity = 20 'dB'
+* component[left-250].extension[sensitivityTest].extension[frequency].valueQuantity = 250 'Hz'
+* component[left-250].extension[sensitivityTest].extension[ear].valueCode = #left
+* component[left-250].extension[sensitivityTest].extension[conduction].valueCode = #air
+* component[left-250].extension[sensitivityTest].extension[masked].valueBoolean = false
 * component[right-250].code = $loinc#91374-9
 * component[right-250].valueQuantity = 25 'dB'
+* component[right-250].extension[sensitivityTest].extension[frequency].valueQuantity = 250 'Hz'
+* component[right-250].extension[sensitivityTest].extension[ear].valueCode = #right
+* component[right-250].extension[sensitivityTest].extension[conduction].valueCode = #air
+* component[right-250].extension[sensitivityTest].extension[masked].valueBoolean = false
 
 Instance: HealthkitBiologicalSexExample
 InstanceOf: HealthkitBiologicalSex

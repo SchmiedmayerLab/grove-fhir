@@ -143,9 +143,25 @@
       "approvedBy": [
         "P. Schmiedmayer (repository owner)"
       ],
-      "approvedOn": "2026-08-26",
-      "digest": "sha256:45eb47dac73f4e4d480ef9a6e4c025adad3c9897260424f829370abcc770595c",
-      "provenance": "LOINC 89015-2 for the test and the 22 per-ear, per-frequency air conduction threshold codes for its components, all verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au (LOINC 2.82). The panel 100653-5 that a secondary source named as current is deprecated and was rejected. Thresholds are components rather than member Observations because they are parts of one test: a single-frequency threshold is not recorded on its own. The unit is dB, which is what LOINC states for these codes; UCUM 2.2 defines no hearing-level bel, and the hearing-level reference is carried by the concept."
+      "approvedOn": "2026-11-18",
+      "provenance": "reviewed",
+      "digest": "sha256:6006b4812e2ad141b28c71faf2371fe57eaba118e13ce8a39d18da5e1fe5cab3",
+      "preparedBy": [
+        {
+          "name": "HealthKit audiogram sensitivity tests",
+          "role": "engineering"
+        }
+      ],
+      "verifiedBy": [
+        {
+          "name": "iPhoneOS 27.2 SDK header comparison (HKAudiogramSample.h, HKAudiogramSensitivityPoint.h, HKAudiogramSensitivityTest.h, HKAudiogramSensitivityPointClampingRange.h)",
+          "role": "terminology-verification"
+        }
+      ],
+      "reviewedOn": "2026-11-14",
+      "recordedOn": "2026-11-14",
+      "reviewRef": "pending-integration-commit",
+      "notes": "The code, the 22 component codes, and the dB unit are unchanged from the projection the repository owner approved on 2026-08-26 (digest sha256:45eb47dac73f4e4d480ef9a6e4c025adad3c9897260424f829370abcc770595c): LOINC 89015-2 for the test and the 22 per-ear, per-frequency air conduction threshold codes for its components, all verified 2026-08-26 on tx.fhir.org r4 and r4.ontoserver.csiro.au (LOINC 2.82). The panel 100653-5 that a secondary source named as current is deprecated and was rejected. Thresholds are components rather than member Observations because they are parts of one test: a single-frequency threshold is not recorded on its own. The unit is dB, which is what LOINC states for these codes; UCUM 2.2 defines no hearing-level bel, and the hearing-level reference is carried by the concept. Compared with that projection, this digest differs in the description, in the effective time, which admits a Period because an HKAudiogramSample states a start and an end, and in obeying healthkit-audiogram-panel-1. Each component carries the HealthKit Audiogram Sensitivity Test extension (healthkit-audiogram-sensitivity-test), whose ear, frequency, air conduction, masking state and clamping bounds match HKAudiogramSensitivityTest and its clamping range in the iPhoneOS 27.2 SDK. Ratified by the repository owner on 2026-11-18."
     },
     "basal-body-temperature": {
       "status": "approved",
