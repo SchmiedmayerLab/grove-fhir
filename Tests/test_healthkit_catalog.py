@@ -675,6 +675,22 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertIn("may travel in the same Bundle", symptom["exchangeRule"])
         self.assertNotRegex(symptom["exchangeRule"], r"\bevent")
         self.assertIn("normal HealthKit", symptom["sourceRevisionRule"])
+        self.assertEqual(
+            {key: value for key, value in symptom["unreadableSymptoms"].items() if key != "rule"},
+            {
+                "symptomsStatus": "present",
+                "r4Element": "Observation.hasMember",
+                "cardinality": "1..1",
+                "extension": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                "code": "unknown",
+            },
+        )
+        self.assertIn("keeps the present status", symptom["unreadableSymptoms"]["rule"])
+        profiles = (ROOT / "healthkit/input/fsh/profiles.fsh").read_text(encoding="utf-8")
+        self.assertIn(
+            "* hasMember.extension[dataAbsentReason].valueCode = #unknown (exactly)", profiles
+        )
+        self.assertIn("extension.count() = 1 and extension(", profiles)
         self.assertNotIn("authorization", json.dumps(contract).lower())
         self.assertEqual(
             [item["outputRole"] for item in contract["outputs"]],

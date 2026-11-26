@@ -23,6 +23,7 @@ A Grove Mobile implementation begins with a valid clinical Observation and adds 
    Use those UUID URNs for internal references.
    Every literal reference resolves to an entry in that same Bundle, either an output of the referring resource's own record or a shared node; a reference to another record's output is identifier-only, and contained resources and `#id` references are prohibited.
    At a governed path, use either that literal form or an identifier-only logical Reference—never both.
+   The one exception is the HealthKit ECG Observation whose present symptoms could not be read: its `hasMember` carries one Reference with only a `data-absent-reason` extension of code `unknown`, which names no target (see [HealthKit electrocardiograms](https://grovealliance.org/fhir/healthkit/mapping.html#electrocardiograms)).
    A logical Reference carries the exact `Reference.type` and one complete Identifier with an absolute system; a logical Patient uses the deployment's pseudonym and does not require a fabricated Patient entry.
 9. Place one or more records of one subject in a Grove Mobile Exchange Bundle, each shared node once.
    Allow only the resource types listed for active outputs, supporting entries, and lifecycle entries. Connect every supporting entry to at least one record. Require every output, Device, QuestionnaireResponse, and Provenance to declare exactly the profile set defined in `profile-claims.json`.

@@ -121,8 +121,9 @@ class ReceiverLifecycleTests(unittest.TestCase):
             "matchRule": "no-untyped-carrier-admitted",
             "enforcement": "typed-healthkit-metadata-extension-and-no-automatic-native-uuid-copy",
         })
-        # The typed metadata carrier, the writer-assigned readable Identifier and the writer
-        # version on a DocumentReference are the only rule differences. Keep the original digest
+        # The typed metadata carrier, the writer-assigned readable Identifier, the writer
+        # version on a DocumentReference and the data-absent HealthKit ECG member are the only
+        # rule differences. Keep the original digest
         # guarding every other protocol rule and all source Bundles, rather than rebaselining them.
         metadata["matchRule"] = "no-generic-carrier-admitted"
         metadata["enforcement"] = "closed-adapter-metadata-allowlists-and-no-grove-generic-extension"
@@ -147,6 +148,20 @@ class ReceiverLifecycleTests(unittest.TestCase):
         selection["writerEvidence"] = selection["writerEvidence"].replace(
             "only on Observation and DocumentReference.", "only on Observation."
         )
+        references = protocol["referencePolicy"]
+        absent = references.pop("dataAbsentReferences")
+        self.assertEqual(len(absent), 1)
+        ecg_member = absent[0]
+        self.assertEqual(ecg_member["resourceType"], "Observation")
+        self.assertEqual(ecg_member["path"], "hasMember")
+        self.assertEqual(ecg_member["profiles"], [
+            "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
+        ])
+        self.assertEqual(ecg_member["extension"], "http://hl7.org/fhir/StructureDefinition/data-absent-reason")
+        self.assertEqual(ecg_member["codes"], ["unknown"])
+        absent_shape = ", or, only where dataAbsentReferences admits it, a Reference that carries nothing but one data-absent-reason extension"
+        self.assertIn(absent_shape, references["governedShape"])
+        references["governedShape"] = references["governedShape"].replace(absent_shape, "")
         rules = json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(rules).hexdigest(), "860fd192e0164b867c63aa13408b21537da0fa3685d04f618e342dd5dd407223")
         for name, digest in {

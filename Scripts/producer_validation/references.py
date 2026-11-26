@@ -263,6 +263,26 @@ def validate_identity_system_role(resource: dict[str, Any], label: str) -> None:
             f"{label} reuses Grove Identifier.system {system!r} across roles: {details}",
         )
 
+def is_admitted_data_absent_reference(
+    resource: dict[str, Any], path: str, reference: dict[str, Any]
+) -> bool:
+    """A Reference that carries only one admitted data-absent reason, where the claimed profile admits it."""
+    meta = resource.get("meta")
+    profiles = meta.get("profile", []) if isinstance(meta, dict) else []
+    for rule in REFERENCE_POLICY["dataAbsentReferences"]:
+        if (
+            rule["resourceType"] == resource.get("resourceType")
+            and rule["path"] == path
+            and isinstance(profiles, list)
+            and any(profile in profiles for profile in rule["profiles"])
+            and reference.keys() == {"extension"}
+            and reference["extension"] in [
+                [{"url": rule["extension"], "valueCode": code}] for code in rule["codes"]
+            ]
+        ):
+            return True
+    return False
+
 def validate_reference_policy(
     resource: dict[str, Any],
     resources_by_full_url: dict[str, dict[str, Any]],
@@ -281,6 +301,8 @@ def validate_reference_policy(
             rule["repeating"],
             path_label,
         ):
+            if is_admitted_data_absent_reference(resource, rule["path"], reference):
+                continue
             validate_governed_reference(
                 reference,
                 allowed,

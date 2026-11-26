@@ -1,0 +1,133 @@
+{
+  "resourceType": "Observation",
+  "id": "unreadable-symptoms",
+  "meta": {
+    "profile": [
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-observation"
+    ]
+  },
+  "extension": [
+    {
+      "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-source-type",
+      "valueCode": "HKDataTypeIdentifierElectrocardiogram"
+    },
+    {
+      "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-symptoms-status",
+      "valueCode": "present"
+    },
+    {
+      "url": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-source-period",
+      "valuePeriod": {
+        "start": "2026-08-19T10:50:00.000-07:00",
+        "end": "2026-08-19T10:50:00.010-07:00"
+      }
+    }
+  ],
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-record"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+      "value": "v0:test-key:1:NgGy-e0_7xzmc2gJr_ekKZNQlGALWOSijVy8PnmIof0"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role",
+            "code": "source-output"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+      "value": "v0:test-key:1:iv6G2HXg54C4jxzo4h5m43uFqtfX32ur5VNvPvy8B88"
+    }
+  ],
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "procedure",
+          "display": "Procedure"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "11524-6",
+        "display": "EKG study"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "Patient/HealthKitPatientExample"
+  },
+  "effectivePeriod": {
+    "start": "2026-08-19T10:50:00.002-07:00",
+    "end": "2026-08-19T10:50:00.008-07:00"
+  },
+  "interpretation": [
+    {
+      "coding": [
+        {
+          "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-ecg-classification",
+          "code": "sinusRhythm",
+          "display": "Sinus rhythm"
+        }
+      ]
+    }
+  ],
+  "method": {
+    "coding": [
+      {
+        "system": "https://grovealliance.org/fhir/healthkit/CodeSystem/healthkit-ecg-algorithm-version",
+        "code": "version2",
+        "display": "Version 2"
+      }
+    ]
+  },
+  "hasMember": [
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+          "valueCode": "unknown"
+        }
+      ]
+    }
+  ],
+  "component": [
+    {
+      "code": {
+        "coding": [
+          {
+            "system": "urn:iso:std:iso:11073:10101",
+            "code": "131329",
+            "display": "MDC_ECG_ELEC_POTL_I"
+          }
+        ]
+      },
+      "valueSampledData": {
+        "origin": {
+          "value": 0,
+          "system": "http://unitsofmeasure.org",
+          "code": "mV"
+        },
+        "period": 2,
+        "dimensions": 1,
+        "data": "0.012 0.021 -0.004 0.016"
+      }
+    }
+  ]
+}
