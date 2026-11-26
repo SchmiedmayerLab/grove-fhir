@@ -30,6 +30,7 @@ class DraftGuideSelectionTests(unittest.TestCase):
             [
                 "mobile",
                 "sensor",
+                "clinical-records",
                 "sensorkit",
                 "healthkit",
                 "health-connect",
@@ -69,6 +70,7 @@ class DraftGuideSelectionTests(unittest.TestCase):
             "mobile",
             "questionnaire",
             "sensor",
+            "clinical-records",
             "sensorkit",
             "healthkit",
             "health-connect",

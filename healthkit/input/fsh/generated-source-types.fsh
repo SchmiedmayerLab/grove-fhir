@@ -303,7 +303,7 @@ Description: "The 218 source-type identifiers the iPhoneOS 26.5 SDK baseline (Xc
 * #HKDataTypeUserAnnotatedMedicationConcept "User Annotated Medication Concept" "The HealthKit HKDataTypeUserAnnotatedMedicationConcept source type. Grove converts it to healthkit-user-annotated-medication."
 * #HKDataTypeUserAnnotatedMedicationConcept ^property[0].code = #documentation
 * #HKDataTypeUserAnnotatedMedicationConcept ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkdatatypeidentifieruserannotatedmedicationconcept"
-* #HKDocumentTypeIdentifierCDA "CDA Document" "The HealthKit HKDocumentTypeIdentifierCDA source type. Grove converts it to healthkit-recording-document."
+* #HKDocumentTypeIdentifierCDA "CDA Document" "The HealthKit HKDocumentTypeIdentifierCDA source type. Grove converts it to healthkit-cda-document."
 * #HKDocumentTypeIdentifierCDA ^property[0].code = #documentation
 * #HKDocumentTypeIdentifierCDA ^property[0].valueString = "https://developer.apple.com/documentation/healthkit/hkdocumenttypeidentifier/cda"
 * #HKMedicationDoseEventTypeIdentifierMedicationDoseEvent "Medication Dose Event" "The HealthKit HKMedicationDoseEventTypeIdentifierMedicationDoseEvent source type. Grove converts it to healthkit-medication-dose-event."

@@ -6,7 +6,7 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-The Grove FHIR Implementation Guides are a coordinated family of ten packages that share one exchange model.
+The Grove FHIR Implementation Guides are a coordinated family of eleven packages that share one exchange model.
 This guide, Mobile, is the hub: it defines the source-neutral profiles every adapter emits.
 Each adapter guide binds one platform or provider API to those shared profiles and states exactly which source types convert, which do not, and why.
 
@@ -16,6 +16,7 @@ Each adapter guide binds one platform or provider API to those shared profiles a
 |---|---|---|
 | [Mobile](index.html) | The shared measurement profiles, exchange Bundle, device roles, provenance, and study context | Consuming Grove data or implementing any producer |
 | [Sensor](https://grovealliance.org/fhir/sensor/) | Source-neutral time series, waveforms, and the recording DocumentReference contract | Representing a sampled series or raw recording rather than a scalar result |
+| [Clinical Records](https://grovealliance.org/fhir/clinical-records/) | Source-neutral provider-issued clinical records, their declared FHIR release, and the files that accompany them | Carrying a provider-issued FHIR record or CDA document, and its PDF or other files, from any platform or importer |
 | [HealthKit](https://grovealliance.org/fhir/healthkit/) | The Apple HealthKit adapter with an exhaustive source-type inventory | Converting `HKSample` records on iOS, watchOS, or visionOS |
 | [Health Connect](https://grovealliance.org/fhir/health-connect/) | The Android Health Connect adapter with an exhaustive record inventory | Converting Health Connect records on Android |
 | [SensorKit](https://grovealliance.org/fhir/sensorkit/) | The Apple SensorKit adapter with an exhaustive source inventory and dual-output recording pattern | Converting `SRSensor` streams from a study-entitled iOS application |

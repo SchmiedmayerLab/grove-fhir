@@ -3,10 +3,29 @@
   "schemaVersion": 0,
   "fhirVersion": "4.0.1",
   "version": "0.8.3",
-  "canonical": "https://grovealliance.org/fhir/sensor",
-  "codeSystem": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
-  "valueSet": "https://grovealliance.org/fhir/sensor/ValueSet/grove-recording-format",
-  "description": "The complete registry of payload formats a Grove recording DocumentReference may carry. Every content entry declares exactly one registry format in DocumentReference.content.format, and an unregistered payload format is nonconformant. Each format defines what Grove format validation checks and which FHIR/profile, CDA, provider-domain, or binary semantic validations remain producer or receiver responsibilities. Most format codes name a source-neutral payload schema. The native-recording code instead names only a generic JSON object-or-array envelope; the carrying document's source type supplies the source category and meaning, not a per-stream field schema. The encoding is carried by the entry's media type, and the producing platform by the carrying document's source type. The source-file code is the one format that enumerates no media type: it carries one file exactly as its source stored it, under the media type the source declares.",
+  "canonical": "https://grovealliance.org/fhir/mobile",
+  "codeSystem": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format",
+  "valueSet": "https://grovealliance.org/fhir/mobile/ValueSet/grove-payload-format",
+  "description": "The complete registry of payload formats a Grove payload DocumentReference may carry: a Sensor recording document, a Clinical Records document or attachment, or an adapter document derived from one of them. Every content entry declares exactly one registry format in DocumentReference.content.format, and an unregistered payload format is nonconformant. Mobile publishes the one CodeSystem and ValueSet; each format names the guide that owns its definition, and a document profile admits only the formats its guide owns or names. Each format defines what Grove format validation checks and which FHIR/profile, CDA, provider-domain, or binary semantic validations remain producer or receiver responsibilities. Most format codes name a source-neutral payload schema. The native-recording-json code instead names only a generic JSON object-or-array envelope; the carrying document's source type supplies the source category and meaning, not a per-stream field schema. The encoding is carried by the entry's media type, and the producing platform by the carrying document's source type. Two formats enumerate no exact media type: provider-issued-fhir-json admits any FHIR release the producer declares in the media type's fhirVersion parameter, and source-file carries one file exactly as its source stored it, under the media type the source declares.",
+  "owners": {
+    "mobile": {
+      "title": "Grove FHIR Mobile",
+      "canonical": "https://grovealliance.org/fhir/mobile",
+      "page": "https://grovealliance.org/fhir/mobile/formats.html"
+    },
+    "sensor": {
+      "title": "Grove FHIR Sensor and Waveform",
+      "canonical": "https://grovealliance.org/fhir/sensor",
+      "page": "https://grovealliance.org/fhir/sensor/formats.html",
+      "valueSet": "https://grovealliance.org/fhir/sensor/ValueSet/grove-sensor-recording-format"
+    },
+    "clinical-records": {
+      "title": "Grove FHIR Clinical Records",
+      "canonical": "https://grovealliance.org/fhir/clinical-records",
+      "page": "https://grovealliance.org/fhir/clinical-records/formats.html",
+      "valueSet": "https://grovealliance.org/fhir/clinical-records/ValueSet/grove-clinical-record-format"
+    }
+  },
   "encodings": {
     "csv": {
       "encoding": "UTF-8 without a byte-order mark.",
@@ -26,8 +45,6 @@
   "mediaTypes": {
     "text/csv": "Comma-separated values",
     "application/fhir+json": "FHIR JSON",
-    "application/fhir+json; fhirVersion=1.0": "FHIR DSTU2 JSON",
-    "application/fhir+json; fhirVersion=4.0": "FHIR R4 JSON",
     "application/json": "JSON",
     "application/octet-stream": "Binary octet stream",
     "application/hl7-cda+xml": "HL7 Clinical Document Architecture"
@@ -35,6 +52,7 @@
   "formats": {
     "heart-rate-samples": {
       "title": "Heart Rate Samples",
+      "owner": "sensor",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
@@ -68,6 +86,7 @@
     },
     "triaxial-acceleration-samples": {
       "title": "Triaxial Acceleration Samples",
+      "owner": "sensor",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
@@ -115,6 +134,7 @@
     },
     "ambient-light-samples": {
       "title": "Ambient Light Samples",
+      "owner": "sensor",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
@@ -160,6 +180,7 @@
     },
     "ambient-pressure-samples": {
       "title": "Ambient Pressure Samples",
+      "owner": "sensor",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
@@ -200,6 +221,7 @@
     },
     "pedometer-samples": {
       "title": "Pedometer Samples",
+      "owner": "sensor",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
@@ -273,6 +295,7 @@
     },
     "wrist-temperature-samples": {
       "title": "Wrist Temperature Samples",
+      "owner": "sensor",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
@@ -307,6 +330,7 @@
     },
     "triaxial-rotation-samples": {
       "title": "Triaxial Rotation Samples",
+      "owner": "sensor",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
@@ -348,6 +372,7 @@
     },
     "odometer-samples": {
       "title": "Odometer Samples",
+      "owner": "sensor",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
@@ -442,6 +467,7 @@
     },
     "beat-interval-series": {
       "title": "Beat Interval Series",
+      "owner": "sensor",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
@@ -462,6 +488,7 @@
     },
     "location-track-samples": {
       "title": "Location Track Samples",
+      "owner": "sensor",
       "contentType": "text/csv",
       "status": "active",
       "encoding": "csv",
@@ -537,8 +564,9 @@
         }
       ]
     },
-    "fhir-collection-bundle": {
-      "title": "FHIR R4 Collection Bundle",
+    "sensor-sample-collection-bundle": {
+      "title": "Sensor Sample Collection Bundle",
+      "owner": "sensor",
       "contentType": "application/fhir+json",
       "status": "active",
       "specification": {
@@ -549,31 +577,32 @@
         "validationScope": "Grove format validation verifies strict JSON syntax and only the collection-Bundle envelope and resource shape described above. It does not execute the official FHIR Validator over embedded resources. Base FHIR R4 conformance, adapter-declared resource profiles, the one-stream/one-source-batch boundary, and preservation of source ordering and source meaning remain producer responsibilities unless a separate validation step explicitly performs them."
       }
     },
-    "fhir-resource": {
-      "title": "FHIR Resource",
-      "contentTypes": [
-        "application/fhir+json; fhirVersion=1.0",
-        "application/fhir+json; fhirVersion=4.0"
-      ],
+    "provider-issued-fhir-json": {
+      "title": "Provider-Issued FHIR JSON",
+      "owner": "clinical-records",
+      "contentTypeRule": "declared-fhir-release",
+      "contentTypePattern": "^application/fhir\\+json; fhirVersion=[0-9]+\\.[0-9]+$",
       "status": "active",
       "specification": {
         "encoding": "UTF-8.",
-        "structure": "One complete provider-issued FHIR DSTU2 or R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.",
-        "fhirVersion": "Attachment.contentType is exactly `application/fhir+json; fhirVersion=1.0` for DSTU2 or `application/fhir+json; fhirVersion=4.0` for R4. The standard media-type parameter is the authoritative release declaration; an unversioned or other value is not admitted.",
+        "structure": "One complete provider-issued FHIR resource in FHIR JSON representation, of the FHIR release its producer declares, byte-preserved exactly as the source delivered it.",
+        "fhirVersion": "Attachment.contentType is `application/fhir+json` with the standard `fhirVersion` media-type parameter, which names the embedded resource's FHIR release as major.minor: `application/fhir+json; fhirVersion=1.0` for DSTU2, `application/fhir+json; fhirVersion=3.0` for STU3, `application/fhir+json; fhirVersion=4.0` for R4, and so on for any other explicitly identified release. The producer takes the release from source metadata and writes it into the parameter; it must not infer the release from the JSON. A media type without the parameter, or with a malformed one, is not admitted. The outer Grove exchange Bundle and its DocumentReference envelope remain FHIR R4 whatever release the payload declares.",
         "provenance": "The carrying document records the issuing source, while the attachment media type records the exact FHIR release. Grove never converts, re-encodes, or asserts conformance over another issuer's resource.",
         "scope": "One document carries exactly one clinical record's FHIR payload. Grove format validation verifies strict JSON syntax and a `resourceType`-bearing object only; it does not infer the FHIR release or execute base or profile validation over the issuer's resource."
       }
     },
-    "clinical-document": {
-      "title": "Clinical Document",
+    "cda-document": {
+      "title": "CDA Document",
+      "owner": "clinical-records",
       "contentType": "application/hl7-cda+xml",
       "status": "active",
       "specification": {
-        "file": "One HL7 Clinical Document Architecture Release 2 document, byte-preserved exactly as the source platform delivered it. Grove never rewrites, reserializes, or asserts conformance over another issuer's document; the carrying document records the issuer."
+        "file": "One HL7 Clinical Document Architecture Release 2 (CDA R2) document in its XML representation, media type `application/hl7-cda+xml`, byte-preserved exactly as the source platform delivered it. CDA R2 XML is the one representation this format currently admits. Grove never rewrites, reserializes, or asserts conformance over another issuer's document; the carrying document records the issuer."
       }
     },
     "source-file": {
       "title": "Source File",
+      "owner": "mobile",
       "contentTypeRule": "source-declared",
       "contentTypePattern": "^[a-z0-9][a-z0-9!#$&^_.+-]{0,126}/[a-z0-9][a-z0-9!#$&^_.+-]{0,126}(; [a-z0-9][a-z0-9!#$&^_.+-]{0,126}=([^\\s\";]+|\"[^\"]*\"))*$",
       "defaultContentType": "application/octet-stream",
@@ -582,11 +611,12 @@
         "file": "One file exactly as the source platform stored it, in any format. Grove never opens, rewrites, reserializes, or interprets the file.",
         "mediaType": "Attachment.contentType is the file's IANA media type as the source platform declares it, with the type, subtype, and parameter names in lowercase, or `application/octet-stream` when the source declares none. The registry enumerates no media type for this format: any value that matches its contentTypePattern is admitted, and a receiver must not reject a file for an unfamiliar media type.",
         "validationScope": "Grove format validation checks only the size and SHA-1 hash of embedded bytes, as for every recording attachment; it never opens or interprets the file. A URL payload is resolved by the deployment, not by Grove.",
-        "scope": "One document carries exactly one file. Only a profile that names this format carries it; no Sensor recording document does."
+        "scope": "One document carries exactly one file. Only a profile that fixes this format carries it, such as the Clinical Records attachment; no document profile admits it through a value-set binding."
       }
     },
-    "native-recording": {
-      "title": "Native Recording",
+    "native-recording-json": {
+      "title": "Native Recording JSON",
+      "owner": "sensor",
       "contentType": "application/json",
       "status": "active",
       "specification": {
@@ -596,8 +626,9 @@
         "scope": "One document carries one stream and one source batch. Validation checks only this strict envelope; it does not reinterpret, sanitize, rewrite, or reserialize the bytes."
       }
     },
-    "provider-recording": {
-      "title": "Provider Recording",
+    "provider-response-json": {
+      "title": "Provider Response JSON",
+      "owner": "sensor",
       "contentType": "application/json",
       "status": "active",
       "specification": {
@@ -609,6 +640,7 @@
     },
     "photoplethysmogram-samples": {
       "title": "Photoplethysmogram Samples",
+      "owner": "sensor",
       "contentType": "application/octet-stream",
       "status": "active",
       "specification": {
@@ -768,6 +800,30 @@
           }
         ]
       }
+    }
+  },
+  "previousCodings": {
+    "system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
+    "lastRelease": "0.8.3",
+    "rule": "Bundles written before the payload formats moved to Mobile declare DocumentReference.content.format from the retired Sensor CodeSystem named below. A receiver that keeps or reads such a Bundle maps each coding through the code map to the Mobile coding of the same meaning: the system always changes, and five codes also change their spelling. The mapped coding means exactly what the old one meant, including its media types. No producer of a later release writes the old system or the old codes, and a validator of a later release rejects them. A receiver never recomputes a record version or a source-artifact identity from a mapped coding: a stored Bundle keeps the identities it was written with, and a producer that converts the same source record again under a later release emits a new record version of the same source record, not a retry, whose outputs carry new source-artifact identities where the format code changed spelling.",
+    "codes": {
+      "heart-rate-samples": "heart-rate-samples",
+      "triaxial-acceleration-samples": "triaxial-acceleration-samples",
+      "ambient-light-samples": "ambient-light-samples",
+      "ambient-pressure-samples": "ambient-pressure-samples",
+      "pedometer-samples": "pedometer-samples",
+      "wrist-temperature-samples": "wrist-temperature-samples",
+      "triaxial-rotation-samples": "triaxial-rotation-samples",
+      "odometer-samples": "odometer-samples",
+      "beat-interval-series": "beat-interval-series",
+      "location-track-samples": "location-track-samples",
+      "fhir-collection-bundle": "sensor-sample-collection-bundle",
+      "fhir-resource": "provider-issued-fhir-json",
+      "clinical-document": "cda-document",
+      "source-file": "source-file",
+      "native-recording": "native-recording-json",
+      "provider-recording": "provider-response-json",
+      "photoplethysmogram-samples": "photoplethysmogram-samples"
     }
   }
 }

@@ -12,3 +12,4 @@ Alias: $ucum = http://unitsofmeasure.org
 Alias: $provenanceParticipantType = http://terminology.hl7.org/CodeSystem/provenance-participant-type
 Alias: $recordLifecycleEvent = http://terminology.hl7.org/CodeSystem/iso-21089-lifecycle
 Alias: $groveIdentifierRole = https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role
+Alias: $payloadFormat = https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format

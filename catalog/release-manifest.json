@@ -56,6 +56,16 @@
       ]
     },
     {
+      "source": "clinical-records",
+      "packageId": "org.grovealliance.fhir.clinical-records",
+      "canonical": "https://grovealliance.org/fhir/clinical-records",
+      "directDependencies": [
+        "hl7.terminology.r4#7.5.0",
+        "hl7.fhir.uv.extensions.r4#5.4.0",
+        "org.grovealliance.fhir.mobile#0.8.3"
+      ]
+    },
+    {
       "source": "sensorkit",
       "packageId": "org.grovealliance.fhir.sensorkit",
       "canonical": "https://grovealliance.org/fhir/sensorkit",
@@ -73,6 +83,7 @@
       "directDependencies": [
         "hl7.terminology.r4#7.5.0",
         "hl7.fhir.uv.extensions.r4#5.4.0",
+        "org.grovealliance.fhir.clinical-records#0.8.3",
         "org.grovealliance.fhir.mobile#0.8.3",
         "org.grovealliance.fhir.sensor#0.8.3"
       ]

@@ -106,8 +106,8 @@
       "emittedBy": "conformance-kit"
     },
     {
-      "code": "healthkit-clinical.attachment-graph",
-      "reason": "A HealthKit clinical-record attachment document relates by appends to exactly the clinical-record document of its own record in the same Bundle, with the same source-record identity, source type, type coding, date, author, and study context.related, including stating none where that document states none, and every attachment of one record has its own source-output identity; mobile-exchange.single-subject holds it to the Bundle's one subject.",
+      "code": "clinical-record.attachment-graph",
+      "reason": "A Clinical Record Attachment relates by appends to exactly the clinical record document of its own record in the same Bundle, with the same source-record identity, type coding, subject, date, author, and study context.related, including stating none where that document states none, and every attachment of one record has its own source-output identity; an adapter attachment also carries its document's source type, and mobile-exchange.single-subject holds it to the Bundle's one subject.",
       "emittedBy": "conformance-kit"
     },
     {
@@ -242,7 +242,7 @@
     },
     {
       "code": "mobile-output.document-profile",
-      "reason": "Every active DocumentReference must directly claim exactly one admitted recording or clinical-document profile mode.",
+      "reason": "Every active DocumentReference must directly claim exactly one admitted recording, clinical record, or clinical record attachment profile mode.",
       "emittedBy": "conformance-kit"
     },
     {
@@ -975,7 +975,7 @@
       ],
       "neverProfiles": [
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-ecg-average-heart-rate-observation",
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"
+        "https://grovealliance.org/fhir/clinical-records/StructureDefinition/grove-clinical-record-attachment"
       ],
       "healthConnectChildCountRules": [
         "one-per-sample",
@@ -1484,10 +1484,10 @@
           "https://accounts.example.org",
           "patient|α",
           "recording-001",
-          "provider-recording",
+          "provider-response-json",
           "0"
         ],
-        "value": "v0:test-key:1:0LxvhsWmRngwxPPMqWk7--4qTN8Wa1j-oTbGuMCCgrA"
+        "value": "v0:test-key:1:pZ9qxa2SmaW5j_jpARGA_0D_lrv-QUeGmoQQK0vxcWw"
       },
       {
         "id": "generic-source-artifact",
@@ -1498,10 +1498,10 @@
           "https://store.example.org",
           "default",
           "record-001",
-          "native-recording",
+          "native-recording-json",
           "0"
         ],
-        "value": "v0:test-key:1:iN5W23PWv_0jfI3RuCiO__c--cElAPDllZ4Gl_3CUPM"
+        "value": "v0:test-key:1:e9W_vDWg09DM0KxSnTHL5y6Zy8GcvklUko-XBpstews"
       },
       {
         "id": "writer-record-complete-application-pair",
@@ -1772,10 +1772,10 @@
           "https://study.example.org/fhir/NamingSystem/source-repository",
           "1f5c58aa-6ec6-4e79-a682-829a9debd3f5",
           "5d1f3c2a-8b4e-4f6a-9c7d-2e0b1a3c4d5e",
-          "fhir-resource",
+          "provider-issued-fhir-json",
           "0"
         ],
-        "value": "v0:test-key:1:DT8ZbVYH6deAKsRcqi2ETvrGU1oISY7NsVCnFWUSec4"
+        "value": "v0:test-key:1:9VSbbdK8b_UF2evMSO2KauXmMkOMhKVFNaZOlioBYg4"
       },
       {
         "id": "healthkit-clinical-attachment-source-output",
@@ -1804,6 +1804,74 @@
           "0"
         ],
         "value": "v0:test-key:1:j2LQarBZO53vb9832PjKG4ij6sCXlBbZqWWQwdNvVpw"
+      },
+      {
+        "id": "clinical-records-note-source-record",
+        "identityKind": "source-record",
+        "components": [
+          "portal-importer",
+          "DocumentReference",
+          "https://study.example.org/fhir/NamingSystem/source-repository",
+          "patient-portal",
+          "provider-note-7"
+        ],
+        "value": "v0:test-key:1:_hcEGJV15Q_pOgnQva_qLn7onjsqM3_YBbCpOE52eaE"
+      },
+      {
+        "id": "clinical-records-note-document-source-output",
+        "identityKind": "source-output",
+        "components": [
+          "portal-importer",
+          "DocumentReference",
+          "https://study.example.org/fhir/NamingSystem/source-repository",
+          "patient-portal",
+          "provider-note-7",
+          "clinical-record",
+          "single"
+        ],
+        "value": "v0:test-key:1:pKADUrrKywzVTkUyBjqXFclrM4YWez6lSFCQMZqYRHM"
+      },
+      {
+        "id": "clinical-records-note-document-source-artifact",
+        "identityKind": "source-artifact",
+        "components": [
+          "portal-importer",
+          "DocumentReference",
+          "https://study.example.org/fhir/NamingSystem/source-repository",
+          "patient-portal",
+          "provider-note-7",
+          "provider-issued-fhir-json",
+          "0"
+        ],
+        "value": "v0:test-key:1:fT0CaSwLECwfII6cX_LgG2FA8gGU9X2BNRFkw3ZFh9k"
+      },
+      {
+        "id": "clinical-records-note-attachment-source-output",
+        "identityKind": "source-output",
+        "components": [
+          "portal-importer",
+          "DocumentReference",
+          "https://study.example.org/fhir/NamingSystem/source-repository",
+          "patient-portal",
+          "provider-note-7",
+          "clinical-record-attachment",
+          "visit-note-pdf"
+        ],
+        "value": "v0:test-key:1:UKNWwUuarzRHBX-I70n__ghFxUwE8fKIEHOAPFTTOVU"
+      },
+      {
+        "id": "clinical-records-note-attachment-source-artifact",
+        "identityKind": "source-artifact",
+        "components": [
+          "portal-importer",
+          "DocumentReference",
+          "https://study.example.org/fhir/NamingSystem/source-repository",
+          "patient-portal",
+          "provider-note-7",
+          "source-file",
+          "0"
+        ],
+        "value": "v0:test-key:1:747212hmvziVtxAX5r1M_rx-mHwpfkU_TUtStpsau4U"
       },
       {
         "id": "questionnaire-extraction-source-record",
@@ -2404,7 +2472,7 @@
           "https://accounts.example.org",
           "patient-001",
           "recording-001",
-          "provider-recording",
+          "provider-response-json",
           "0"
         ],
         "expectedError": "provider-kind-required"
@@ -2432,7 +2500,7 @@
           "https://accounts.example.org",
           "patient|α",
           "recording-001",
-          "provider-recording",
+          "provider-response-json",
           "01"
         ],
         "expectedError": "non-canonical-part-index"

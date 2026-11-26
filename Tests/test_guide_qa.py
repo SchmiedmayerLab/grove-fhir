@@ -29,9 +29,10 @@ SPEC.loader.exec_module(CHECK)
 
 
 def registered_media_types() -> set[str]:
-    """Every media type the format registry enumerates, read from the registry itself.
+    """Every media type a Sensor-owned format enumerates, read from the registry itself.
 
-    A source-declared format enumerates none, so it adds nothing to the closed MIME value set.
+    A pattern-ruled format enumerates none, and only the formats Sensor owns feed its closed MIME
+    value set.
     """
     registry = json.loads(
         (ROOT / "catalog/format-registry.json").read_text(encoding="utf-8")
@@ -39,7 +40,7 @@ def registered_media_types() -> set[str]:
     return {
         content_type
         for fmt in registry["formats"].values()
-        if fmt.get("contentTypeRule") != "source-declared"
+        if fmt.get("contentTypeRule") is None and fmt["owner"] == "sensor"
         for content_type in fmt.get("contentTypes", [fmt.get("contentType")])
     }
 
@@ -399,10 +400,10 @@ class GuideQATests(unittest.TestCase):
                 "attachment": {"contentType": "application/json"},
                 "format": {
                     "system": (
-                        "https://grovealliance.org/fhir/sensor/CodeSystem/"
-                        "grove-recording-format"
+                        "https://grovealliance.org/fhir/mobile/CodeSystem/"
+                        "grove-payload-format"
                     ),
-                    "code": "native-recording",
+                    "code": "native-recording-json",
                 },
             }],
         }
@@ -430,7 +431,7 @@ class GuideQATests(unittest.TestCase):
             versioned_document["content"][0]["attachment"]["contentType"] = (
                 versioned_content_type
             )
-            versioned_document["content"][0]["format"]["code"] = "fhir-resource"
+            versioned_document["content"][0]["format"]["code"] = "provider-issued-fhir-json"
             self.assertEqual(
                 write_case(
                     qa_html(

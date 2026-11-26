@@ -41,7 +41,10 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
         }
         return {
             "resourceType": "DocumentReference",
-            "meta": {"profile": [context.HEALTHKIT_CLINICAL_RECORD_PROFILE]},
+            "meta": {"profile": [
+                context.CLINICAL_RECORD_DOCUMENT_PROFILE,
+                context.HEALTHKIT_CLINICAL_RECORD_PROFILE,
+            ]},
             "identifier": [
                 typed_identifier(
                     role,
@@ -72,10 +75,10 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
                 },
                 "format": {
                     "system": (
-                        "https://grovealliance.org/fhir/sensor/CodeSystem/"
-                        "grove-recording-format"
+                        "https://grovealliance.org/fhir/mobile/CodeSystem/"
+                        "grove-payload-format"
                     ),
-                    "code": "fhir-resource",
+                    "code": "provider-issued-fhir-json",
                 },
             }],
         }
@@ -157,9 +160,9 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
             )
 
         source = grove("source-record", "A")
-        clinical_profile = claims["healthKitClinicalRecordDocumentClaim"]["profiles"][0]
+        clinical_profiles = claims["healthKitClinicalRecordDocumentClaim"]["profiles"]
         document = self._clinical_document()
-        document["meta"] = {"profile": [clinical_profile]}
+        document["meta"] = {"profile": list(clinical_profiles)}
         document["identifier"][0] = copy.deepcopy(source)
         healthkit_validation.validate_healthkit_resource_claims(document, "HealthKit clinical")
 
@@ -195,6 +198,8 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
 
     def test_healthkit_clinical_document_runs_shared_payload_pipeline(self) -> None:
         clinical_profile = context.HEALTHKIT_CLINICAL_RECORD_PROFILE
+        # A declared release HealthKit never reports is admitted by the shared format but not by
+        # this adapter.
         for release in ("dstu2", "r4"):
             with self.subTest(release=release):
                 exchange_bundle.validate_resource_profile_claims(
@@ -206,7 +211,7 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
         document = self._clinical_document()
 
         defects = (
-            ("format", "exactly one fhir-resource payload"),
+            ("format", "exactly one provider-issued-fhir-json payload"),
             ("size", "size is required"),
             ("hash", "hash does not match embedded bytes"),
         )
@@ -228,9 +233,9 @@ class ProducerHealthkitTests(ProducerValidationTestCase):
                 )
 
         wrong_format = self._clinical_document()
-        wrong_format["content"][0]["format"]["code"] = "native-recording"
+        wrong_format["content"][0]["format"]["code"] = "native-recording-json"
         with self.assertRaisesRegex(
-            diagnostics.ProducerValidationError, "exactly one fhir-resource payload"
+            diagnostics.ProducerValidationError, "exactly one provider-issued-fhir-json payload"
         ):
             exchange_bundle.validate_resource_profile_claims(
                 wrong_format, "HealthKit clinical", {clinical_profile}

@@ -34,10 +34,11 @@ The package graph is:
 
 | Package | Layer and dependency |
 |---|---|
-| `org.grovealliance.fhir.mobile` | Source-neutral mobile measurements, exchange graphs, Devices, and conversion provenance; foundation package |
+| `org.grovealliance.fhir.mobile` | Source-neutral mobile measurements, exchange graphs, Devices, conversion provenance, and the payload format registry; foundation package |
 | `org.grovealliance.fhir.questionnaire` | International Questionnaire and QuestionnaireResponse exchange; independent of the measurement graph and based on SDC R4 |
 | `org.grovealliance.fhir.sensor` | Source-neutral SampledData, ECG, immutable raw Recording Documents, and Sensor conversion provenance; depends on Mobile |
-| `org.grovealliance.fhir.healthkit` | Apple HealthKit adapter; depends on Mobile and Sensor |
+| `org.grovealliance.fhir.clinical-records` | Source-neutral provider-issued clinical records and their accompanying files; depends on Mobile |
+| `org.grovealliance.fhir.healthkit` | Apple HealthKit adapter; depends on Mobile, Sensor, and Clinical Records |
 | `org.grovealliance.fhir.health-connect` | Android Health Connect 1.1 adapter; depends on Mobile |
 | `org.grovealliance.fhir.sensorkit` | Apple SensorKit adapter; depends on Mobile and Sensor |
 | `org.grovealliance.fhir.providers` | Google Health API, Oura, and Withings mappings; depends on Mobile and Sensor |
@@ -45,7 +46,7 @@ The package graph is:
 | `org.grovealliance.fhir.oura` | Oura-exclusive mappings; depends on Mobile, Sensor, and the Connected Provider Adapter |
 | `org.grovealliance.fhir.google-health` | Google Health API-exclusive mappings; depends on Mobile, Sensor, and the Connected Provider Adapter |
 
-Use the [HealthKit adapter](https://schmiedmayerlab.github.io/grove-fhir/healthkit/), [Health Connect adapter](https://schmiedmayerlab.github.io/grove-fhir/health-connect/), [Sensor and waveform guide](https://schmiedmayerlab.github.io/grove-fhir/sensor/), [SensorKit adapter](https://schmiedmayerlab.github.io/grove-fhir/sensorkit/), or [connected-provider adapter](https://schmiedmayerlab.github.io/grove-fhir/providers/) for the applicable already-obtained source data.
+Use the [HealthKit adapter](https://schmiedmayerlab.github.io/grove-fhir/healthkit/), [Health Connect adapter](https://schmiedmayerlab.github.io/grove-fhir/health-connect/), [Sensor and waveform guide](https://schmiedmayerlab.github.io/grove-fhir/sensor/), [Clinical Records guide](https://schmiedmayerlab.github.io/grove-fhir/clinical-records/), [SensorKit adapter](https://schmiedmayerlab.github.io/grove-fhir/sensorkit/), or [connected-provider adapter](https://schmiedmayerlab.github.io/grove-fhir/providers/) for the applicable already-obtained source data.
 Use the [Questionnaire Exchange guide](https://schmiedmayerlab.github.io/grove-fhir/questionnaire/) to publish instruments and exchange their responses.
 Adapter packages define mappings and conformance; they do not fetch provider or platform data, authenticate to provider APIs, or prescribe persistence behavior.
 

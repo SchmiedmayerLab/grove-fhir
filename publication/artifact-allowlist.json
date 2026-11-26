@@ -91,6 +91,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "GrovePayloadFormatCS",
+          "fshType": "CodeSystem",
+          "resourceType": "CodeSystem",
+          "id": "grove-payload-format",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveRecordingMethodCS",
           "fshType": "CodeSystem",
           "resourceType": "CodeSystem",
@@ -1687,6 +1694,13 @@
           "classification": "definition"
         },
         {
+          "fshName": "GrovePayloadFormatVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-payload-format",
+          "classification": "definition"
+        },
+        {
           "fshName": "GroveRecordingMethodVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
@@ -1735,13 +1749,6 @@
       "packageId": "org.grovealliance.fhir.sensor",
       "canonical": "https://grovealliance.org/fhir/sensor",
       "artifacts": [
-        {
-          "fshName": "GroveRecordingFormatCS",
-          "fshType": "CodeSystem",
-          "resourceType": "CodeSystem",
-          "id": "grove-recording-format",
-          "classification": "definition"
-        },
         {
           "fshName": "GroveSensorConversionProvenanceExample",
           "fshType": "Instance",
@@ -1820,17 +1827,80 @@
           "classification": "definition"
         },
         {
-          "fshName": "GroveRecordingFormatVS",
-          "fshType": "ValueSet",
-          "resourceType": "ValueSet",
-          "id": "grove-recording-format",
-          "classification": "definition"
-        },
-        {
           "fshName": "GroveRecordingMimeTypeVS",
           "fshType": "ValueSet",
           "resourceType": "ValueSet",
           "id": "grove-recording-mime-type",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveSensorRecordingFormatVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-sensor-recording-format",
+          "classification": "definition"
+        }
+      ]
+    },
+    {
+      "source": "clinical-records",
+      "packageId": "org.grovealliance.fhir.clinical-records",
+      "canonical": "https://grovealliance.org/fhir/clinical-records",
+      "artifacts": [
+        {
+          "fshName": "GroveClinicalNoteRecordDocumentExample",
+          "fshType": "Instance",
+          "resourceType": "DocumentReference",
+          "id": "GroveClinicalNoteRecordDocumentExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveClinicalNoteRecordProvenanceExample",
+          "fshType": "Instance",
+          "resourceType": "Provenance",
+          "id": "GroveClinicalNoteRecordProvenanceExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveClinicalRecordAttachmentExample",
+          "fshType": "Instance",
+          "resourceType": "DocumentReference",
+          "id": "GroveClinicalRecordAttachmentExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveClinicalRecordsImporterExample",
+          "fshType": "Instance",
+          "resourceType": "Device",
+          "id": "GroveClinicalRecordsImporterExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveClinicalRecordsPatientExample",
+          "fshType": "Instance",
+          "resourceType": "Patient",
+          "id": "GroveClinicalRecordsPatientExample",
+          "classification": "example"
+        },
+        {
+          "fshName": "GroveClinicalRecordAttachment",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-clinical-record-attachment",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveClinicalRecordDocument",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "grove-clinical-record-document",
+          "classification": "definition"
+        },
+        {
+          "fshName": "GroveClinicalRecordFormatVS",
+          "fshType": "ValueSet",
+          "resourceType": "ValueSet",
+          "id": "grove-clinical-record-format",
           "classification": "definition"
         }
       ]
@@ -3812,6 +3882,13 @@
           "fshType": "Profile",
           "resourceType": "StructureDefinition",
           "id": "healthkit-application-device",
+          "classification": "definition"
+        },
+        {
+          "fshName": "HealthKitCDADocument",
+          "fshType": "Profile",
+          "resourceType": "StructureDefinition",
+          "id": "healthkit-cda-document",
           "classification": "definition"
         },
         {

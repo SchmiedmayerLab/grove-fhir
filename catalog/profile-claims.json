@@ -263,9 +263,36 @@
       "source-artifact"
     ]
   },
-  "healthKitClinicalRecordDocumentClaim": {
+  "clinicalRecordDocumentClaim": {
+    "resourceType": "DocumentReference",
     "cardinality": 1,
     "profiles": [
+      "https://grovealliance.org/fhir/clinical-records/StructureDefinition/grove-clinical-record-document"
+    ],
+    "otherProfilesAllowed": false,
+    "requiredIdentifierRoles": [
+      "source-record",
+      "source-output",
+      "source-artifact"
+    ]
+  },
+  "clinicalRecordAttachmentClaim": {
+    "resourceType": "DocumentReference",
+    "cardinality": 1,
+    "profiles": [
+      "https://grovealliance.org/fhir/clinical-records/StructureDefinition/grove-clinical-record-attachment"
+    ],
+    "otherProfilesAllowed": false,
+    "requiredIdentifierRoles": [
+      "source-record",
+      "source-output",
+      "source-artifact"
+    ]
+  },
+  "healthKitClinicalRecordDocumentClaim": {
+    "cardinality": 2,
+    "profiles": [
+      "https://grovealliance.org/fhir/clinical-records/StructureDefinition/grove-clinical-record-document",
       "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document"
     ],
     "otherProfilesAllowed": false,
@@ -275,9 +302,23 @@
       "source-artifact"
     ]
   },
-  "healthKitClinicalRecordAttachmentClaim": {
-    "cardinality": 1,
+  "healthKitCDADocumentClaim": {
+    "cardinality": 2,
     "profiles": [
+      "https://grovealliance.org/fhir/clinical-records/StructureDefinition/grove-clinical-record-document",
+      "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-cda-document"
+    ],
+    "otherProfilesAllowed": false,
+    "requiredIdentifierRoles": [
+      "source-record",
+      "source-output",
+      "source-artifact"
+    ]
+  },
+  "healthKitClinicalRecordAttachmentClaim": {
+    "cardinality": 2,
+    "profiles": [
+      "https://grovealliance.org/fhir/clinical-records/StructureDefinition/grove-clinical-record-attachment",
       "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"
     ],
     "otherProfilesAllowed": false,
@@ -434,6 +475,7 @@
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-bleeding-during-pregnancy",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-alcohol-content",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-blood-type",
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-cda-document",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-contraceptive-use",
@@ -543,7 +585,7 @@
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-wheelchair-use",
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-workout-effort-score"
       ],
-      "rule": "One conversion Provenance per record targets every admitted HealthKit structured or byte-preserving output produced from its exact sole typed source-record Identifier, including child-only Observation, recording, clinical-document, vision, dose, and tracked-medication resources; every target is an internal UUID reference. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
+      "rule": "One conversion Provenance per record targets every admitted HealthKit structured or byte-preserving output produced from its exact sole typed source-record Identifier, including child-only Observation, recording, clinical record, CDA, clinical record attachment, vision, dose, and tracked-medication resources; every target is an internal UUID reference. An active conversion graph never encodes retraction by mutating output status. A separate retraction Bundle with retraction Provenance asserts source removal and carries no conversion Provenance.",
       "sourceIdentifierRole": "source-record",
       "sourceIdentityKind": "source-record"
     },

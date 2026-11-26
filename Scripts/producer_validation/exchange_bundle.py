@@ -39,8 +39,10 @@ from .health_connect import (
     validate_health_connect_output_graph, validate_health_connect_provider_claim,
     validate_health_connect_source_type, validate_health_connect_specimen_claim,
 )
+from .clinical_records import (
+    validate_clinical_record_attachment, validate_clinical_record_attachment_graph,
+)
 from .healthkit import (
-    validate_healthkit_clinical_attachment_graph,
     validate_healthkit_ecg_contract, validate_healthkit_ecg_output_graph,
     validate_healthkit_resource_claims, validate_healthkit_source_type,
 )
@@ -152,6 +154,7 @@ def validate_resource_profile_claims(
     validate_health_connect_specimen_claim(resource, label)
     validate_health_connect_provider_claim(resource, label)
     validate_healthkit_resource_claims(resource, label)
+    validate_clinical_record_attachment(resource, label)
     validate_healthkit_source_type(resource, label)
     validate_healthkit_metadata(resource, label)
     validate_healthkit_ecg_contract(resource, label)
@@ -1186,7 +1189,7 @@ def validate_exchange_bundle(
         validate_governed_source_identifiers(entry_resources, label)
         validate_health_connect_output_graph(entry_resources, resources_by_full_url, label)
         validate_healthkit_ecg_output_graph(entry_resources, resources_by_full_url, label)
-        validate_healthkit_clinical_attachment_graph(
+        validate_clinical_record_attachment_graph(
             entry_resources, resources_by_full_url, label
         )
         validate_adapter_provenance_graph(entry_resources, resources_by_full_url, label)

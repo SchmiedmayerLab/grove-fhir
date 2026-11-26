@@ -3,6 +3,7 @@
   "id": "clinical-note-record-attachment",
   "meta": {
     "profile": [
+      "https://grovealliance.org/fhir/clinical-records/StructureDefinition/grove-clinical-record-attachment",
       "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment"
     ]
   },
@@ -83,14 +84,14 @@
     {
       "attachment": {
         "contentType": "application/pdf",
-        "url": "recordings/50cd9bb4234b61635e892290a431ec36c3dedf389c9b538d07d21c3a5ffc9dd8.pdf",
+        "url": "documents/50cd9bb4234b61635e892290a431ec36c3dedf389c9b538d07d21c3a5ffc9dd8.pdf",
         "size": 112,
         "hash": "Nr47nTDanS+zEuOEesL4SWU4Ef0=",
         "title": "Visit note.pdf",
         "creation": "2026-08-20T09:30:00-07:00"
       },
       "format": {
-        "system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format",
         "code": "source-file",
         "display": "Source File"
       }

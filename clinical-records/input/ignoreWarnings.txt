@@ -1,0 +1,13 @@
+== Suppressed Messages ==
+
+# This contract targets FHIR R4. It does not publish the generated R4B package claim.
+WARNING: 2: An HTML fragment from the set [cross-version-analysis.xhtml, cross-version-analysis-inline.xhtml] is not included anywhere in the produced implementation guide
+
+# The guide intentionally defines no global profiles; an empty generated table adds no implementation guidance.
+WARNING: 4: The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide
+
+# The generated clinical record format value set is Grove-owned and carries no OID by policy.
+WARNING: Resource: The resource ValueSet/grove-clinical-record-format should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html)
+
+# A clinical record attachment's url may be relative to the transport unit that carries the Bundle, such as an entry of the upload archive. The Publisher cannot resolve it, and Grove never fetches it; resolving it is the deployment's job.
+WARNING: DocumentReference/GroveClinicalRecordAttachmentExample: DocumentReference.content[0].attachment.url: No definition could be found for URL value 'documents/c4071ece7b3d0e2501f5278299ff8be67aa48f40b4657cd898a99afa57de295e.pdf'

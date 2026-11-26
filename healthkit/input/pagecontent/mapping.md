@@ -197,14 +197,16 @@ An `HKDeletedObject` carries none of the deleted workout's events or activities,
 
 ### Clinical FHIR records
 
+HealthKit maps `HKClinicalRecord`, `HKAttachment`, and `HKCDADocumentSample` onto the shared [Clinical Records](https://grovealliance.org/fhir/clinical-records/) contracts: each output claims the shared Clinical Records profile beside its HealthKit profile, which adds only what is Apple's, namely the HealthKit record class, source type and metadata, release detection, and attachment ordering.
+
 HealthKit can expose both DSTU2 and R4 `HKFHIRResource` payloads.
 The Grove exchange Bundle and HealthKit Clinical Record Document envelope remain FHIR R4, while the provider-issued attachment may be either DSTU2 or R4.
 Admit a clinical record only when `HKFHIRResource.fhirVersion.fhirRelease` is exactly `dstu2` or `r4`.
 Map that source value directly to `Attachment.contentType`: `application/fhir+json; fhirVersion=1.0` for DSTU2 or `application/fhir+json; fhirVersion=4.0` for R4.
 The standard `fhirVersion` media-type parameter carries the release; never infer it from the JSON shape.
-Reject an unknown or missing release, as well as every future release that the contract does not yet admit, before creating the DocumentReference.
+Reject an unknown or missing release before creating the DocumentReference. The shared `provider-issued-fhir-json` format admits any release its producer declares; HealthKit reports only these two, so this adapter admits only them.
 
-Carry the provider-issued bytes under the release-neutral `fhir-resource` format contract.
+Carry the provider-issued bytes under the release-neutral `provider-issued-fhir-json` format contract.
 Do not parse and reserialize, relabel, upgrade, downgrade, or otherwise rewrite those bytes.
 Grove validation checks that an inline attachment is strict UTF-8 JSON containing one `resourceType`-bearing object, but it does not apply R4 rules to a DSTU2 payload or assert conformance to the issuer's FHIR release.
 The R4 envelope asserts the exact source release, payload integrity, identity, and provenance—not that Grove has validated or endorsed the provider's clinical content.
@@ -225,14 +227,18 @@ It is a target of the record's one conversion Provenance like every output.
 |---|---|
 | `source-output` | output role `clinical-record-attachment`, discriminator the lowercase canonical `HKAttachment.identifier` |
 | `source-artifact` | format `source-file` and a zero-based part index over the record's attachments ordered by `HKAttachment.creationDate`, then by identifier |
-| `content.format` | `source-file` from the [format registry](https://grovealliance.org/fhir/sensor/formats.html) |
+| `content.format` | `source-file` from the Mobile [payload format registry](https://grovealliance.org/fhir/mobile/formats.html) |
 | `content.attachment.contentType` | the attachment `UTType`'s preferred MIME type in lowercase, else `application/octet-stream` |
-| `content.attachment.data` or `url` | the exact file bytes, or an immutable, version-specific location of them, which may be relative to the transport unit that carries the Bundle, such as `recordings/<sha256>.pdf` in an upload archive |
+| `content.attachment.data` or `url` | the exact file bytes, or an immutable, version-specific location of them, which may be relative to the transport unit that carries the Bundle, such as `documents/<sha256>.pdf` in an upload archive |
 | `content.attachment.size`, `hash` | the byte count and SHA-1 of the exact file bytes |
 | `content.attachment.title`, `creation` | `HKAttachment.name` and `HKAttachment.creationDate` |
 | [HealthKit Source Metadata](StructureDefinition-metadata.html) | `HKAttachment.metadata`, under the same rules as sample metadata |
 
 An attachment document is never the record's primary output: it carries no `writer-record` Identifier, Grove Writer Record Version, readable sync identifier, or `HKObject.uuid` Identifier.
+
+#### CDA documents
+
+An `HKCDADocumentSample` becomes one [HealthKit CDA Document](StructureDefinition-healthkit-cda-document.html), a Clinical Records clinical record document in the `cda-document` format: the CDA R2 XML exactly as HealthKit stores it, with `Attachment.contentType` `application/hl7-cda+xml`.
 
 ### Values, units, and time
 

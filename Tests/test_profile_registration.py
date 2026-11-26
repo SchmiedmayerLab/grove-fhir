@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 GUIDES = (
     "mobile",
     "sensor",
+    "clinical-records",
     "sensorkit",
     "healthkit",
     "health-connect",

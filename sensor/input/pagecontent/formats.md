@@ -9,8 +9,8 @@ GENERATED FILE. Edit catalog/format-registry.json and run
 `python3 Scripts/render-format-registry.py`.
 -->
 
-Every Grove recording DocumentReference content entry declares exactly one payload format from this closed registry in `content.format`.
-An unregistered payload format is nonconformant. Each entry defines the payload grammar that a conformant producer validates before emission and identifies any additional producer or receiver responsibilities. For `native-recording`, the carrying source type selects the source category and meaning; this generic format defines no per-stream field schema.
+Every Grove Sensor recording DocumentReference content entry declares exactly one payload format this guide owns in `content.format`. An unregistered payload format is nonconformant. Each entry defines the payload grammar that a conformant producer validates before emission and identifies any additional producer or receiver responsibilities. For `native-recording-json`, the carrying source type selects the source category and meaning; this generic format defines no per-stream field schema.
+The formats are codes of the Mobile [payload format registry](https://grovealliance.org/fhir/mobile/formats.html), which also states the rules for carrying the bytes inline or by URL, their media type, size, and hash.
 The complete machine-readable contract is published in [`catalog/format-registry.json`](https://grovealliance.org/fhir/catalog/format-registry.json).
 
 ### `heart-rate-samples` — Heart Rate Samples
@@ -258,7 +258,7 @@ The table's `Nullable` column controls empty fields: `no` requires a non-empty f
 | `course` | number | yes | `deg` | Direction of travel in degrees clockwise from true north; empty when unavailable. |
 | `courseAccuracy` | number | yes | `deg` | Uncertainty of the course in degrees; empty when unavailable. |
 
-### `fhir-collection-bundle` — FHIR R4 Collection Bundle
+### `sensor-sample-collection-bundle` — Sensor Sample Collection Bundle
 
 Media type: `application/fhir+json`.
 UTF-8.
@@ -267,29 +267,7 @@ Every entry resource conforms to the profile set the emitting adapter declares f
 An empty batch emits no document rather than an empty Bundle.
 Grove format validation verifies strict JSON syntax and only the collection-Bundle envelope and resource shape described above. It does not execute the official FHIR Validator over embedded resources. Base FHIR R4 conformance, adapter-declared resource profiles, the one-stream/one-source-batch boundary, and preservation of source ordering and source meaning remain producer responsibilities unless a separate validation step explicitly performs them.
 
-### `fhir-resource` — FHIR Resource
-
-Media types: `application/fhir+json; fhirVersion=1.0`, `application/fhir+json; fhirVersion=4.0`.
-UTF-8.
-One complete provider-issued FHIR DSTU2 or R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it.
-Attachment.contentType is exactly `application/fhir+json; fhirVersion=1.0` for DSTU2 or `application/fhir+json; fhirVersion=4.0` for R4. The standard media-type parameter is the authoritative release declaration; an unversioned or other value is not admitted.
-The carrying document records the issuing source, while the attachment media type records the exact FHIR release. Grove never converts, re-encodes, or asserts conformance over another issuer's resource.
-One document carries exactly one clinical record's FHIR payload. Grove format validation verifies strict JSON syntax and a `resourceType`-bearing object only; it does not infer the FHIR release or execute base or profile validation over the issuer's resource.
-
-### `clinical-document` — Clinical Document
-
-Media type: `application/hl7-cda+xml`.
-One HL7 Clinical Document Architecture Release 2 document, byte-preserved exactly as the source platform delivered it. Grove never rewrites, reserializes, or asserts conformance over another issuer's document; the carrying document records the issuer.
-
-### `source-file` — Source File
-
-Media type: the one the source declares, matching `^[a-z0-9][a-z0-9!#$&^_.+-]{0,126}/[a-z0-9][a-z0-9!#$&^_.+-]{0,126}(; [a-z0-9][a-z0-9!#$&^_.+-]{0,126}=([^\s";]+|"[^"]*"))*$`; `application/octet-stream` when it declares none.
-Attachment.contentType is the file's IANA media type as the source platform declares it, with the type, subtype, and parameter names in lowercase, or `application/octet-stream` when the source declares none. The registry enumerates no media type for this format: any value that matches its contentTypePattern is admitted, and a receiver must not reject a file for an unfamiliar media type.
-Grove format validation checks only the size and SHA-1 hash of embedded bytes, as for every recording attachment; it never opens or interprets the file. A URL payload is resolved by the deployment, not by Grove.
-One document carries exactly one file. Only a profile that names this format carries it; no Sensor recording document does.
-One file exactly as the source platform stored it, in any format. Grove never opens, rewrites, reserializes, or interprets the file.
-
-### `native-recording` — Native Recording
+### `native-recording-json` — Native Recording JSON
 
 Media type: `application/json`.
 UTF-8 without a byte-order mark.
@@ -297,7 +275,7 @@ The payload is strict UTF-8 JSON with an object or array root. Byte-order marks,
 This format defines no per-stream field schema. The carrying document's source type supplies the source category and meaning; payload members retain their native producer-defined meaning and remain opaque to a generic receiver.
 One document carries one stream and one source batch. Validation checks only this strict envelope; it does not reinterpret, sanitize, rewrite, or reserialize the bytes.
 
-### `provider-recording` — Provider Recording
+### `provider-response-json` — Provider Response JSON
 
 Media type: `application/json`.
 UTF-8.

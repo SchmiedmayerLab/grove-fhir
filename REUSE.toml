@@ -28,6 +28,8 @@ path = [
     "questionnaire/input/expectedBrokenLinks.txt",
     "sensor/ig.ini",
     "sensor/input/ignoreWarnings.txt",
+    "clinical-records/ig.ini",
+    "clinical-records/input/ignoreWarnings.txt",
     "sensorkit/ig.ini",
     "sensorkit/input/ignoreWarnings.txt",
     "withings/ig.ini",

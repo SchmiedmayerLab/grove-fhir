@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
 A shared HealthKit Observation directly claims the generic HealthKit adapter profile and the one Mobile or standard profile that defines the result.
 A HealthKit-specific child Observation directly claims only that exact child; inherited profiles are not repeated.
 The ECG Observation directly declares the Sensor ECG and HealthKit ECG profiles.
-Native recording, clinical-record, clinical-record attachment, vision-prescription, medication-dose, and tracked-medication outputs declare exactly the profile sets published in `catalog/profile-claims.json`.
+Native recording, clinical-record, CDA, clinical-record attachment, vision-prescription, medication-dose, and tracked-medication outputs declare exactly the profile sets published in `catalog/profile-claims.json`; a clinical-record, CDA, or attachment output claims its shared Clinical Records profile beside its HealthKit profile.
 Install Mobile, Sensor, and HealthKit and validate every direct profile together.
 
 ### Download the packages

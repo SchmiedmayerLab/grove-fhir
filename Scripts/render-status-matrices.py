@@ -101,6 +101,16 @@ def healthkit() -> str:
         "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
         "healthkit-recording-document"
     )
+    clinical_records = "https://grovealliance.org/fhir/clinical-records/StructureDefinition/"
+    healthkit_profiles = "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
+    clinical_parents = {
+        healthkit_profiles + "healthkit-clinical-record-document":
+            clinical_records + "grove-clinical-record-document",
+        healthkit_profiles + "healthkit-cda-document":
+            clinical_records + "grove-clinical-record-document",
+        healthkit_profiles + "healthkit-clinical-record-attachment":
+            clinical_records + "grove-clinical-record-attachment",
+    }
     rows = []
     for item in catalog["rows"]:
         requirement = item.get("requirement")
@@ -132,6 +142,12 @@ def healthkit() -> str:
         elif direct_profiles == [healthkit_recording_profile]:
             direct_profiles.insert(0, sensor_recording_profile)
             direct_contract = profile_names(direct_profiles)
+        elif set(direct_profiles) & set(clinical_parents):
+            # A clinical output claims its shared Clinical Records profile beside its adapter one.
+            claimed = []
+            for profile in direct_profiles:
+                claimed.extend([clinical_parents[profile], profile] if profile in clinical_parents else [profile])
+            direct_contract = profile_names(claimed)
         else:
             direct_contract = profile_names(direct_profiles)
         rows.append(

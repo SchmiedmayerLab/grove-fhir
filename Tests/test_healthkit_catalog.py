@@ -112,7 +112,7 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertEqual(
             provenance["targetAdapterProfiles"], sorted(active_healthkit_profiles)
         )
-        self.assertEqual(len(active_healthkit_profiles), 120)
+        self.assertEqual(len(active_healthkit_profiles), 121)
 
         single_profiles = {
             profile
@@ -135,15 +135,22 @@ class HealthKitCatalogTests(unittest.TestCase):
                 prefix + "healthkit-recording-document",
             ],
         )
+        clinical = "https://grovealliance.org/fhir/clinical-records/StructureDefinition/"
+        # A HealthKit clinical output claims the shared Clinical Records profile beside its own.
         self.assertEqual(
             self.claims["healthKitClinicalRecordDocumentClaim"]["profiles"],
-            [prefix + "healthkit-clinical-record-document"],
+            [clinical + "grove-clinical-record-document", prefix + "healthkit-clinical-record-document"],
+        )
+        self.assertEqual(
+            self.claims["healthKitCDADocumentClaim"]["profiles"],
+            [clinical + "grove-clinical-record-document", prefix + "healthkit-cda-document"],
         )
         attachment_claim = self.claims["healthKitClinicalRecordAttachmentClaim"]
         self.assertEqual(
-            attachment_claim["profiles"], [prefix + "healthkit-clinical-record-attachment"]
+            attachment_claim["profiles"],
+            [clinical + "grove-clinical-record-attachment", prefix + "healthkit-clinical-record-attachment"],
         )
-        self.assertEqual(attachment_claim["cardinality"], 1)
+        self.assertEqual(attachment_claim["cardinality"], 2)
         self.assertEqual(
             attachment_claim["requiredIdentifierRoles"],
             ["source-record", "source-output", "source-artifact"],
@@ -184,7 +191,7 @@ class HealthKitCatalogTests(unittest.TestCase):
                 "r4": "application/fhir+json; fhirVersion=4.0",
             },
         )
-        self.assertIn("* content.format = $recordingFormat#fhir-resource", profiles)
+        self.assertIn("* content.format = $payloadFormat#provider-issued-fhir-json", profiles)
         self.assertIn("* obeys healthkit-clinical-fhir-content-type-1", profiles)
         self.assertNotIn("HealthKitClinicalFHIRRelease", profiles)
         terminology = (ROOT / "healthkit/input/fsh/terminology.fsh").read_text(
@@ -192,21 +199,30 @@ class HealthKitCatalogTests(unittest.TestCase):
         )
         self.assertNotIn("HealthKitClinicalFHIRRelease", terminology)
 
-    def test_clinical_document_has_one_provenance_target_hierarchy(self) -> None:
+    def test_clinical_documents_map_onto_clinical_records_and_are_provenance_targets(self) -> None:
         profiles = (ROOT / "healthkit/input/fsh/profiles.fsh").read_text(
             encoding="utf-8"
         )
-        self.assertIn(
-            "Profile: HealthKitClinicalRecordDocument\n"
-            "Parent: HealthKitRecordingDocument",
-            profiles,
-        )
+        for profile, parent in (
+            ("HealthKitClinicalRecordDocument", "GroveClinicalRecordDocument"),
+            ("HealthKitCDADocument", "GroveClinicalRecordDocument"),
+            ("HealthKitClinicalRecordAttachment", "GroveClinicalRecordAttachment"),
+        ):
+            with self.subTest(profile=profile):
+                self.assertIn(f"Profile: {profile}\nParent: {parent}", profiles)
         target_rule = next(
             line for line in profiles.splitlines()
             if line.startswith("* target only Reference(")
         )
-        self.assertIn("HealthKitRecordingDocument", target_rule)
-        self.assertNotIn("HealthKitClinicalRecordDocument", target_rule)
+        # The clinical profiles no longer derive from the recording document, so each is named.
+        for profile in (
+            "HealthKitRecordingDocument",
+            "HealthKitClinicalRecordDocument",
+            "HealthKitCDADocument",
+            "HealthKitClinicalRecordAttachment",
+        ):
+            with self.subTest(target=profile):
+                self.assertIn(f" {profile} ", target_rule)
 
     def test_examples_do_not_reintroduce_a_generic_metadata_channel(self) -> None:
         examples = (ROOT / "healthkit/input/fsh/examples.fsh").read_text(

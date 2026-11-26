@@ -52,6 +52,7 @@ menu:
   Observations: observations.html
   Devices and provenance: devices.html
   Study context: study.html
+  Payload formats: formats.html
   Implement and validate: implementation.html
   Artifacts: artifacts.html
 
@@ -68,5 +69,7 @@ pages:
     title: Devices and provenance
   study.md:
     title: Study context
+  formats.md:
+    title: Payload formats
   implementation.md:
     title: Implement and validate

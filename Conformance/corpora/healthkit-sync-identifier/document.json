@@ -101,7 +101,7 @@
         "hash": "hRPUfJrDsoGXIPige7C51EtpY9E="
       },
       "format": {
-        "system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format",
         "code": "beat-interval-series",
         "display": "Beat Interval Series"
       }

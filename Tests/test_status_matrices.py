@@ -63,11 +63,24 @@ class StatusMatrixTests(unittest.TestCase):
         )
         for source_type in (
             "HKDataTypeIdentifierHeartbeatSeries",
-            "HKDocumentTypeIdentifierCDA",
             "HKWorkoutRouteTypeIdentifier",
         ):
             row = next(line for line in healthkit.splitlines() if source_type in line)
             self.assertIn(recording_claims, row)
+        cda_row = next(
+            line for line in healthkit.splitlines() if "HKDocumentTypeIdentifierCDA" in line
+        )
+        self.assertIn("grove-clinical-record-document; healthkit-cda-document", cda_row)
+        clinical_row = next(
+            line
+            for line in healthkit.splitlines()
+            if "HKClinicalTypeIdentifierClinicalNoteRecord" in line
+        )
+        self.assertIn(
+            "grove-clinical-record-document; healthkit-clinical-record-document; "
+            "grove-clinical-record-attachment; healthkit-clinical-record-attachment",
+            clinical_row,
+        )
         workout_row = next(
             line
             for line in healthkit.splitlines()

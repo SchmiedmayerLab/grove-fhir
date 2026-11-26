@@ -35,7 +35,7 @@ The [Sensor guide](https://grovealliance.org/fhir/sensor/waveforms.html#recordin
 The mapper does not fetch attachment URLs, semantically reinterpret, sanitize, rewrite, or reserialize SensorKit data.
 Two SensorKit-specific limits apply on top of that scope: the CSV checks are structural and lexical and do not enforce the per-column source-domain ranges stated in column meanings, and nothing parses the PPG binary grammar.
 
-`native-recording` is strict UTF-8 JSON with an object or array root.
+`native-recording-json` is strict UTF-8 JSON with an object or array root.
 Byte-order marks, duplicate object member names, non-finite numeric values, scalar roots, malformed UTF-8, and malformed JSON are rejected.
 Validation checks only this strict envelope; it does not reinterpret, sanitize, rewrite, or reserialize the bytes.
 The carrying SensorKit source type supplies the source category and meaning; it does not select a per-stream JSON field schema in this guide, and a generic receiver treats payload members as opaque producer-defined data.
@@ -50,7 +50,7 @@ Every SensorKit hybrid graph is bidirectional: the Observation's `derivedFrom` p
 The accelerometer, PPG, and wrist-temperature contracts additionally require caller-supplied acquisition or session bounds in `Observation.effectivePeriod` to contain every instant encoded in the accepted payload.
 The same fail-closed containment check applies to a raw-only Recording Document's `context.period` whenever its registered inline payload grammar yields instant bounds; formats without derived bounds retain the producer's exact source-coverage assertion.
 For those three registered-schema graphs, every summary count is derived by parsing that same payload; a separate caller-supplied count is never an authoritative input.
-Generic `native-recording` links, such as keyboard metrics, define graph coherence without defining a per-stream JSON member schema or a generic summary algorithm.
+Generic `native-recording-json` links, such as keyboard metrics, define graph coherence without defining a per-stream JSON member schema or a generic summary algorithm.
 The machine-readable `graphContract` on each catalog row states the exact resource pair, links, and, where applicable, coverage and derivation rules.
 
 The linked Observation and DocumentReference examples illustrate individual resources rather than a complete exchange Bundle.

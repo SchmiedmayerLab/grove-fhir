@@ -221,6 +221,7 @@ class ExchangeProtocolTests(unittest.TestCase):
                 "mobile-exchange", "mobile-output", "mobile-retraction", "mobile-support",
                 "mobile-device", "mobile-input", "mobile-omission", "healthkit-clinical", "healthkit-ecg",
                 "healthkit-input", "healthkit-device", "health-connect-provenance", "sensor-recording-document",
+                "clinical-record",
             },
         )
         for row in rows:

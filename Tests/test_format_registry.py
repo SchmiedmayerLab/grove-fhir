@@ -35,12 +35,12 @@ class FormatRegistryTests(unittest.TestCase):
                 "odometer-samples",
                 "beat-interval-series",
                 "location-track-samples",
-                "fhir-collection-bundle",
-                "fhir-resource",
-                "clinical-document",
+                "sensor-sample-collection-bundle",
+                "provider-issued-fhir-json",
+                "cda-document",
                 "source-file",
-                "native-recording",
-                "provider-recording",
+                "native-recording-json",
+                "provider-response-json",
                 "photoplethysmogram-samples",
             ],
         )
@@ -66,7 +66,7 @@ class FormatRegistryTests(unittest.TestCase):
         expected = {
             content_type
             for fmt in REGISTRY["formats"].values()
-            if "contentTypeRule" not in fmt
+            if "contentTypeRule" not in fmt and fmt["owner"] == "sensor"
             for content_type in fmt.get("contentTypes", [fmt.get("contentType")])
         }
         for content_type in expected:
@@ -149,12 +149,15 @@ class FormatRegistryTests(unittest.TestCase):
 
     def test_a_format_code_never_names_its_encoding(self) -> None:
         # The code identifies the payload's wire format; the media type carries its encoding.
+        # JSON is the exception: the three JSON contracts (provider-issued FHIR JSON, a native
+        # recording's JSON, and a provider's response JSON) are named for the grammar their bytes
+        # follow, as the payload-format move to Mobile renamed them.
         for code in REGISTRY["formats"]:
-            for encoding in ("csv", "json", "binary", "octet"):
+            for encoding in ("csv", "binary", "octet"):
                 self.assertNotIn(encoding, code.split("-"), code)
 
     def test_native_recording_is_a_generic_json_envelope_not_a_schema_gate(self) -> None:
-        specification = REGISTRY["formats"]["native-recording"]["specification"]
+        specification = REGISTRY["formats"]["native-recording-json"]["specification"]
         self.assertIn("strict UTF-8 JSON", specification["structure"])
         self.assertIn("object or array root", specification["structure"])
         self.assertIn("duplicate object member names", specification["structure"])
@@ -169,7 +172,7 @@ class FormatRegistryTests(unittest.TestCase):
         native_rows = [
             entry["raw"]
             for entry in adapter["entries"]
-            if "native-recording" in entry.get("raw", {}).get("formats", [])
+            if "native-recording-json" in entry.get("raw", {}).get("formats", [])
         ]
         self.assertTrue(native_rows)
         self.assertTrue(all("jsonSchema" not in raw for raw in native_rows))
@@ -179,7 +182,7 @@ class FormatRegistryTests(unittest.TestCase):
         self.assertIn("no per-stream field schema", page)
 
     def test_fhir_collection_generic_validation_scope_is_explicit(self) -> None:
-        validation_scope = REGISTRY["formats"]["fhir-collection-bundle"][
+        validation_scope = REGISTRY["formats"]["sensor-sample-collection-bundle"][
             "specification"
         ]["validationScope"]
         self.assertIn("Grove format validation verifies strict JSON syntax", validation_scope)
@@ -199,19 +202,19 @@ class FormatRegistryTests(unittest.TestCase):
         self.assertIn("Grove format validation checks", description)
         self.assertIn("FHIR/profile", description)
         self.assertNotIn("receiver can validate the admitted wire format", description)
-        fhir_resource_scope = REGISTRY["formats"]["fhir-resource"][
+        fhir_resource_scope = REGISTRY["formats"]["provider-issued-fhir-json"][
             "specification"
         ]["scope"]
         self.assertIn("`resourceType`-bearing object only", fhir_resource_scope)
         self.assertIn("does not infer the FHIR release", fhir_resource_scope)
-        fhir_resource = REGISTRY["formats"]["fhir-resource"]["specification"]
-        self.assertIn("FHIR DSTU2 or R4", fhir_resource["structure"])
+        fhir_resource = REGISTRY["formats"]["provider-issued-fhir-json"]["specification"]
+        self.assertIn("of the FHIR release its producer declares", fhir_resource["structure"])
         self.assertNotIn("HealthKit", fhir_resource["fhirVersion"])
         self.assertNotIn("HKFHIRVersion", fhir_resource["fhirVersion"])
         self.assertIn("fhirVersion=1.0", fhir_resource["fhirVersion"])
         self.assertIn("fhirVersion=4.0", fhir_resource["fhirVersion"])
         self.assertIn("never converts, re-encodes", fhir_resource["provenance"])
-        provider_scope = REGISTRY["formats"]["provider-recording"][
+        provider_scope = REGISTRY["formats"]["provider-response-json"][
             "specification"
         ]["scope"]
         self.assertIn("strict JSON syntax", provider_scope)
@@ -251,7 +254,7 @@ class FormatRegistryTests(unittest.TestCase):
         self.assertIn("enumerates no media type", specification["mediaType"])
         self.assertIn("exactly one file", specification["scope"])
 
-        page = (ROOT / "sensor/input/pagecontent/formats.md").read_text(encoding="utf-8")
+        page = (ROOT / "mobile/input/pagecontent/formats.md").read_text(encoding="utf-8")
         self.assertIn("### `source-file` — Source File", page)
         terminology = (ROOT / "sensor/input/fsh/generated-recording-mime-types.fsh").read_text(
             encoding="utf-8"

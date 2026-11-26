@@ -271,4 +271,4 @@ WARNING: Observation/HealthkitWheelchairUseExample: Observation: Best Practice R
 WARNING: Observation/HealthkitWorkoutEffortScoreExample: Observation: Best Practice Recommendation: In general, all observations should have a performer
 
 # A clinical-record attachment's url may be relative to the transport unit that carries the Bundle, such as an entry of the upload archive. The Publisher cannot resolve it, and Grove never fetches it; resolving it is the deployment's job.
-WARNING: DocumentReference/HealthKitClinicalRecordAttachmentExample: DocumentReference.content[0].attachment.url: No definition could be found for URL value 'recordings/50cd9bb4234b61635e892290a431ec36c3dedf389c9b538d07d21c3a5ffc9dd8.pdf'
+WARNING: DocumentReference/HealthKitClinicalRecordAttachmentExample: DocumentReference.content[0].attachment.url: No definition could be found for URL value 'documents/50cd9bb4234b61635e892290a431ec36c3dedf389c9b538d07d21c3a5ffc9dd8.pdf'
