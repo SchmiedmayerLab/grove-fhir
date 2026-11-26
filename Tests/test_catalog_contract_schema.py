@@ -100,7 +100,7 @@ class CatalogContractSchemaTests(unittest.TestCase):
                 ("formats",),
                 ("formats", "heart-rate-samples"),
                 ("formats", "heart-rate-samples", "columns", 0),
-                ("formats", "fhir-resource", "specification"),
+                ("formats", "provider-issued-fhir-json", "specification"),
                 ("formats", "photoplethysmogram-samples", "specification"),
                 ("formats", "photoplethysmogram-samples", "specification", "primitives"),
                 ("formats", "photoplethysmogram-samples", "specification", "record", 0),
@@ -290,7 +290,7 @@ class CatalogContractSchemaTests(unittest.TestCase):
     def test_healthkit_clinical_admission_accepts_only_dstu2_and_r4(self) -> None:
         healthkit = _read("catalog/healthkit-adapter.json")
         admission = healthkit["clinicalRecordAdmission"]
-        self.assertEqual(admission["payloadFormat"], "fhir-resource")
+        self.assertEqual(admission["payloadFormat"], "provider-issued-fhir-json")
         self.assertEqual(
             admission["sourceFHIRReleaseField"], "HKFHIRVersion.fhirRelease"
         )

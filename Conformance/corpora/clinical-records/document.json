@@ -1,0 +1,77 @@
+{
+  "resourceType": "DocumentReference",
+  "id": "portal-clinical-note-record",
+  "meta": {
+    "profile": [
+      "https://grovealliance.org/fhir/clinical-records/StructureDefinition/grove-clinical-record-document"
+    ]
+  },
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "code": "source-record",
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+      "value": "v0:test-key:1:_hcEGJV15Q_pOgnQva_qLn7onjsqM3_YBbCpOE52eaE"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "code": "source-output",
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+      "value": "v0:test-key:1:pKADUrrKywzVTkUyBjqXFclrM4YWez6lSFCQMZqYRHM"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "code": "source-artifact",
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1",
+      "value": "v0:test-key:1:fT0CaSwLECwfII6cX_LgG2FA8gGU9X2BNRFkw3ZFh9k"
+    }
+  ],
+  "status": "current",
+  "type": {
+    "coding": [
+      {
+        "code": "34109-9",
+        "system": "http://loinc.org",
+        "display": "Note"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "Patient/GroveClinicalRecordsPatientExample"
+  },
+  "date": "2026-08-20T17:09:01Z",
+  "content": [
+    {
+      "format": {
+        "code": "provider-issued-fhir-json",
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format",
+        "display": "Provider-Issued FHIR JSON"
+      },
+      "attachment": {
+        "contentType": "application/fhir+json; fhirVersion=4.0",
+        "title": "Provider-issued DocumentReference",
+        "data": "eyJyZXNvdXJjZVR5cGUiOiJEb2N1bWVudFJlZmVyZW5jZSIsImlkIjoicHJvdmlkZXItbm90ZS03Iiwic3RhdHVzIjoiY3VycmVudCIsInR5cGUiOnsidGV4dCI6IlByb2dyZXNzIG5vdGUifSwic3ViamVjdCI6eyJyZWZlcmVuY2UiOiJQYXRpZW50L3BvcnRhbC1wYXRpZW50LTcifSwiY29udGVudCI6W3siYXR0YWNobWVudCI6eyJjb250ZW50VHlwZSI6ImFwcGxpY2F0aW9uL3BkZiIsInVybCI6IkJpbmFyeS9wcm92aWRlci1ub3RlLTctcGRmIiwidGl0bGUiOiJWaXNpdCBub3RlIn19XX0=",
+        "size": 278,
+        "hash": "9hYGF2CskU4fd9vhihIP8PNaDSk="
+      }
+    }
+  ]
+}

@@ -38,6 +38,7 @@ class PackageGraphTests(unittest.TestCase):
                 "mobile",
                 "questionnaire",
                 "sensor",
+                "clinical-records",
                 "sensorkit",
                 "healthkit",
                 "health-connect",

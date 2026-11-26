@@ -136,7 +136,7 @@ Description: "An externally encoded or embedded sensor recording preserved in on
 * content.attachment.contentType 1..1 MS
 * content.attachment.contentType from GroveRecordingMimeTypeVS (required)
 * content.format 1..1 MS
-* content.format from GroveRecordingFormatVS (required)
+* content.format from GroveSensorRecordingFormatVS (required)
 // The stable CodeSystem and code identify the registered wire format. IG release versions do
 // not travel in payload Coding values.
 * content.format.version 0..0

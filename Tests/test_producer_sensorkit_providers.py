@@ -443,7 +443,7 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
                         identity_kind="source-artifact",
                         components=[
                             "sensorkit", "rotation-rate", "scope", "one", "record",
-                            "native-recording", "0",
+                            "native-recording-json", "0",
                         ],
                     ),
                 ),
@@ -782,7 +782,7 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
             key_id="test-key",
             epoch=1,
             identity_kind="source-artifact",
-            components=[*components, "native-recording", "0"],
+            components=[*components, "native-recording-json", "0"],
         )
 
         def typed_identifier(role: str, system: str, value: str) -> dict[str, object]:
@@ -836,8 +836,8 @@ class ProducerSensorkitProvidersTests(ProducerValidationTestCase):
                     "hash": "vyGp6PvFo4RvsFtPoIWeCReyIC8=",
                 },
                 "format": {
-                    "system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
-                    "code": "native-recording",
+                    "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format",
+                    "code": "native-recording-json",
                 },
             }],
             "context": {"related": [{

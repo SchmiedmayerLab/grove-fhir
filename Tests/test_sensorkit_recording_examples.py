@@ -333,7 +333,7 @@ class SensorKitRecordingExampleTests(unittest.TestCase):
                     r"^\* extension\[sensorKitSourceType\]\.valueCode = #(\S+)$",
                 )
                 format_code = required_match(
-                    block, r"^\* content\.format = \$recordingFormat#(\S+) "
+                    block, r"^\* content\.format = \$payloadFormat#(\S+) "
                 )
                 content_type = required_match(
                     block, r"^\* content\.attachment\.contentType = #(\S+)$"
@@ -366,7 +366,7 @@ class SensorKitRecordingExampleTests(unittest.TestCase):
         for name, block in self.blocks.items():
             if "InstanceOf: SensorKitRecordingDocument" not in block:
                 continue
-            if "$recordingFormat#native-recording " not in block:
+            if "$payloadFormat#native-recording-json " not in block:
                 continue
             native_recordings += 1
             with self.subTest(instance=name):

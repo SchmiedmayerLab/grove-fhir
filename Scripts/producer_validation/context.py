@@ -167,7 +167,7 @@ MEASUREMENT_BY_PROFILE = {
     f"/StructureDefinition/{entry['profile']}": entry
     for entry in MEASUREMENT_CATALOG["measurements"]
 }
-NON_ADAPTER_SOURCES = {"mobile", "questionnaire", "sensor"}
+NON_ADAPTER_SOURCES = {"mobile", "questionnaire", "sensor", "clinical-records"}
 ADAPTER_PACKAGE_PROFILES = {
     package["packageId"]: {
         f"{package['canonical']}/StructureDefinition/{profile}"
@@ -193,6 +193,15 @@ SENSOR_RECORDING_PROFILE = (
     "https://grovealliance.org/fhir/sensor/StructureDefinition/"
     "grove-sensor-recording-document"
 )
+CLINICAL_RECORDS_PROFILE_PREFIX = (
+    "https://grovealliance.org/fhir/clinical-records/StructureDefinition/"
+)
+CLINICAL_RECORD_DOCUMENT_PROFILE = (
+    CLINICAL_RECORDS_PROFILE_PREFIX + "grove-clinical-record-document"
+)
+CLINICAL_RECORD_ATTACHMENT_PROFILE = (
+    CLINICAL_RECORDS_PROFILE_PREFIX + "grove-clinical-record-attachment"
+)
 HEALTHKIT_PROFILE_PREFIX = (
     "https://grovealliance.org/fhir/healthkit/StructureDefinition/"
 )
@@ -204,6 +213,11 @@ HEALTHKIT_CLINICAL_RECORD_PROFILE = (
 HEALTHKIT_CLINICAL_ATTACHMENT_PROFILE = (
     HEALTHKIT_PROFILE_PREFIX + "healthkit-clinical-record-attachment"
 )
+HEALTHKIT_CDA_PROFILE = HEALTHKIT_PROFILE_PREFIX + "healthkit-cda-document"
+# An adapter attachment appends only to the same adapter's clinical record document.
+ADAPTER_ATTACHMENT_DOCUMENT_PROFILES = {
+    HEALTHKIT_CLINICAL_ATTACHMENT_PROFILE: HEALTHKIT_CLINICAL_RECORD_PROFILE,
+}
 HEALTHKIT_ECG_PROFILE = HEALTHKIT_PROFILE_PREFIX + "healthkit-ecg-observation"
 HEALTHKIT_ECG_AVERAGE_HEART_RATE_PROFILE = (
     HEALTHKIT_PROFILE_PREFIX + "healthkit-ecg-average-heart-rate-observation"

@@ -104,7 +104,7 @@ Description: "A compact embedded native recording linked to the parsed ECG Obser
 * content.attachment.data = "eyJsZWFkIjoiSSIsInVuaXQiOiJ1ViIsInNhbXBsZXMiOlsxMCw0MCwxMjAsMzAsLTEwXX0="
 * content.attachment.size = 53
 * content.attachment.hash = "oXwMobBXGCGxZ9coBgjYXhY29Dc="
-* content.format = GroveRecordingFormatCS#native-recording "Native Recording"
+* content.format = $payloadFormat#native-recording-json "Native Recording JSON"
 * context.related = Reference(GroveSensorECGExample)
 
 Instance: GroveSensorConversionProvenanceExample

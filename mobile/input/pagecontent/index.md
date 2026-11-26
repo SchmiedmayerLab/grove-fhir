@@ -11,7 +11,7 @@ Mobile names the data domain, not the writer: a backend that projects a question
 Clinical meaning stays in standard FHIR fields and established domain profiles.
 Grove profiles make record identity, capture mode, device roles, conversion provenance, and research-study context consistent across source platforms.
 
-The Grove FHIR Implementation Guides form a family of ten guide packages. The [guide family page](guides.html) maps their responsibilities, catalogs, and shared status vocabulary.
+The Grove FHIR Implementation Guides form a family of eleven guide packages. The [guide family page](guides.html) maps their responsibilities, catalogs, and shared status vocabulary.
 
 Readers who are new to FHIR can begin with [FHIR basics](fhir-basics.html).
 That page introduces the core resources used by these guides, distinguishes resource IDs from business identifiers, and explains how to read a profile page.

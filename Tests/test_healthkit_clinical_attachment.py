@@ -16,8 +16,7 @@ import unittest
 from pathlib import Path
 from typing import Any
 
-from Scripts.producer_validation import context, exchange_bundle, identity
-from Scripts.producer_validation import healthkit as healthkit_validation
+from Scripts.producer_validation import clinical_records, context, exchange_bundle, identity
 from Scripts.producer_validation.diagnostics import ProducerValidationError
 
 
@@ -53,7 +52,7 @@ def bundled(document: dict[str, Any], *attachments: dict[str, Any]) -> dict[str,
 
 
 def validate_graph(resources: dict[str, dict[str, Any]]) -> None:
-    healthkit_validation.validate_healthkit_clinical_attachment_graph(
+    clinical_records.validate_clinical_record_attachment_graph(
         list(resources.values()), resources, "Bundle"
     )
 
@@ -133,7 +132,7 @@ class HealthKitClinicalAttachmentTests(unittest.TestCase):
 
     def test_the_payload_is_exactly_one_source_file(self) -> None:
         wrong_format = copy.deepcopy(self.attachment)
-        wrong_format["content"][0]["format"]["code"] = "fhir-resource"
+        wrong_format["content"][0]["format"]["code"] = "provider-issued-fhir-json"
         with self.assertRaisesRegex(ProducerValidationError, "exactly one source-file payload"):
             self.admit(wrong_format)
 
@@ -148,7 +147,7 @@ class HealthKitClinicalAttachmentTests(unittest.TestCase):
         del recording["relatesTo"]
         del recording["extension"]
         with self.assertRaisesRegex(
-            ProducerValidationError, "admitted only on a document profile"
+            ProducerValidationError, "admits only formats the sensor guide owns"
         ):
             exchange_bundle.validate_resource_profile_claims(
                 recording, "Recording", set()
@@ -171,7 +170,7 @@ class HealthKitClinicalAttachmentTests(unittest.TestCase):
             with self.subTest(case=name), self.assertRaises(ProducerValidationError) as raised:
                 self.admit(invalid)
             self.assertEqual(
-                raised.exception.diagnostic["code"], "healthkit-clinical.attachment-graph"
+                raised.exception.diagnostic["code"], "clinical-record.attachment-graph"
             )
 
     def test_only_the_primary_output_carries_writer_or_native_identity(self) -> None:
@@ -182,7 +181,7 @@ class HealthKitClinicalAttachmentTests(unittest.TestCase):
             "https://study.example.org/fhir/NamingSystem/grove-writer-record-v0/test-key/1"
         )
         writer["extension"].append({
-            "url": healthkit_validation.WRITER_RECORD_VERSION_EXTENSION,
+            "url": clinical_records.WRITER_RECORD_VERSION_EXTENSION,
             "valueString": "1",
         })
         with self.assertRaisesRegex(ProducerValidationError, "no writer record"):
@@ -232,7 +231,7 @@ class HealthKitClinicalAttachmentTests(unittest.TestCase):
             with self.assertRaises(ProducerValidationError) as raised:
                 validate_graph(resources)
             self.assertEqual(
-                raised.exception.diagnostic["code"], "healthkit-clinical.attachment-graph"
+                raised.exception.diagnostic["code"], "clinical-record.attachment-graph"
             )
             self.assertIn(message, str(raised.exception))
 
@@ -281,7 +280,7 @@ class HealthKitClinicalAttachmentTests(unittest.TestCase):
 
         onto_attachment = bundled(self.document, copy.deepcopy(self.attachment))
         onto_attachment[DOCUMENT_URL] = copy.deepcopy(self.attachment)
-        failing(onto_attachment, "clinical-record document in the same Bundle")
+        failing(onto_attachment, "in the same Bundle")
 
     def test_attachments_state_the_date_authors_and_studies_of_their_document(self) -> None:
         study = {"reference": "ResearchStudy/HealthKitResearchStudyExample"}
@@ -303,7 +302,7 @@ class HealthKitClinicalAttachmentTests(unittest.TestCase):
             with self.assertRaises(ProducerValidationError) as raised:
                 validate_graph(bundled(document, attachment))
             self.assertEqual(
-                raised.exception.diagnostic["code"], "healthkit-clinical.attachment-graph"
+                raised.exception.diagnostic["code"], "clinical-record.attachment-graph"
             )
             self.assertIn(message, str(raised.exception))
 
@@ -324,35 +323,35 @@ class HealthKitClinicalAttachmentTests(unittest.TestCase):
 
         document, attachment = pair()
         attachment["date"] = "2026-08-20T17:07:02Z"
-        failing(document, attachment, "date of its clinical-record document")
+        failing(document, attachment, "date of its clinical record document")
 
         document, attachment = pair()
         del attachment["date"]
-        failing(document, attachment, "date of its clinical-record document")
+        failing(document, attachment, "date of its clinical record document")
 
         document, attachment = pair(author=[device])
         attachment["author"] = [other_device]
-        failing(document, attachment, "authors of its clinical-record document")
+        failing(document, attachment, "authors of its clinical record document")
 
         document, attachment = pair(author=[device])
         del attachment["author"]
-        failing(document, attachment, "authors of its clinical-record document")
+        failing(document, attachment, "authors of its clinical record document")
 
         document, attachment = pair()
         attachment["author"] = [device]
-        failing(document, attachment, "authors of its clinical-record document")
+        failing(document, attachment, "authors of its clinical record document")
 
         document, attachment = pair(context={"related": [study]})
         attachment["context"]["related"] = [other_study]
-        failing(document, attachment, "studies of its clinical-record document")
+        failing(document, attachment, "studies of its clinical record document")
 
         document, attachment = pair(context={"related": [study]})
         del attachment["context"]
-        failing(document, attachment, "studies of its clinical-record document")
+        failing(document, attachment, "studies of its clinical record document")
 
         document, attachment = pair()
         attachment["context"] = {"related": [study]}
-        failing(document, attachment, "studies of its clinical-record document")
+        failing(document, attachment, "studies of its clinical record document")
 
 
 if __name__ == "__main__":

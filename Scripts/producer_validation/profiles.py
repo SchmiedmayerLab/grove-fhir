@@ -312,20 +312,25 @@ def validate_active_adapter_only_output_profile_claim(
             f"its adapter-only profile {expected}",
         )
 
-DOCUMENT_REFERENCE_CLAIM_KEYS = (
-    "sensorRecordingDocumentClaim",
-    "healthKitRecordingDocumentClaim",
-    "healthKitClinicalRecordDocumentClaim",
-    "healthKitClinicalRecordAttachmentClaim",
-    "sensorKitRecordingDocumentClaim",
-    "providerRecordingDocumentClaim",
-)
+# Each document claim admits the payload formats of one registry owner: a Sensor recording
+# carries the formats Sensor owns, a clinical record document those Clinical Records owns, and
+# a clinical record attachment only the Mobile source-file format.
+DOCUMENT_REFERENCE_CLAIM_FORMAT_OWNERS = {
+    "sensorRecordingDocumentClaim": "sensor",
+    "healthKitRecordingDocumentClaim": "sensor",
+    "clinicalRecordDocumentClaim": "clinical-records",
+    "healthKitClinicalRecordDocumentClaim": "clinical-records",
+    "healthKitCDADocumentClaim": "clinical-records",
+    "clinicalRecordAttachmentClaim": "mobile",
+    "healthKitClinicalRecordAttachmentClaim": "mobile",
+    "sensorKitRecordingDocumentClaim": "sensor",
+    "providerRecordingDocumentClaim": "sensor",
+}
+DOCUMENT_REFERENCE_CLAIM_KEYS = tuple(DOCUMENT_REFERENCE_CLAIM_FORMAT_OWNERS)
 
 
-def admitted_document_reference_claim(
-    resource: dict[str, Any],
-) -> dict[str, Any] | None:
-    """Return the one exact admitted recording/clinical-document claim, if any."""
+def admitted_document_reference_claim_key(resource: dict[str, Any]) -> str | None:
+    """Return the key of the one exact admitted document claim, if any."""
     if resource.get("resourceType") != "DocumentReference":
         return None
     profiles = resource.get("meta", {}).get("profile", [])
@@ -337,7 +342,7 @@ def admitted_document_reference_claim(
         return None
     claims = read_json(CATALOG_ROOT / "profile-claims.json")
     matches = [
-        claims[key]
+        key
         for key in DOCUMENT_REFERENCE_CLAIM_KEYS
         if (
             len(profiles) == claims[key]["cardinality"]
@@ -345,6 +350,14 @@ def admitted_document_reference_claim(
         )
     ]
     return matches[0] if len(matches) == 1 else None
+
+
+def admitted_document_reference_claim(
+    resource: dict[str, Any],
+) -> dict[str, Any] | None:
+    """Return the one exact admitted recording or clinical document claim, if any."""
+    key = admitted_document_reference_claim_key(resource)
+    return None if key is None else read_json(CATALOG_ROOT / "profile-claims.json")[key]
 
 
 def validate_active_document_reference_profile_claim(
@@ -359,7 +372,7 @@ def validate_active_document_reference_profile_claim(
             "mobile-output.document-profile",
             "DocumentReference.meta.profile",
             f"{label} active DocumentReference must directly claim exactly one "
-            "admitted recording or clinical-document profile mode",
+            "admitted recording, clinical record, or clinical record attachment profile mode",
         )
     typed = typed_resource_identifiers(resource, label)
     required = set(claim["requiredIdentifierRoles"])
@@ -712,11 +725,10 @@ def validate_adapter_conversion_provenance(
 
 def validate_recording_format(resource: dict[str, Any], label: str) -> None:
     """Require one registered payload format per recording content entry."""
-    claim = admitted_document_reference_claim(resource)
-    if claim is None:
+    claim_key = admitted_document_reference_claim_key(resource)
+    if claim_key is None:
         return
-    claims = read_json(CATALOG_ROOT / "profile-claims.json")
-    source_declared_claims = (claims["healthKitClinicalRecordAttachmentClaim"],)
+    admitted_owner = DOCUMENT_REFERENCE_CLAIM_FORMAT_OWNERS[claim_key]
     registry = read_json(CATALOG_ROOT / "format-registry.json")
     formats = registry["formats"]
     contents = resource.get("content", [])
@@ -738,7 +750,7 @@ def validate_recording_format(resource: dict[str, Any], label: str) -> None:
                 rule,
                 f"{format_location}.system",
                 f"{label} content[{index}] format system is not the Grove "
-                "recording-format registry",
+                "payload-format registry",
             )
         code = format_coding.get("code")
         entry = formats.get(code) if isinstance(code, str) else None
@@ -759,24 +771,30 @@ def validate_recording_format(resource: dict[str, Any], label: str) -> None:
             )
         attachment = content.get("attachment")
         content_type = attachment.get("contentType") if isinstance(attachment, dict) else None
-        source_declared = entry.get("contentTypeRule") == "source-declared"
-        if source_declared != (claim in source_declared_claims):
+        if entry["owner"] != admitted_owner:
             raise contract_failure(
                 rule,
                 f"{format_location}.code",
-                f"{label} content[{index}] format {code} is admitted only on a document "
-                "profile that carries a source-declared file, and such a profile admits only it",
+                f"{label} content[{index}] format {code} belongs to the {entry['owner']} "
+                f"guide; this document profile admits only formats the {admitted_owner} "
+                "guide owns",
             )
-        if source_declared:
+        content_type_rule = entry.get("contentTypeRule")
+        if content_type_rule in ("source-declared", "declared-fhir-release"):
             if (
                 not isinstance(content_type, str)
                 or re.fullmatch(entry["contentTypePattern"], content_type) is None
             ):
+                requirement = (
+                    "a lowercase IANA media type"
+                    if content_type_rule == "source-declared"
+                    else "FHIR JSON declaring its FHIR release in the fhirVersion parameter"
+                )
                 raise contract_failure(
                     rule,
                     f"DocumentReference.content[{index}].attachment.contentType",
-                    f"{label} content[{index}] contentType {content_type!r} is not a "
-                    f"lowercase IANA media type as registry format {code} requires",
+                    f"{label} content[{index}] contentType {content_type!r} is not "
+                    f"{requirement} as registry format {code} requires",
                 )
             admitted_content_types = [content_type]
         else:

@@ -139,6 +139,20 @@
       ]
     },
     {
+      "source": "clinical-records",
+      "packageId": "org.grovealliance.fhir.clinical-records",
+      "canonical": "https://grovealliance.org/fhir/clinical-records",
+      "dependencies": [
+        "hl7.terminology.r4#7.5.0",
+        "hl7.fhir.uv.extensions.r4#5.4.0",
+        "org.grovealliance.fhir.mobile#0.8.3"
+      ],
+      "profiles": [
+        "grove-clinical-record-attachment",
+        "grove-clinical-record-document"
+      ]
+    },
+    {
       "source": "sensorkit",
       "packageId": "org.grovealliance.fhir.sensorkit",
       "canonical": "https://grovealliance.org/fhir/sensorkit",
@@ -172,6 +186,7 @@
       "dependencies": [
         "hl7.terminology.r4#7.5.0",
         "hl7.fhir.uv.extensions.r4#5.4.0",
+        "org.grovealliance.fhir.clinical-records#0.8.3",
         "org.grovealliance.fhir.mobile#0.8.3",
         "org.grovealliance.fhir.sensor#0.8.3"
       ],
@@ -189,6 +204,7 @@
         "healthkit-bleeding-during-pregnancy",
         "healthkit-blood-alcohol-content",
         "healthkit-blood-type",
+        "healthkit-cda-document",
         "healthkit-clinical-record-attachment",
         "healthkit-clinical-record-document",
         "healthkit-contraceptive-use",

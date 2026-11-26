@@ -9,34 +9,22 @@
 // `python3 Scripts/render-format-registry.py`.
 //
 
-CodeSystem: GroveRecordingFormatCS
-Id: grove-recording-format
-Title: "Grove Recording Format"
-Description: "The closed registry of payload formats a Grove recording DocumentReference may declare in content.format. Each code identifies a wire format and structural envelope. Native Recording defines only a JSON object-or-array container; the carrying source type supplies its category and meaning."
+ValueSet: GroveSensorRecordingFormatVS
+Id: grove-sensor-recording-format
+Title: "Grove Sensor Recording Format"
+Description: "Every payload format the Sensor guide owns, drawn from the Mobile payload format CodeSystem; a Sensor recording document content entry declares one of them."
 * ^experimental = false
-* ^caseSensitive = true
-* ^content = #complete
-* #heart-rate-samples "Heart Rate Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, value, confidence, device."
-* #triaxial-acceleration-samples "Triaxial Acceleration Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, identifier, x, y, z, device."
-* #ambient-light-samples "Ambient Light Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, lux, placement, chromaticityX, chromaticityY, device."
-* #ambient-pressure-samples "Ambient Pressure Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, identifier, pressure, temperature, device."
-* #pedometer-samples "Pedometer Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: start, end, steps, distance, floorsUp, floorsDown, currentPace, currentCadence, avgActivePace, device."
-* #wrist-temperature-samples "Wrist Temperature Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, value, errorEstimate, condition."
-* #triaxial-rotation-samples "Triaxial Rotation Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, x, y, z, device."
-* #odometer-samples "Odometer Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: start, end, gpsDate, speed, speedAccuracy, slope, maxAbsSlope, deltaDistance, deltaDistanceAccuracy, deltaAltitude, verticalAccuracy, originDevice, device."
-* #beat-interval-series "Beat Interval Series" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, precededByGap."
-* #location-track-samples "Location Track Samples" "One header row naming every column in order, then one row per source sample in source order. Columns: timestamp, latitude, longitude, altitude, horizontalAccuracy, verticalAccuracy, speed, speedAccuracy, course, courseAccuracy."
-* #fhir-collection-bundle "FHIR R4 Collection Bundle" "One strict UTF-8 JSON resource with `resourceType` = `Bundle`, `Bundle.type` = `collection`, a required offset-bearing `Bundle.timestamp`, and one `Bundle.entry` for each source sample in source order. The Bundle has at least one entry. Every entry has a unique absolute non-fragment `fullUrl` and a resource object with `resourceType`; `request`, `response`, and `search` are absent."
-* #fhir-resource "FHIR Resource" "One complete provider-issued FHIR DSTU2 or R4 resource in FHIR JSON representation, byte-preserved exactly as the source platform delivered it."
-* #clinical-document "Clinical Document" "One HL7 Clinical Document Architecture Release 2 document, byte-preserved exactly as the source platform delivered it. Grove never rewrites, reserializes, or asserts conformance over another issuer's document; the carrying document records the issuer."
-* #source-file "Source File" "One file exactly as the source platform stored it, in any format. Grove never opens, rewrites, reserializes, or interprets the file."
-* #native-recording "Native Recording" "The payload is strict UTF-8 JSON with an object or array root. Byte-order marks, duplicate object member names, non-finite numeric values, scalar roots, malformed UTF-8, and malformed JSON are rejected."
-* #provider-recording "Provider Recording" "The payload is the exact JSON response-body bytes returned by the provider API; HTTP transport framing is not part of the payload."
-* #photoplethysmogram-samples "Photoplethysmogram Samples" "Version byte 0x01, then a varint record count, then that many PPG records. Decoders reject any other version byte; a payload whose grammar changes takes the next version."
-
-ValueSet: GroveRecordingFormatVS
-Id: grove-recording-format
-Title: "Grove Recording Format"
-Description: "Every payload format admitted for a Grove recording DocumentReference content entry."
-* ^experimental = false
-* include codes from system GroveRecordingFormatCS
+* https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format#heart-rate-samples "Heart Rate Samples"
+* https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format#triaxial-acceleration-samples "Triaxial Acceleration Samples"
+* https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format#ambient-light-samples "Ambient Light Samples"
+* https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format#ambient-pressure-samples "Ambient Pressure Samples"
+* https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format#pedometer-samples "Pedometer Samples"
+* https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format#wrist-temperature-samples "Wrist Temperature Samples"
+* https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format#triaxial-rotation-samples "Triaxial Rotation Samples"
+* https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format#odometer-samples "Odometer Samples"
+* https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format#beat-interval-series "Beat Interval Series"
+* https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format#location-track-samples "Location Track Samples"
+* https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format#sensor-sample-collection-bundle "Sensor Sample Collection Bundle"
+* https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format#native-recording-json "Native Recording JSON"
+* https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format#provider-response-json "Provider Response JSON"
+* https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format#photoplethysmogram-samples "Photoplethysmogram Samples"

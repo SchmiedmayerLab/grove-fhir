@@ -47,13 +47,8 @@ RuleSet: HealthKitSyncIdentifierSlice
 * identifier[syncIdentifier].value 1..1 MS
 
 Invariant: healthkit-clinical-fhir-content-type-1
-Description: "The clinical attachment declares DSTU2 or R4 with the standard FHIR media-type parameter."
+Description: "A HealthKit clinical record declares the DSTU2 or R4 release that HKFHIRVersion reports, with the standard FHIR media-type parameter."
 Expression: "content.attachment.contentType.all($this = 'application/fhir+json; fhirVersion=1.0' or $this = 'application/fhir+json; fhirVersion=4.0')"
-Severity: #error
-
-Invariant: healthkit-clinical-attachment-payload-1
-Description: "A clinical-record attachment carries its file in exactly one of embedded data or an immutable, version-specific URL."
-Expression: "data.exists() xor url.exists()"
 Severity: #error
 
 RuleSet: HealthKitOutputIdentitySlices
@@ -213,7 +208,7 @@ Title: "HealthKit Conversion Provenance"
 Description: "Provenance for transforming or byte-preserving one HealthKit object into every admitted HealthKit adapter output without fetching source data."
 * obeys healthkit-source-revision-writer-1
 * target 1..* MS
-* target only Reference(HealthKitObservation or HealthKitRecordingDocument or HealthKitClinicalRecordAttachment or HealthKitVisionPrescription or HealthKitMedicationDoseEvent or HealthKitUserAnnotatedMedication)
+* target only Reference(HealthKitObservation or HealthKitRecordingDocument or HealthKitClinicalRecordDocument or HealthKitCDADocument or HealthKitClinicalRecordAttachment or HealthKitVisionPrescription or HealthKitMedicationDoseEvent or HealthKitUserAnnotatedMedication)
 * entity 1..1 MS
 * entity.role = #source
 * entity.what.reference 0..0
@@ -223,11 +218,7 @@ Description: "Provenance for transforming or byte-preserving one HealthKit objec
 * entity.what.identifier.value 1..1 MS
 * entity.extension contains HealthKitSourceRevision named sourceRevision 0..1 MS
 
-Profile: HealthKitRecordingDocument
-Parent: GroveSensorRecordingDocument
-Id: healthkit-recording-document
-Title: "HealthKit Recording Document"
-Description: "A byte-preserved HealthKit source document or series whose native representation is not a scalar result. Beat-to-beat intervals and workout routes use registered column schemas; provider-issued clinical resources use a stricter derived profile that declares their source FHIR release in the attachment media type."
+RuleSet: HealthKitDocumentLineage
 * extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
 * obeys healthkit-writer-record-1
 * extension contains GroveWriterRecordVersion named writerRecordVersion 0..1 MS
@@ -235,87 +226,48 @@ Description: "A byte-preserved HealthKit source document or series whose native 
 * insert HealthKitSyncIdentifierSlice
 // The SDK source class is lineage, not a document-type coding.
 * extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
-* type 1..1 MS
 
+Profile: HealthKitRecordingDocument
+Parent: GroveSensorRecordingDocument
+Id: healthkit-recording-document
+Title: "HealthKit Recording Document"
+Description: "A byte-preserved HealthKit source series whose native representation is not a scalar result. Beat-to-beat intervals and workout routes use registered column schemas. Provider-issued clinical records and CDA documents are not recordings: they use the HealthKit profiles derived from the Clinical Records guide."
+* insert HealthKitDocumentLineage
+* type 1..1 MS
 
 Profile: HealthKitClinicalRecordDocument
-Parent: HealthKitRecordingDocument
+Parent: GroveClinicalRecordDocument
 Id: healthkit-clinical-record-document
 Title: "HealthKit Clinical Record Document"
-Description: "A pass-through envelope for one provider-issued clinical FHIR resource surfaced by HealthKit. The payload is byte-preserved in the declared source FHIR release; Grove asserts identity and provenance, never conformance over the issuer's resource."
-* status MS
-* type 1..1 MS
+Description: "The HealthKit adapter's mapping of one HKClinicalRecord onto the Grove Clinical Record Document. The provider-issued payload is byte-preserved in the source FHIR release that HKFHIRVersion reports, DSTU2 or R4; Grove asserts identity and provenance, never conformance over the issuer's resource. HealthKit's record class, source type, and metadata stay in this adapter profile."
+* insert HealthKitDocumentLineage
 * type from HealthKitClinicalRecordTypeVS (required)
-* subject 1..1 MS
-* subject only Reference(Patient)
-* date 1..1 MS
-* content 1..1 MS
-* content.format 1..1 MS
-* content.format = $recordingFormat#fhir-resource
-// Required by the inherited HealthKit recording parent and repeated here for clinical clarity.
-* content.format.version 0..0
-* content.attachment.contentType 1..1 MS
-* content.attachment.size 1..1 MS
-* content.attachment.hash 1..1 MS
+* content.format = $payloadFormat#provider-issued-fhir-json
 * obeys healthkit-clinical-fhir-content-type-1
 
+Profile: HealthKitCDADocument
+Parent: GroveClinicalRecordDocument
+Id: healthkit-cda-document
+Title: "HealthKit CDA Document"
+Description: "The HealthKit adapter's mapping of one HKCDADocumentSample onto the Grove Clinical Record Document: its CDA R2 XML document byte-preserved exactly as HealthKit stores it. Grove never asserts conformance over another issuer's document."
+* insert HealthKitDocumentLineage
+* content.format = $payloadFormat#cda-document
+
 Profile: HealthKitClinicalRecordAttachment
-Parent: DocumentReference
+Parent: GroveClinicalRecordAttachment
 Id: healthkit-clinical-record-attachment
 Title: "HealthKit Clinical Record Attachment"
-Description: "One file that HealthKit stores with a clinical record, such as a clinical note's PDF, read through HKAttachmentStore and carried exactly as HealthKit stored it. It is an output of its clinical record's record beside the HealthKit Clinical Record Document, which it appends to; that document and its provider-issued payload stay unchanged. Its type coding, source type, subject, date, author, and study context.related equal those of that document, and where the document states no author or no study, neither does the attachment. The file's media type is whatever the source declares, so this profile does not derive from the Sensor recording document, whose media types are a closed list."
+Description: "The HealthKit adapter's mapping of one HKAttachment, read through HKAttachmentStore for an admitted clinical record, onto the Grove Clinical Record Attachment: one file, such as a clinical note's PDF, carried exactly as HealthKit stored it. It appends to the record's HealthKit Clinical Record Document, whose source type it also carries. Attachment ordering and the HKAttachment identifier stay in this adapter."
 * extension contains HealthKitSourceMetadata named sourceMetadata 0..1 MS
 * extension[sourceMetadata] ^short = "The attachment's own HKAttachment.metadata"
 * extension contains HealthKitSourceType named healthKitSourceType 1..1 MS
-* identifier 3..3 MS
-* identifier ^slicing.discriminator.type = #pattern
-* identifier ^slicing.discriminator.path = "type"
-* identifier ^slicing.rules = #closed
-* identifier contains sourceRecord 1..1 MS and sourceOutput 1..1 MS and sourceArtifact 1..1 MS
-* identifier[sourceRecord].type = $groveIdentifierRole#source-record
-* identifier[sourceRecord].system 1..1 MS
-* identifier[sourceRecord].value 1..1 MS
 * identifier[sourceRecord].value obeys healthkit-opaque-identifier-value-1
-* identifier[sourceOutput].type = $groveIdentifierRole#source-output
-* identifier[sourceOutput].system 1..1 MS
-* identifier[sourceOutput].value 1..1 MS
 * identifier[sourceOutput].value obeys healthkit-opaque-identifier-value-1
-* identifier[sourceArtifact].type = $groveIdentifierRole#source-artifact
-* identifier[sourceArtifact].system 1..1 MS
-* identifier[sourceArtifact].value 1..1 MS
 * identifier[sourceArtifact].value obeys healthkit-opaque-identifier-value-1
-* status = #current (exactly)
-* type 1..1 MS
 * type from HealthKitClinicalRecordTypeVS (required)
-* subject 1..1 MS
-* subject only Reference(Patient)
-* date 1..1 MS
-* relatesTo 1..1 MS
-* relatesTo ^short = "The clinical record's document this file appends to"
-* relatesTo.code = #appends (exactly)
 * relatesTo.target only Reference(HealthKitClinicalRecordDocument)
-* relatesTo.target.reference 1..1 MS
-* relatesTo.target.identifier 0..0
-* content 1..1 MS
-* content.format 1..1 MS
-* content.format = $recordingFormat#source-file
-// The stable CodeSystem and code identify the registered format. IG release versions do not
-// travel in payload Coding values.
-* content.format.version 0..0
-* content.attachment obeys healthkit-clinical-attachment-payload-1
-* content.attachment.contentType 1..1 MS
-* content.attachment.url ^short = "Immutable, version-specific location of the file; may be relative to the transport unit that carries the Bundle"
-* content.attachment.size 1..1 MS
-* content.attachment.hash 1..1 MS
-* content.attachment.title 0..1 MS
 * content.attachment.title ^short = "HKAttachment.name"
-* content.attachment.creation 0..1 MS
 * content.attachment.creation ^short = "HKAttachment.creationDate"
-* context.related MS
-
-
-
-
 
 Profile: HealthKitVisionPrescription
 Parent: VisionPrescription

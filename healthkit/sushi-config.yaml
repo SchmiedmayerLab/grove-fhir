@@ -38,6 +38,9 @@ copyright: >-
 dependencies:
   hl7.terminology.r4: 7.5.0
   hl7.fhir.uv.extensions.r4: 5.4.0
+  org.grovealliance.fhir.clinical-records:
+    version: 0.8.3
+    uri: https://grovealliance.org/fhir/clinical-records/ImplementationGuide/org.grovealliance.fhir.clinical-records
   org.grovealliance.fhir.mobile:
     version: 0.8.3
     uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile

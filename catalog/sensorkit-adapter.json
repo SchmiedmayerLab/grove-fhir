@@ -395,8 +395,8 @@
         ],
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "fhir-collection-bundle",
-          "native-recording"
+          "sensor-sample-collection-bundle",
+          "native-recording-json"
         ]
       }
     },
@@ -461,8 +461,8 @@
         ],
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "fhir-collection-bundle",
-          "native-recording"
+          "sensor-sample-collection-bundle",
+          "native-recording-json"
         ]
       }
     },
@@ -486,7 +486,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "native-recording"
+          "native-recording-json"
         ]
       }
     },
@@ -544,7 +544,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "native-recording"
+          "native-recording-json"
         ]
       }
     },
@@ -568,7 +568,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "native-recording"
+          "native-recording-json"
         ]
       }
     },
@@ -593,7 +593,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "native-recording"
+          "native-recording-json"
         ]
       }
     },
@@ -649,8 +649,8 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "fhir-collection-bundle",
-          "native-recording"
+          "sensor-sample-collection-bundle",
+          "native-recording-json"
         ]
       }
     },
@@ -699,7 +699,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "native-recording"
+          "native-recording-json"
         ]
       }
     },
@@ -787,7 +787,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "native-recording"
+          "native-recording-json"
         ]
       }
     },
@@ -827,7 +827,7 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "native-recording"
+          "native-recording-json"
         ]
       }
     },
@@ -872,8 +872,8 @@
         "outputDiscriminator": "native-recording",
         "encoding": "caller-supplied exact bytes",
         "formats": [
-          "fhir-collection-bundle",
-          "native-recording"
+          "sensor-sample-collection-bundle",
+          "native-recording-json"
         ]
       }
     },

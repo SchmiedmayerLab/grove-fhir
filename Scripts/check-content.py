@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parent.parent
 EXPECTED_GUIDE_SOURCES = (
     "mobile",
     "sensor",
+    "clinical-records",
     "sensorkit",
     "healthkit",
     "health-connect",
@@ -32,6 +33,7 @@ EXPECTED_GUIDE_SOURCES = (
 )
 MOBILE_ADAPTER_SOURCES = (
     "sensor",
+    "clinical-records",
     "sensorkit",
     "healthkit",
     "health-connect",

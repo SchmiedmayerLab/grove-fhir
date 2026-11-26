@@ -155,14 +155,33 @@ class ReceiverLifecycleTests(unittest.TestCase):
         )
         diagnostics = protocol["producerDiagnostics"]
         attachment_rules = [
-            rule for rule in diagnostics if rule["code"] == "healthkit-clinical.attachment-graph"
+            rule for rule in diagnostics if rule["code"] == "clinical-record.attachment-graph"
         ]
         self.assertEqual(len(attachment_rules), 1)
         diagnostics.remove(attachment_rules[0])
         validation = protocol["governedSourceIdentifier"]["validation"]
-        validation["neverProfiles"].remove(attachment_profile)
+        # The never-primary attachment profile is the shared Clinical Records one, which every
+        # HealthKit attachment also claims.
+        validation["neverProfiles"].remove(
+            "https://grovealliance.org/fhir/clinical-records/StructureDefinition/"
+            "grove-clinical-record-attachment"
+        )
         validation["designatedNode"]["adapterSelectors"]["healthkit"]["excludedProfiles"].remove(
             attachment_profile
+        )
+        # The document-profile rule names the clinical record modes the Clinical Records guide
+        # added; the pinned text predates them.
+        document_rule = next(
+            rule for rule in diagnostics if rule["code"] == "mobile-output.document-profile"
+        )
+        self.assertEqual(
+            document_rule["reason"],
+            "Every active DocumentReference must directly claim exactly one admitted recording, "
+            "clinical record, or clinical record attachment profile mode.",
+        )
+        document_rule["reason"] = (
+            "Every active DocumentReference must directly claim exactly one admitted recording "
+            "or clinical-document profile mode."
         )
         self.assertIn(
             "other than outputs of a neverProfiles profile, such as a clinical record's attachment documents",

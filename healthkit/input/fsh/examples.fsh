@@ -554,7 +554,7 @@ Description: "One provider-issued R4 resource surfaced by HealthKit and byte-pre
 * subject = Reference(HealthKitPatientExample)
 * date = "2026-08-20T17:05:01Z"
 * content.attachment.contentType = #"application/fhir+json; fhirVersion=4.0"
-* content.format = $recordingFormat#fhir-resource "FHIR Resource"
+* content.format = $payloadFormat#provider-issued-fhir-json "Provider-Issued FHIR JSON"
 * content.attachment.title = "Provider-issued AllergyIntolerance"
 * content.attachment.data = "eyJyZXNvdXJjZVR5cGUiOiJBbGxlcmd5SW50b2xlcmFuY2UiLCJpZCI6InByb3ZpZGVyLWlzc3VlZC0xIiwiY2xpbmljYWxTdGF0dXMiOnsiY29kaW5nIjpbeyJzeXN0ZW0iOiJodHRwOi8vdGVybWlub2xvZ3kuaGw3Lm9yZy9Db2RlU3lzdGVtL2FsbGVyZ3lpbnRvbGVyYW5jZS1jbGluaWNhbCIsImNvZGUiOiJhY3RpdmUifV19LCJwYXRpZW50Ijp7InJlZmVyZW5jZSI6IlBhdGllbnQvcGFydGljaXBhbnQtaGstMDAxIn19"
 * content.attachment.size = 240
@@ -596,7 +596,7 @@ Description: "One provider-issued DSTU2 resource surfaced by HealthKit and byte-
 * subject = Reference(HealthKitPatientExample)
 * date = "2026-08-20T17:06:01Z"
 * content.attachment.contentType = #"application/fhir+json; fhirVersion=1.0"
-* content.format = $recordingFormat#fhir-resource "FHIR Resource"
+* content.format = $payloadFormat#provider-issued-fhir-json "Provider-Issued FHIR JSON"
 * content.attachment.title = "Provider-issued DSTU2 AllergyIntolerance"
 * content.attachment.data = "eyJyZXNvdXJjZVR5cGUiOiJBbGxlcmd5SW50b2xlcmFuY2UiLCJpZCI6InByb3ZpZGVyLWlzc3VlZC1kc3R1Mi0xIiwicGF0aWVudCI6eyJyZWZlcmVuY2UiOiJQYXRpZW50L3BhcnRpY2lwYW50LWhrLTAwMSJ9LCJzdWJzdGFuY2UiOnsidGV4dCI6IlBlbmljaWxsaW4ifSwic3RhdHVzIjoiY29uZmlybWVkIiwiY3JpdGljYWxpdHkiOiJDUklUTCJ9"
 * content.attachment.size = 198
@@ -631,7 +631,7 @@ Description: "One provider-issued R4 clinical note surfaced by HealthKit. The no
 * identifier[sourceOutput].system = "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1"
 * identifier[sourceOutput].value = "v0:test-key:1:rvSyW-erZnLWI7PuzkPypjigbUOS6yOct2uqPkKWSD0"
 * identifier[sourceArtifact].system = "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1"
-* identifier[sourceArtifact].value = "v0:test-key:1:DT8ZbVYH6deAKsRcqi2ETvrGU1oISY7NsVCnFWUSec4"
+* identifier[sourceArtifact].value = "v0:test-key:1:9VSbbdK8b_UF2evMSO2KauXmMkOMhKVFNaZOlioBYg4"
 * extension[healthKitSourceType].valueCode = #HKClinicalTypeIdentifierClinicalNoteRecord
 * status = #current
 * type = HealthKitClinicalRecordTypeCS#clinical-note-record "Clinical note record"
@@ -639,7 +639,7 @@ Description: "One provider-issued R4 clinical note surfaced by HealthKit. The no
 * date = "2026-08-20T17:07:01Z"
 * context.related = Reference(HealthKitResearchStudyExample)
 * content.attachment.contentType = #"application/fhir+json; fhirVersion=4.0"
-* content.format = $recordingFormat#fhir-resource "FHIR Resource"
+* content.format = $payloadFormat#provider-issued-fhir-json "Provider-Issued FHIR JSON"
 * content.attachment.title = "Provider-issued DocumentReference"
 * content.attachment.data = "eyJyZXNvdXJjZVR5cGUiOiJEb2N1bWVudFJlZmVyZW5jZSIsImlkIjoicHJvdmlkZXItbm90ZS0xIiwic3RhdHVzIjoiY3VycmVudCIsInR5cGUiOnsidGV4dCI6IlByb2dyZXNzIG5vdGUifSwic3ViamVjdCI6eyJyZWZlcmVuY2UiOiJQYXRpZW50L3BhcnRpY2lwYW50LWhrLTAwMSJ9LCJjb250ZW50IjpbeyJhdHRhY2htZW50Ijp7ImNvbnRlbnRUeXBlIjoiYXBwbGljYXRpb24vcGRmIiwidXJsIjoiQmluYXJ5L3Byb3ZpZGVyLW5vdGUtMS1wZGYiLCJ0aXRsZSI6IlZpc2l0IG5vdGUifX1dfQ=="
 * content.attachment.size = 280
@@ -663,9 +663,9 @@ Description: "The PDF that HealthKit stores with the clinical note record, carri
 * context.related = Reference(HealthKitResearchStudyExample)
 * relatesTo.code = #appends
 * relatesTo.target = Reference(HealthKitClinicalNoteRecordDocumentExample)
-* content.format = $recordingFormat#source-file "Source File"
+* content.format = $payloadFormat#source-file "Source File"
 * content.attachment.contentType = #application/pdf
-* content.attachment.url = "recordings/50cd9bb4234b61635e892290a431ec36c3dedf389c9b538d07d21c3a5ffc9dd8.pdf"
+* content.attachment.url = "documents/50cd9bb4234b61635e892290a431ec36c3dedf389c9b538d07d21c3a5ffc9dd8.pdf"
 * content.attachment.size = 112
 * content.attachment.hash = "Nr47nTDanS+zEuOEesL4SWU4Ef0="
 * content.attachment.title = "Visit note.pdf"
@@ -718,7 +718,7 @@ Description: "A beat-to-beat interval series carried as its published column sch
 * date = "2026-08-19T10:05:00Z"
 * author = Reference(HealthKitApplicationDeviceExample)
 * content.attachment.contentType = #text/csv
-* content.format = $recordingFormat#beat-interval-series "Beat Interval Series"
+* content.format = $payloadFormat#beat-interval-series "Beat Interval Series"
 * content.attachment.title = "Heartbeat series beat intervals"
 * content.attachment.data = "dGltZXN0YW1wLHByZWNlZGVkQnlHYXAKMTc4NzEzMzYwMC4wLDAKMTc4NzEzMzYwMC44NCwwCjE3ODcxMzM2MDEuNzEsMQo="
 * content.attachment.size = 71

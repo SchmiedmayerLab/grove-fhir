@@ -1,0 +1,60 @@
+#
+# This source file is part of the Grove FHIR open-source project
+#
+# SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+id: org.grovealliance.fhir.clinical-records
+canonical: https://grovealliance.org/fhir/clinical-records
+name: GroveFHIRClinicalRecords
+title: Grove FHIR Clinical Records
+description: >-
+  Source-neutral FHIR R4 contracts for provider-issued clinical records carried
+  byte for byte, and for the files that accompany them.
+status: draft
+version: 0.8.3
+fhirVersion: 4.0.1
+copyrightYear: 2026+
+releaseLabel: ci-build
+publisher:
+  name: Schmiedmayer Lab
+  url: https://github.com/SchmiedmayerLab
+license: MIT
+copyright: >-
+  Grove-authored profiles, extensions, terminology, and examples in this guide are published by the Schmiedmayer Lab under the MIT license.
+
+  FHIR® is the registered trademark of HL7 and is used with the permission of HL7. HL7 R4 material is copyright © HL7 International.
+
+  This material contains content from LOINC (https://loinc.org). LOINC is copyright © 1995-2026 Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at https://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc.
+
+dependencies:
+  hl7.terminology.r4: 7.5.0
+  hl7.fhir.uv.extensions.r4: 5.4.0
+  org.grovealliance.fhir.mobile:
+    version: 0.8.3
+    uri: https://grovealliance.org/fhir/mobile/ImplementationGuide/org.grovealliance.fhir.mobile
+
+parameters:
+  # Turtle serializations and their rendered views are omitted to keep the published site small.
+  # JSON and XML remain complete.
+  excludettl: true
+
+menu:
+  Overview: index.html
+  Guides: https://grovealliance.org/fhir/mobile/guides.html
+  Clinical records: records.html
+  Formats: formats.html
+  Implement and validate: implementation.html
+  Artifacts: artifacts.html
+
+pages:
+  index.md:
+    title: Overview
+  records.md:
+    title: Clinical records and attachments
+  formats.md:
+    title: Clinical record formats
+  implementation.md:
+    title: Implement and validate

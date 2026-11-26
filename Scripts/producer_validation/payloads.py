@@ -175,13 +175,13 @@ def validate_inline_recording_payload(
     except (binascii.Error, ValueError) as error:
         raise ProducerValidationError(f"{label}.data must be valid base64") from error
 
-    if format_code == "native-recording":
+    if format_code == "native-recording-json":
         _validate_native_json(payload, label)
-    elif format_code == "provider-recording":
-        _validate_json_container(payload, label, "provider recording")
-    elif format_code == "fhir-resource":
+    elif format_code == "provider-response-json":
+        _validate_json_container(payload, label, "provider response")
+    elif format_code == "provider-issued-fhir-json":
         _validate_fhir_resource(payload, label)
-    elif format_code == "fhir-collection-bundle":
+    elif format_code == "sensor-sample-collection-bundle":
         _validate_fhir_collection_bundle(payload, label)
     elif format_entry.get("encoding") == "csv":
         _validate_registered_csv(payload, format_entry, label)

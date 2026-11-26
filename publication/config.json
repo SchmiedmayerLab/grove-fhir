@@ -20,6 +20,12 @@
       "representativeResource": "StructureDefinition/grove-sensor-sampled-data-observation"
     },
     {
+      "source": "clinical-records",
+      "canonicalPath": "clinical-records",
+      "aliases": [],
+      "representativeResource": "StructureDefinition/grove-clinical-record-document"
+    },
+    {
       "source": "sensorkit",
       "canonicalPath": "sensorkit",
       "aliases": [],

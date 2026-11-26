@@ -77,7 +77,7 @@ The following excerpt shows the elements that establish profile conformance, ide
   "subject": {"reference": "Patient/SensorKitPatientExample"},
   "date": "2026-08-20T15:15:01Z",
   "author": [{"reference": "Device/SensorKitDeviceExample"}],
-  "content": [{"format": {"system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format", "code": "native-recording"}, "attachment": {
+  "content": [{"format": {"system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format", "code": "native-recording-json"}, "attachment": {
     "contentType": "application/json",
     "title": "SensorKit device usage report",
     "data": "eyJ0aW1lc3RhbXAiOjE3ODcyMzgwMDAsImR1cmF0aW9uIjo5MDAsInRvdGFsU2NyZWVuV2FrZXMiOjYsInRvdGFsVW5sb2NrcyI6NCwidG90YWxVbmxvY2tEdXJhdGlvbiI6MzcyLCJ2ZXJzaW9uIjoiMSIsImFwcFVzYWdlQnlDYXRlZ29yeSI6eyJwcm9kdWN0aXZpdHkiOlt7ImJ1bmRsZUlkZW50aWZpZXIiOiJjb20uYXBwbGUubW9iaWxlbm90ZXMiLCJyZXBvcnRBcHBsaWNhdGlvbklkZW50aWZpZXIiOiJyZXBvcnQtYXBwLTEiLCJyZWxhdGl2ZVN0YXJ0VGltZSI6MCwidXNhZ2VUaW1lIjo0ODAsInN1cHBsZW1lbnRhbENhdGVnb3JpZXMiOlt7ImlkZW50aWZpZXIiOiJ3cml0aW5nIn1dLCJ0ZXh0SW5wdXRTZXNzaW9ucyI6W3siZHVyYXRpb24iOjQyLCJzZXNzaW9uVHlwZVJhd1ZhbHVlIjowLCJpZGVudGlmaWVyIjoidGV4dC1zZXNzaW9uLTEifV19XX0sIm5vdGlmaWNhdGlvblVzYWdlQnlDYXRlZ29yeSI6eyJwcm9kdWN0aXZpdHkiOlt7ImJ1bmRsZUlkZW50aWZpZXIiOiJjb20uYXBwbGUubW9iaWxlbm90ZXMiLCJldmVudFJhd1ZhbHVlIjowfV19LCJ3ZWJVc2FnZUJ5Q2F0ZWdvcnkiOnsicHJvZHVjdGl2aXR5IjpbeyJ0b3RhbFVzYWdlVGltZSI6MTIwfV19fQ==",
@@ -88,7 +88,7 @@ The following excerpt shows the elements that establish profile conformance, ide
 }
 ```
 
-The payload format identity is `content.format` from the [recording format registry](https://grovealliance.org/fhir/sensor/formats.html) — here `native-recording` — and the `contentType` comes from the [Grove Recording MIME Types](https://grovealliance.org/fhir/sensor/ValueSet-grove-recording-mime-type.html) value set; the caller-encoded bytes are `application/json`. The format code, rather than a custom media type, identifies the Grove wire format.
+The payload format identity is `content.format` from the [payload format registry](https://grovealliance.org/fhir/mobile/formats.html), defined on the [Sensor formats page](https://grovealliance.org/fhir/sensor/formats.html) — here `native-recording-json` — and the `contentType` comes from the [Grove Recording MIME Types](https://grovealliance.org/fhir/sensor/ValueSet-grove-recording-mime-type.html) value set; the caller-encoded bytes are `application/json`. The format code, rather than a custom media type, identifies the Grove wire format.
 The example's JSON members are one producer-defined serialization, not a SensorKit stream schema published by this guide. The source-type code supplies the category and meaning; a generic receiver validates only the UTF-8 object-or-array container and otherwise treats the members as opaque.
 The attachment holds exactly one of embedded `data` or a retrievable `url`, always the required `size` and R4 SHA-1 `hash`, and optionally presentation-only `title`. The hash provides change detection only, never authorization.
 The producer emits the document only after the caller asserts `caller-authorized-opaque-payload` or `verified-sanitized-input`, and validates the declared format grammar; [Recording payload admission](implementation.html#recording-payload-admission) states those preconditions and exactly how far Grove format validation reaches.

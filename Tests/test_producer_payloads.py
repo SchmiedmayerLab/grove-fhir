@@ -208,7 +208,7 @@ class ProducerPayloadsTests(ProducerValidationTestCase):
         for value in (b"{}", b"[]"):
             with self.subTest(value=value):
                 payloads.validate_inline_recording_payload(
-                    self.inline(value), "native-recording", entry, "Attachment"
+                    self.inline(value), "native-recording-json", entry, "Attachment"
                 )
 
         invalid = (
@@ -225,7 +225,7 @@ class ProducerPayloadsTests(ProducerValidationTestCase):
                 diagnostics.ProducerValidationError, message
             ):
                 payloads.validate_inline_recording_payload(
-                    self.inline(value), "native-recording", entry, "Attachment"
+                    self.inline(value), "native-recording-json", entry, "Attachment"
                 )
 
     def test_inline_fhir_collection_validation_enforces_its_real_envelope(self) -> None:
@@ -243,7 +243,7 @@ class ProducerPayloadsTests(ProducerValidationTestCase):
         def validate(value: bytes) -> None:
             payloads.validate_inline_recording_payload(
                 self.inline(value),
-                "fhir-collection-bundle",
+                "sensor-sample-collection-bundle",
                 entry,
                 "Attachment",
             )
@@ -296,7 +296,7 @@ class ProducerPayloadsTests(ProducerValidationTestCase):
         fhir_entry = {"contentType": "application/fhir+json"}
         payloads.validate_inline_recording_payload(
             self.inline(b'{"resourceType":"Observation"}'),
-            "fhir-resource",
+            "provider-issued-fhir-json",
             fhir_entry,
             "FHIR attachment",
         )
@@ -305,7 +305,7 @@ class ProducerPayloadsTests(ProducerValidationTestCase):
         ):
             payloads.validate_inline_recording_payload(
                 self.inline(b'{}'),
-                "fhir-resource",
+                "provider-issued-fhir-json",
                 fhir_entry,
                 "FHIR attachment",
             )
@@ -313,7 +313,7 @@ class ProducerPayloadsTests(ProducerValidationTestCase):
         provider_entry = {"contentType": "application/json"}
         payloads.validate_inline_recording_payload(
             self.inline(b'[{"provider":true}]'),
-            "provider-recording",
+            "provider-response-json",
             provider_entry,
             "Provider attachment",
         )
@@ -442,10 +442,10 @@ class ProducerPayloadsTests(ProducerValidationTestCase):
                 },
                 "format": {
                     "system": (
-                        "https://grovealliance.org/fhir/sensor/CodeSystem/"
-                        "grove-recording-format"
+                        "https://grovealliance.org/fhir/mobile/CodeSystem/"
+                        "grove-payload-format"
                     ),
-                    "code": "native-recording",
+                    "code": "native-recording-json",
                 },
             }],
         }

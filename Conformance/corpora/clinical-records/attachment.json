@@ -1,0 +1,86 @@
+{
+  "resourceType": "DocumentReference",
+  "id": "portal-clinical-note-record-attachment",
+  "meta": {
+    "profile": [
+      "https://grovealliance.org/fhir/clinical-records/StructureDefinition/grove-clinical-record-attachment"
+    ]
+  },
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "code": "source-record",
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
+      "value": "v0:test-key:1:_hcEGJV15Q_pOgnQva_qLn7onjsqM3_YBbCpOE52eaE"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "code": "source-output",
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-output-v0/test-key/1",
+      "value": "v0:test-key:1:UKNWwUuarzRHBX-I70n__ghFxUwE8fKIEHOAPFTTOVU"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "code": "source-artifact",
+            "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role"
+          }
+        ]
+      },
+      "system": "https://study.example.org/fhir/NamingSystem/grove-source-artifact-v0/test-key/1",
+      "value": "v0:test-key:1:747212hmvziVtxAX5r1M_rx-mHwpfkU_TUtStpsau4U"
+    }
+  ],
+  "status": "current",
+  "type": {
+    "coding": [
+      {
+        "code": "34109-9",
+        "system": "http://loinc.org",
+        "display": "Note"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "Patient/GroveClinicalRecordsPatientExample"
+  },
+  "date": "2026-08-20T17:09:01Z",
+  "relatesTo": [
+    {
+      "code": "appends",
+      "target": {
+        "reference": "DocumentReference/portal-clinical-note-record"
+      }
+    }
+  ],
+  "content": [
+    {
+      "format": {
+        "code": "source-file",
+        "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format",
+        "display": "Source File"
+      },
+      "attachment": {
+        "contentType": "application/pdf",
+        "url": "documents/c4071ece7b3d0e2501f5278299ff8be67aa48f40b4657cd898a99afa57de295e.pdf",
+        "size": 125,
+        "hash": "TF2ofvSD2nMLKkzbb/w6aZ8CoFY=",
+        "title": "Visit note.pdf",
+        "creation": "2026-08-20T09:30:00-07:00"
+      }
+    }
+  ]
+}

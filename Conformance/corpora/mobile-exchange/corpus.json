@@ -901,7 +901,7 @@
       ],
       "expectedRule": {
         "code": "mobile-output.document-profile",
-        "reason": "Every active DocumentReference must directly claim exactly one admitted recording or clinical-document profile mode.",
+        "reason": "Every active DocumentReference must directly claim exactly one admitted recording, clinical record, or clinical record attachment profile mode.",
         "location": "DocumentReference.meta.profile",
         "severity": "error"
       }
@@ -1506,7 +1506,7 @@
                   "hash": "k9bJPZp20n7DRi57V95d8etFvHs="
                 },
                 "format": {
-                  "system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
+                  "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format",
                   "code": "heart-rate-samples"
                 }
               }
@@ -1594,7 +1594,7 @@
                   "hash": "z3GFc1fkRzogDOGJOm9gm9H0RrE="
                 },
                 "format": {
-                  "system": "https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format",
+                  "system": "https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format",
                   "code": "heart-rate-waveform"
                 }
               }

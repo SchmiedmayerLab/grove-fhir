@@ -10,6 +10,6 @@ Alias: $provider = https://grovealliance.org/fhir/providers/CodeSystem/provider
 Alias: $providerSourceType = https://grovealliance.org/fhir/providers/CodeSystem/provider-source-type
 Alias: $groveIdentifierRole = https://grovealliance.org/fhir/mobile/CodeSystem/grove-identifier-role
 Alias: $provenanceParticipantType = http://terminology.hl7.org/CodeSystem/provenance-participant-type
-Alias: $recordingFormat = https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format
+Alias: $payloadFormat = https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format
 Alias: $ucum = http://unitsofmeasure.org
 Alias: $loinc = http://loinc.org

@@ -43,6 +43,17 @@ The 0.6.0 precedent above rested on no immutable release having been cut, which 
 The release side is settled separately: the change ships as `0.8.0`, and `0.7.0` keeps the old names for whoever pins it.
 The pull request that performs the rename records the full basis of the statement.
 
+The move of the payload formats to Mobile and of the clinical record profiles to the new Clinical Records guide renames or redefines these persisted identifiers under the same kind of statement:
+
+- the format CodeSystem `https://grovealliance.org/fhir/sensor/CodeSystem/grove-recording-format` and ValueSet `https://grovealliance.org/fhir/sensor/ValueSet/grove-recording-format` became `https://grovealliance.org/fhir/mobile/CodeSystem/grove-payload-format` and `https://grovealliance.org/fhir/mobile/ValueSet/grove-payload-format`, and the Sensor recording document now binds `https://grovealliance.org/fhir/sensor/ValueSet/grove-sensor-recording-format`;
+- the format codes `fhir-collection-bundle`, `fhir-resource`, `clinical-document`, `native-recording`, and `provider-recording` became `sensor-sample-collection-bundle`, `provider-issued-fhir-json`, `cda-document`, `native-recording-json`, and `provider-response-json`, while the `native-recording` output role keeps its name; `previousCodings` in `catalog/format-registry.json` maps every old coding to its new one for readers of stored Bundles;
+- a `source-artifact` identity hashes the new format code, so an artifact whose code changed spelling gets a new identity; the identity's computation is unchanged and keeps its `v0` form, and the exchange protocol version is unchanged;
+- the rule code `healthkit-clinical.attachment-graph` became `clinical-record.attachment-graph`; and
+- the HealthKit clinical record document and attachment keep their URLs but derive from, and are claimed beside, `grove-clinical-record-document` and `grove-clinical-record-attachment`, and a HealthKit CDA document is a `healthkit-cda-document` instead of a `healthkit-recording-document`.
+
+The statement is the 0.8.0 one: no App Store build of any client ever emitted one of the old names, and data under them exists only from TestFlight builds, which the project lead's ruling of 2026-11-01 disregards.
+Tag `0.8.3` keeps the old names for whoever pins it.
+
 ## Clients pin tagged releases
 
 The canonical namespace `https://grovealliance.org/fhir` is an identifier, not a download location, and the CI-build preview is not release history.

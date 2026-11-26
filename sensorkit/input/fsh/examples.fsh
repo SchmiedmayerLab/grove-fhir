@@ -196,7 +196,7 @@ Description: "The exact native encoding supplied as input, retaining session ide
 * date = "2026-08-20T16:10:01Z"
 * author = Reference(SensorKitDeviceExample)
 * content.attachment.contentType = #application/json
-* content.format = $recordingFormat#native-recording "Native Recording"
+* content.format = $payloadFormat#native-recording-json "Native Recording JSON"
 * content.attachment.title = "SensorKit ECG native recording"
 * content.attachment.data = "W3siZGF0ZSI6MTc4NzI0MjIwMCwiZnJlcXVlbmN5IjoyNTAsInNlc3Npb24iOnsiaWRlbnRpZmllciI6InNlc3Npb24tMSIsInN0YXRlIjoiYmVnaW4iLCJndWlkYW5jZSI6Imd1aWRlZCJ9LCJsZWFkIjoibGVmdEFybU1pbnVzUmlnaHRBcm0iLCJkYXRhIjpbeyJ2YWx1ZU1pY3Jvdm9sdHMiOjExLCJzaWduYWxJbnZhbGlkIjpmYWxzZSwiY3Jvd25Ub3VjaGVkIjpmYWxzZX0seyJ2YWx1ZU1pY3Jvdm9sdHMiOjIzLCJzaWduYWxJbnZhbGlkIjpmYWxzZSwiY3Jvd25Ub3VjaGVkIjp0cnVlfV19LHsiZGF0ZSI6MTc4NzI0MjIwMC4wMDgsImZyZXF1ZW5jeSI6MjUwLCJzZXNzaW9uIjp7ImlkZW50aWZpZXIiOiJzZXNzaW9uLTEiLCJzdGF0ZSI6ImVuZCIsImd1aWRhbmNlIjoiZ3VpZGVkIn0sImxlYWQiOiJsZWZ0QXJtTWludXNSaWdodEFybSIsImRhdGEiOlt7InZhbHVlTWljcm92b2x0cyI6LTUsInNpZ25hbEludmFsaWQiOnRydWUsImNyb3duVG91Y2hlZCI6ZmFsc2V9LHsidmFsdWVNaWNyb3ZvbHRzIjoxNCwic2lnbmFsSW52YWxpZCI6ZmFsc2UsImNyb3duVG91Y2hlZCI6ZmFsc2V9XX1d"
 * content.attachment.size = 561
@@ -268,7 +268,7 @@ Description: "The exact native encoding supplied as input and paired with the in
 * date = "2026-08-20T16:12:01Z"
 * author = Reference(SensorKitDeviceExample)
 * content.attachment.contentType = #application/json
-* content.format = $recordingFormat#native-recording "Native Recording"
+* content.format = $payloadFormat#native-recording-json "Native Recording JSON"
 * content.attachment.title = "SensorKit inverse-lead ECG native recording"
 * content.attachment.data = "W3siZGF0ZSI6MTc4NzI0MjMyMCwiZnJlcXVlbmN5IjoyNTAsInNlc3Npb24iOnsiaWRlbnRpZmllciI6InNlc3Npb24tMiIsInN0YXRlIjoiYmVnaW4iLCJndWlkYW5jZSI6InVuZ3VpZGVkIn0sImxlYWQiOiJyaWdodEFybU1pbnVzTGVmdEFybSIsImRhdGEiOlt7InZhbHVlTWljcm92b2x0cyI6LTExLCJzaWduYWxJbnZhbGlkIjpmYWxzZSwiY3Jvd25Ub3VjaGVkIjpmYWxzZX0seyJ2YWx1ZU1pY3Jvdm9sdHMiOi0yMywic2lnbmFsSW52YWxpZCI6ZmFsc2UsImNyb3duVG91Y2hlZCI6ZmFsc2V9XX0seyJkYXRlIjoxNzg3MjQyMzIwLjAwOCwiZnJlcXVlbmN5IjoyNTAsInNlc3Npb24iOnsiaWRlbnRpZmllciI6InNlc3Npb24tMiIsInN0YXRlIjoiZW5kIiwiZ3VpZGFuY2UiOiJ1bmd1aWRlZCJ9LCJsZWFkIjoicmlnaHRBcm1NaW51c0xlZnRBcm0iLCJkYXRhIjpbeyJ2YWx1ZU1pY3Jvdm9sdHMiOjUsInNpZ25hbEludmFsaWQiOmZhbHNlLCJjcm93blRvdWNoZWQiOmZhbHNlfSx7InZhbHVlTWljcm92b2x0cyI6LTE0LCJzaWduYWxJbnZhbGlkIjpmYWxzZSwiY3Jvd25Ub3VjaGVkIjpmYWxzZX1dfV0="
 * content.attachment.size = 569
@@ -388,7 +388,7 @@ Description: "The complete native SensorKit device-usage report, including text-
 * date = "2026-08-20T15:15:01Z"
 * author = Reference(SensorKitDeviceExample)
 * content.attachment.contentType = #application/json
-* content.format = $recordingFormat#native-recording "Native Recording"
+* content.format = $payloadFormat#native-recording-json "Native Recording JSON"
 * content.attachment.title = "SensorKit device usage report"
 * content.attachment.data = "eyJ0aW1lc3RhbXAiOjE3ODcyMzgwMDAsImR1cmF0aW9uIjo5MDAsInRvdGFsU2NyZWVuV2FrZXMiOjYsInRvdGFsVW5sb2NrcyI6NCwidG90YWxVbmxvY2tEdXJhdGlvbiI6MzcyLCJ2ZXJzaW9uIjoiMSIsImFwcFVzYWdlQnlDYXRlZ29yeSI6eyJwcm9kdWN0aXZpdHkiOlt7ImJ1bmRsZUlkZW50aWZpZXIiOiJjb20uYXBwbGUubW9iaWxlbm90ZXMiLCJyZXBvcnRBcHBsaWNhdGlvbklkZW50aWZpZXIiOiJyZXBvcnQtYXBwLTEiLCJyZWxhdGl2ZVN0YXJ0VGltZSI6MCwidXNhZ2VUaW1lIjo0ODAsInN1cHBsZW1lbnRhbENhdGVnb3JpZXMiOlt7ImlkZW50aWZpZXIiOiJ3cml0aW5nIn1dLCJ0ZXh0SW5wdXRTZXNzaW9ucyI6W3siZHVyYXRpb24iOjQyLCJzZXNzaW9uVHlwZVJhd1ZhbHVlIjowLCJpZGVudGlmaWVyIjoidGV4dC1zZXNzaW9uLTEifV19XX0sIm5vdGlmaWNhdGlvblVzYWdlQnlDYXRlZ29yeSI6eyJwcm9kdWN0aXZpdHkiOlt7ImJ1bmRsZUlkZW50aWZpZXIiOiJjb20uYXBwbGUubW9iaWxlbm90ZXMiLCJldmVudFJhd1ZhbHVlIjowfV19LCJ3ZWJVc2FnZUJ5Q2F0ZWdvcnkiOnsicHJvZHVjdGl2aXR5IjpbeyJ0b3RhbFVzYWdlVGltZSI6MTIwfV19fQ=="
 * content.attachment.size = 604
@@ -433,7 +433,7 @@ Description: "The exact registered triaxial-acceleration CSV recording; the summ
 * date = "2026-08-21T07:05:01Z"
 * author = Reference(SensorKitDeviceExample)
 * content.attachment.contentType = #text/csv
-* content.format = $recordingFormat#triaxial-acceleration-samples "Triaxial Acceleration Samples"
+* content.format = $payloadFormat#triaxial-acceleration-samples "Triaxial Acceleration Samples"
 * content.attachment.title = "SensorKit Accelerometer Recording"
 * content.attachment.data = "dGltZXN0YW1wLGlkZW50aWZpZXIseCx5LHosZGV2aWNlCjE3ODcyMDkyMDAsMTcsMC4xMjUsLTAuMjUsMSwiV2F0Y2g2LDE4IgoxNzg3MjA5MjAxLDE3LDAuNSwwLC0wLjUsIldhdGNoNiwxOCIKMTc4NzIwOTIwMiwxOCwtMSwwLjI1LDAuNzUsIldhdGNoNiwxOCIK"
 * content.attachment.size = 150
@@ -481,7 +481,7 @@ Description: "The exact registered Grove PPG binary recording; the summary recor
 * date = "2026-08-21T07:05:01Z"
 * author = Reference(SensorKitDeviceExample)
 * content.attachment.contentType = #application/octet-stream
-* content.format = $recordingFormat#photoplethysmogram-samples "Photoplethysmogram Samples"
+* content.format = $payloadFormat#photoplethysmogram-samples "Photoplethysmogram Samples"
 * content.attachment.title = "SensorKit PPG Recording"
 * content.attachment.data = "AQFB2qGpfAAAAAIAAQF1AQMCAQIEP/AAAAAAAABAAAAAAAAAAEAQAAAAAAAABQEBYwE/8AAAAAAAAL/wAAAAAAAAQAAAAAAAAADAAAAAAAAAAAE/4AAAAAAAAAEGQCAAAAAAAAA/8AAAAAAAAL/wAAAAAAAAAAAAAAAAAAA="
 * content.attachment.size = 125
@@ -633,7 +633,7 @@ Description: "One deployment-defined native JSON recording retained verbatim alo
 * date = "2026-08-21T07:05:01Z"
 * author = Reference(SensorKitDeviceExample)
 * content.attachment.contentType = #application/json
-* content.format = $recordingFormat#native-recording "Native Recording"
+* content.format = $payloadFormat#native-recording-json "Native Recording JSON"
 * content.attachment.title = "SensorKit Keyboard Metrics Native Recording"
 * content.attachment.data = "W3sidGltZXN0YW1wIjoxNzg3MjA5MjAwLCJkdXJhdGlvbiI6ODY0MDAsImNvdW50cyI6eyJ0b3RhbFdvcmRzIjoxODQwLCJ0b3RhbEFsdGVyZWRXb3JkcyI6OTYsInRvdGFsVGFwcyI6OTgyMCwidG90YWxEZWxldGVzIjo0MTIsInRvdGFsRW1vamlzIjoyMywidG90YWxBdXRvQ29ycmVjdGlvbnMiOjU3LCJ0b3RhbFBhdXNlcyI6MTQ4LCJ0b3RhbFR5cGluZ0VwaXNvZGVzIjozMX0sInRvdGFsVHlwaW5nRHVyYXRpb24iOjI0MDAsInR5cGluZ1NwZWVkIjo0Ni4yLCJkdXJhdGlvbk1ldHJpY3MiOnsidG91Y2hEb3duVXAiOnsidmFsdWVzIjpbXX19fV0="
 * content.attachment.size = 311
@@ -659,7 +659,7 @@ Description: "The session's samples as the tabular recording the registry publis
 * date = "2026-08-21T13:45:01Z"
 * author = Reference(SensorKitDeviceExample)
 * content.attachment.contentType = #text/csv
-* content.format = $recordingFormat#wrist-temperature-samples "Wrist Temperature Samples"
+* content.format = $payloadFormat#wrist-temperature-samples "Wrist Temperature Samples"
 * content.attachment.title = "SensorKit Wrist Temperature Recording"
 * content.attachment.data = "dGltZXN0YW1wLHZhbHVlLGVycm9yRXN0aW1hdGUsY29uZGl0aW9uCjE3ODcyOTI2MDAuMCwzMy40LDAuMSwKMTc4NzMxOTYwMC4wLDMzLjcsMC4xLCJvZmZXcmlzdCxpbk1vdGlvbiIK"
 * content.attachment.size = 105

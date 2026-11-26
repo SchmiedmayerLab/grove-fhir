@@ -363,8 +363,10 @@ def offline_mime_error_count(
             registered_format = formats.get(format_code)
             if not isinstance(registered_format, dict):
                 continue
-            if registered_format.get("contentTypeRule") == "source-declared":
-                # A source-declared format enumerates no media type; the code only has to be
+            if registered_format.get("contentTypeRule") in (
+                "source-declared", "declared-fhir-release"
+            ):
+                # A pattern-ruled format enumerates no media type; the code only has to be
                 # one its registry pattern admits.
                 admitted = re.fullmatch(registered_format["contentTypePattern"], code) is not None
             else:

@@ -48,8 +48,8 @@
     },
     "guides": {
       "type": "array",
-      "minItems": 10,
-      "maxItems": 10,
+      "minItems": 11,
+      "maxItems": 11,
       "uniqueItems": true,
       "items": {
         "type": "object",
@@ -69,6 +69,7 @@
           {"properties": {"source": {"const": "mobile"}, "packageId": {"const": "org.grovealliance.fhir.mobile"}, "canonical": {"const": "https://grovealliance.org/fhir/mobile"}}},
           {"properties": {"source": {"const": "questionnaire"}, "packageId": {"const": "org.grovealliance.fhir.questionnaire"}, "canonical": {"const": "https://grovealliance.org/fhir/questionnaire"}}},
           {"properties": {"source": {"const": "sensor"}, "packageId": {"const": "org.grovealliance.fhir.sensor"}, "canonical": {"const": "https://grovealliance.org/fhir/sensor"}}},
+          {"properties": {"source": {"const": "clinical-records"}, "packageId": {"const": "org.grovealliance.fhir.clinical-records"}, "canonical": {"const": "https://grovealliance.org/fhir/clinical-records"}}},
           {"properties": {"source": {"const": "sensorkit"}, "packageId": {"const": "org.grovealliance.fhir.sensorkit"}, "canonical": {"const": "https://grovealliance.org/fhir/sensorkit"}}},
           {"properties": {"source": {"const": "healthkit"}, "packageId": {"const": "org.grovealliance.fhir.healthkit"}, "canonical": {"const": "https://grovealliance.org/fhir/healthkit"}}},
           {"properties": {"source": {"const": "health-connect"}, "packageId": {"const": "org.grovealliance.fhir.health-connect"}, "canonical": {"const": "https://grovealliance.org/fhir/health-connect"}}},

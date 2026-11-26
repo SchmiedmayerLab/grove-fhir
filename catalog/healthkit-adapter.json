@@ -78,7 +78,7 @@
   },
   "clinicalRecordAdmission": {
     "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-document",
-    "payloadFormat": "fhir-resource",
+    "payloadFormat": "provider-issued-fhir-json",
     "sourceFHIRReleaseField": "HKFHIRVersion.fhirRelease",
     "admittedFHIRReleases": [
       "dstu2",
@@ -94,7 +94,7 @@
     "rejectedFHIRReleases": [
       "unknown"
     ],
-    "rule": "Admit a HealthKit clinical record only when HKFHIRVersion.fhirRelease is exactly dstu2 or r4, then set Attachment.contentType to its matching versioned FHIR JSON media type. Reject an unknown, missing, or future release before emission; preserve the provider-issued payload bytes exactly and never convert, re-encode, or infer their release from JSON shape. Carry every file HealthKit stores with the record as its own HealthKit Clinical Record Attachment, as the attachments contract states.",
+    "rule": "Admit a HealthKit clinical record only when HKFHIRVersion.fhirRelease is exactly dstu2 or r4, then set Attachment.contentType to its matching versioned FHIR JSON media type under the provider-issued-fhir-json format. The shared format admits any declared release; this adapter admits only the two HealthKit reports. Reject an unknown, missing, or future release before emission; preserve the provider-issued payload bytes exactly and never convert, re-encode, or infer their release from JSON shape. Carry every file HealthKit stores with the record as its own HealthKit Clinical Record Attachment, as the attachments contract states.",
     "attachments": {
       "profile": "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-clinical-record-attachment",
       "source": "HKAttachmentStore.attachments(for:) of the admitted HKClinicalRecord",
@@ -1691,9 +1691,9 @@
       "status": "platform-exclusive",
       "measurementIDs": [],
       "profiles": [
-        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-recording-document"
+        "https://grovealliance.org/fhir/healthkit/StructureDefinition/healthkit-cda-document"
       ],
-      "requirement": "A CDA document is carried byte-for-byte as a recording document. Grove never asserts conformance over another issuer's document, the same treatment a provider-issued clinical record receives."
+      "requirement": "A CDA document is carried byte-for-byte as a Clinical Records clinical record document in the cda-document format, CDA R2 XML. Grove never asserts conformance over another issuer's document, the same treatment a provider-issued clinical record receives."
     },
     {
       "sourceTypeIdentifier": "HKMedicationDoseEventTypeIdentifierMedicationDoseEvent",
