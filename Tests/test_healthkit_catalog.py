@@ -347,11 +347,12 @@ class HealthKitCatalogTests(unittest.TestCase):
         self.assertNotEqual(shortest_round_trip(float(Decimal(odd).scaleb(2))), vectors[even])
 
     def test_recording_device_maps_every_hkdevice_field_and_device_metadata_key(self) -> None:
-        # Decision 4: collect every device fact HealthKit exposes and filter downstream.
+        # Decision 4: collect every device fact HealthKit exposes by default; a disclosure policy may withhold facts.
         device = self.catalog["recordingDeviceIdentity"]
         self.assertEqual(device["status"], "snapshot-required-unit-optional")
         self.assertNotIn("fallback", device)
         self.assertIn("non-nil HKDevice", device["snapshot"])
+        self.assertIn("unless a disclosure policy withholds every fact of it", device["snapshot"])
         self.assertIn("HKSource.bundleIdentifier", device["tokenScope"])
         mappings = {mapping["source"]: mapping for mapping in device["fieldMappings"]}
         self.assertEqual(len(mappings), len(device["fieldMappings"]))

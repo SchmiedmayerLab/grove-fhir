@@ -28,8 +28,8 @@ Its absolute system is a governed HealthKit-store namespace and its value is the
 This disclosure does not replace or alter either HMAC identity, and the UUID is not repeated on child outputs or support resources.
 Never copy it into `Resource.id`, Bundle entry keys, retraction addresses, arbitrary components, or untyped metadata, and do not incidentally propagate it into attachment names, URLs, or logs.
 
-The same opt-in setting also discloses the [readable sync identifier](#readable-sync-identifier) of a sample that carries a sync pair; no separate setting exists.
-Enabling the setting therefore discloses the bundle identifier of the application that wrote such a sample, because the sync identifier's namespace names that application, also for a record whose writer attribution is otherwise withheld.
+A second opt-in setting discloses the [readable sync identifier](#readable-sync-identifier) of a sample that carries a sync pair. This setting takes effect only while the `HKObject.uuid` Identifier is disclosed.
+With both settings on, the bundle identifier of the application that wrote such a sample is disclosed, because the sync identifier's namespace names that application, also for a record whose writer attribution is otherwise withheld.
 
 HealthKit replaces a sample when a writer saves the same `HKMetadataKeySyncIdentifier` with a higher `HKMetadataKeySyncVersion`, and that replacement has a new object UUID.
 The new source record and output therefore receive new v0 identities.
@@ -69,7 +69,7 @@ This is adapter lineage, not a second expression of the observed clinical concep
 ### Readable sync identifier
 
 The `writer-record` Identifier is a keyed value: it links the versions of one logical sample and does not reveal the sync identifier it was derived from.
-A deployment that has opted in to the readable `HKObject.uuid` Identifier additionally emits the exact `HKMetadataKeySyncIdentifier` text as one readable Identifier on the same designated primary output:
+A deployment that has opted in to the readable `HKObject.uuid` Identifier and to the readable sync identifier additionally emits the exact `HKMetadataKeySyncIdentifier` text as one readable Identifier on the same designated primary output:
 
 | Element | Content |
 |---|---|
@@ -85,7 +85,7 @@ Sync identifier text is unique only for one writing application in one HealthKit
 
 The readable sync identifier appears only beside the `HKObject.uuid` Identifier, the `writer-record` Identifier, and the Grove Writer Record Version of the same output: an Observation, or the sole DocumentReference of a heartbeat series, a workout route, or a clinical record.
 Workout segments, the electrocardiogram's average-heart-rate Observation, companion artifacts, Devices, and Provenance never carry it.
-With the setting off, the sync identifier text is not exported in any element, and the `writer-record` Identifier alone represents it.
+With either setting off, the sync identifier text is not exported in any element, and the `writer-record` Identifier alone represents it.
 
 The readable sync identifier is traceability, not identity.
 Source-record and source-output identity remain the identity of a record: Bundle entry keys, version selection, deduplication, receipts, and retractions never read the readable value, and adding or withholding it changes only the record's content and therefore its version.
@@ -298,8 +298,8 @@ The correlation's own metadata can be preserved through its typed source-metadat
 
 ### Device, application, and provenance
 
-Map every non-nil `HKObject.device` to a [Grove Recording Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-recording-device.html). When `HKObject.device` is absent, create a recording Device if the sample supplies a nonblank string for a device metadata field listed below. Apply these mappings to both Observation and document outputs: `Observation.device` references the recording Device, and `DocumentReference.author` includes it. Carry the available device facts without inferring a stable physical-unit identity from descriptive metadata.
-The Device always carries the content `device-snapshot` identity, minted over its complete rendered content after every field is set.
+Unless the deployment's disclosure policy withholds the whole Device, map every non-nil `HKObject.device` to a [Grove Recording Device](https://grovealliance.org/fhir/mobile/StructureDefinition-grove-recording-device.html). When `HKObject.device` is absent, create a recording Device if the sample supplies a nonblank string for a device metadata field listed below. Apply these mappings to both Observation and document outputs: `Observation.device` references the recording Device, and `DocumentReference.author` includes it. Carry the available device facts that the deployment's disclosure policy does not withhold, without inferring a stable physical-unit identity from descriptive metadata.
+The Device always carries the content `device-snapshot` identity, minted over its complete rendered content after every field is set and every withheld fact is left out.
 It also carries the typed `recording-device` identity only when a governed stable per-unit token exists: `HKDevice.localIdentifier` when it is nonempty and the deployment has verified that it is stable and names exactly one unit for the acquisition scope, or another caller-governed token.
 That token is local to the host that recorded the sample and writable by any application, so its HMAC is scoped by the writing source's `HKSource.bundleIdentifier`, and the same token stated by two writers names two units.
 The scope separates writers only: a writer that states the same token for distinct units of one subject, on one host or on several, merges them into one identity, and only the deployment's verification that the token names exactly one unit guards against that.
@@ -325,6 +325,8 @@ An `HKDevice` property wins over a device metadata key, a metadata key fills onl
 Map each field only when its value is present. Do not duplicate a faithfully mapped value in the typed metadata extension. If a metadata value conflicts with the preferred `HKDevice` property, preserve that different value in the typed extension. Device metadata describes recording hardware; it does not identify the gateway application.
 The `Device.version.type` codings use the ISO 11073 MDC revision codes; these standard type codes do not assert conformance to a PHD profile.
 The clear local identifier links a participant's samples from one device within one host; a deployment that shares or exports data applies its own policy to it, to the serial number, and to a device name.
+A deployment's disclosure policy may withhold any device fact, or the whole Device; as for every omission a disclosure policy chooses, that is not reported, a withheld fact is not preserved in the typed metadata extension either, and a Device with no fact left is not emitted.
+The `recording-device` identity is not a device fact: withholding the clear local identifier leaves it in place on a Device that keeps another fact, and a Device that is not emitted states no unit.
 `recordingDeviceIdentity.fieldMappings` in [`catalog/healthkit-adapter.json`](https://grovealliance.org/fhir/catalog/healthkit-adapter.json) states the same mapping.
 
 Represent the converting app as a [HealthKit Application Device](StructureDefinition-healthkit-application-device.html), which specializes the shared Grove Application Device.
@@ -388,6 +390,8 @@ A member whose string fact HealthKit does not supply, or supplies empty, is left
 Every member is emitted by default: the producer carries every source fact, and consumers filter what they do not need.
 `HKSource.name` can be the name a person gave a device, and a device's `HKSource.bundleIdentifier` can embed an identifier that HealthKit assigns to that one device; a producer cannot tell either from an application's without classifying the source, so a deployment that shares or exports data applies its own policy to them.
 A deployment's disclosure policy may withhold any of them, or the whole extension; as for every omission a disclosure policy chooses, that is not reported, and an extension with no member left is not emitted.
+Apart from withholding the whole extension, a policy may withhold `sourceBundleIdentifier` only where its value is `com.apple.health.` followed by a UUID in hyphenated hexadecimal form, and keeps every other value. This limits which values a policy may withhold; it does not classify the source, and the member's absence states nothing about whether the source is a device. A policy withholds the member whole and never shortens or rewrites its value.
+Withholding this member does not remove the bundle identifier from the system of a disclosed readable sync identifier.
 
 The extension describes the consumed object, not an actor: it adds no agent, participant type, or Device, and it states neither that the source is an application nor that it is a device.
 The rule that a source is never classified from its identifier's string shape, source name, or `productType` holds for its members as it holds for `HKSourceRevision`.

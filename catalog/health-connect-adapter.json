@@ -2,7 +2,7 @@
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/catalog-contracts.schema.json",
   "schemaVersion": 0,
   "fhirVersion": "4.0.1",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "source": {
     "package": "androidx.health.connect:connect-client",
     "version": "1.1.0",
@@ -1715,7 +1715,7 @@
       "Metadata.device.type"
     ],
     "stableUnitToken": "Health Connect 1.1 exposes no per-unit device identifier. A recording Device carries a recording-device identifier only when its caller supplies a separately governed stable per-unit token.",
-    "snapshot": "Every Record with a supplied Metadata.device yields a recording Device that Observation.device references. The Device always carries one content device-snapshot v0 identifier over its complete rendered content and carries a recording-device v0 identifier only with that token. Manufacturer, model, device type, repository scope, and their digest do not establish a physical instance, and equal snapshots never prove one unit.",
+    "snapshot": "Unless the deployment's disclosure policy withholds it, every Record with a supplied Metadata.device yields a recording Device that Observation.device references. The Device always carries one content device-snapshot v0 identifier over its complete rendered content and carries a recording-device v0 identifier only with that token. Manufacturer, model, device type, repository scope, and their digest do not establish a physical instance, and equal snapshots never prove one unit.",
     "fieldMappings": [
       {"source": "Metadata.device.manufacturer", "r4Element": "Device.manufacturer"},
       {"source": "Metadata.device.model", "r4Element": "Device.modelNumber"},
