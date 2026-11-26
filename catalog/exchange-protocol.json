@@ -1,9 +1,9 @@
 {
   "$schema": "https://grovealliance.org/fhir/catalog/schemas/exchange-protocol.schema.json",
   "schemaVersion": 0,
-  "version": "0.8.2",
+  "version": "0.8.3",
   "protocolVersion": 0,
-  "releaseVersion": "0.8.2",
+  "releaseVersion": "0.8.3",
   "fhirVersion": "4.0.1",
   "profiles": {
     "activeBundle": "https://grovealliance.org/fhir/mobile/StructureDefinition/grove-mobile-exchange-bundle",
@@ -769,7 +769,7 @@
     "type": "Identifier.type is optional when system fully defines the key space, as in FHIR R4. A present type may be text-only. Every present Coding has an absolute system and a code in the FHIR code lexical form; no Coding may use the Grove identifier-role CodeSystem because source-native identifiers are not Grove graph keys.",
     "prohibitions": "Never use a source-native value as Resource.id, a Bundle entry key, retraction address, arbitrary Observation component, or untyped metadata. Do not incidentally copy it into Attachment.title, Attachment.url, Bundle.identifier, transport/object names, or logs; a deployment that deliberately uses it in a separate non-FHIR storage contract must govern that use explicitly. Every export a deployment makes of received records strips every governed source identifier, such as a HealthKit record Identifier, and every grove-retraction-target-native-identifier extension, because a native value that other applications also read joins an exported copy back to theirs record by record.",
     "closedProfiles": "A profile with a closed or exact Identifier set admits no governed source identifier unless that profile explicitly adds such a slice. Supporting nodes whose identity is synthesized from another source record remain closed.",
-    "writerAssignedIdentifier": "An adapter contract may admit one further readable Identifier on the same designated primary output for the logical record id that the writing application assigned, such as a HealthKit sync identifier. It carries the adapter's exact Identifier.type coding and appears only beside the record's native record Identifier, its writer-record Identifier, and its Grove Writer Record Version. The disclosure policy of the native record Identifier governs it: a deployment discloses both or neither. Its system is scoped to the governed repository, account, or store and to the writing application, so it names the writing application even where writer attribution is otherwise withheld. It never replaces the writer-record Identifier, which every version of the logical record carries whether or not the readable value is disclosed.",
+    "writerAssignedIdentifier": "An adapter contract may admit one further readable Identifier on the same designated primary output for the logical record id that the writing application assigned, such as a HealthKit sync identifier. It carries the adapter's exact Identifier.type coding and appears only beside the record's native record Identifier, its writer-record Identifier, and its Grove Writer Record Version. It is disclosed under its own deployment setting, which takes effect only while the native record Identifier is disclosed. Its system is scoped to the governed repository, account, or store and to the writing application, so it names the writing application even where writer attribution is otherwise withheld. It never replaces the writer-record Identifier, which every version of the logical record carries whether or not the readable value is disclosed.",
     "validation": {
       "optionality": "optional",
       "designatedNode": {
@@ -1311,9 +1311,9 @@
   ],
   "recordingDevice": {
     "instanceRule": "Only a recording-device identifier, minted from a deployment-governed stable per-unit token, establishes physical-instance identity. Manufacturer, model, hardware version, subject, a content snapshot, or their digest cannot, and two Devices whose snapshot content is equal are never inferred to be one physical unit.",
-    "unitIdentity": "The recording-device identifier is optional. A recording Device always carries its device-snapshot identifier and carries a recording-device identifier only when a governed stable per-unit token exists; without one, the producer still emits the Device and the output still references it. A token may be local to one host and writable by other applications, as HKDevice.localIdentifier is, so the recording-device kind scopes it with token-scope, the authority that assigned it (for HealthKit, the writing source's HKSource.bundleIdentifier).",
+    "unitIdentity": "The recording-device identifier is optional. A recording Device always carries its device-snapshot identifier and carries a recording-device identifier only when a governed stable per-unit token exists; without one, the producer still emits the Device, unless the disclosure policy withholds it, and the output still references it. A token may be local to one host and writable by other applications, as HKDevice.localIdentifier is, so the recording-device kind scopes it with token-scope, the authority that assigned it (for HealthKit, the writing source's HKSource.bundleIdentifier).",
     "snapshots": "Every Grove Device, whether application, host, or recording, carries exactly one device-snapshot identifier, its content key and selected entry key, minted over its complete rendered content (opaqueIdentity.contentDigest). Snapshot identifiers are descriptive: the same content gives the same identifier in every Bundle and changed content a new snapshot. Firmware, software, operating-system, and application build facts are immutable snapshot data; a shared Device is never mutated while historical records import out of order.",
-    "deviceFacts": "A producer emits every device fact its source exposes, mapped as the adapter catalog's recordingDeviceIdentity field mappings state. Consumers filter what they do not need; the source does not.",
+    "deviceFacts": "By default a producer emits every device fact its source exposes, mapped as the adapter catalog's recordingDeviceIdentity field mappings state, and consumers filter what they do not need. A deployment's disclosure policy may withhold any device fact or the whole Device. A withheld fact or Device is not reported, and a Device with no fact left is not emitted.",
     "roles": "The device-snapshot component node-role is the resource kind only: application, host, or recording-device. Participation roles such as assembler, enterer, gateway, or author never enter identity. One Device resource may participate in several roles; graph construction deduplicates the resource and retains every role relationship."
   },
   "payload": {
@@ -2255,9 +2255,9 @@
           "https://example.org/research/participant-id",
           "participant-001",
           "questionnaire-response",
-          "6wdRcDJe0GnRwqWDI6rpyduGLRFrFqDJwesl1Ei9EQ0"
+          "DW8iczQ0czx83jGCGtB7IeyvdM5WF7f4i5aZj2ExCH0"
         ],
-        "value": "v0:test-key:1:UjRpKw1ChoJ8CY1aT6UTnnnO1CCoHv6aVmLPMbP0kJU"
+        "value": "v0:test-key:1:eRd0Kae044sRbftkFUk_EgeejmbIEzqNVKDnDcJgAUQ"
       },
       {
         "id": "questionnaire-extraction-bundle-application-snapshot",
@@ -2276,9 +2276,9 @@
         "components": [
           "https://study.example.org/fhir/NamingSystem/grove-source-record-v0/test-key/1",
           "v0:test-key:1:7_7dmqTFxPH01QGTycmp8nIPty7WwphH2X0ZaV-p3wk",
-          "3ora5VrFq1fH1P1CpZ0K4uMcqrU9JOqXHaiRN7D0M8c"
+          "EzUle24iUyHAyJmrgF1jiQY12aVSWbycQbZbqmJUX2M"
         ],
-        "value": "v0:test-key:1:E96gmaE_ofFUfBKWb-pcLbNnhxO7QmNh1Yzr5z7qLtw"
+        "value": "v0:test-key:1:pvJVCfeirXaQWh_DI1WEzw61l6MF-qc_iX6ib08LLgo"
       }
     ],
     "invalidIdentities": [
