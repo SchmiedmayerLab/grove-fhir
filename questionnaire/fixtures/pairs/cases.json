@@ -231,13 +231,13 @@
       "expected": null
     },
     {
-      "id": "not-equal-unanswered-is-false",
+      "id": "not-equal-unanswered-is-true",
       "sourceAnswers": [],
       "operator": "!=",
       "conditionAnswer": {
         "answerCoding": {"system": "https://example.org/codes", "code": "a"}
       },
-      "expected": false
+      "expected": true
     },
     {
       "id": "not-equal-only-equal-is-false",
@@ -251,7 +251,7 @@
       "expected": false
     },
     {
-      "id": "not-equal-mixed-repeated-answers-is-true",
+      "id": "not-equal-mixed-repeated-answers-is-false",
       "sourceAnswers": [
         {"valueCoding": {"system": "https://example.org/codes", "code": "a"}},
         {"valueCoding": {"system": "https://example.org/codes", "code": "b"}}
@@ -260,7 +260,21 @@
       "conditionAnswer": {
         "answerCoding": {"system": "https://example.org/codes", "code": "a"}
       },
-      "expected": true
+      "expected": false
+    },
+    {
+      "id": "not-equal-partial-date-is-indeterminate",
+      "sourceAnswer": {"valueDate": "2026-08"},
+      "operator": "!=",
+      "conditionAnswer": {"answerDate": "2026-08-15"},
+      "expected": null
+    },
+    {
+      "id": "not-equal-equal-and-indeterminate-answers-is-false",
+      "sourceAnswers": [{"valueDate": "2026-08"}, {"valueDate": "2026-08-15"}],
+      "operator": "!=",
+      "conditionAnswer": {"answerDate": "2026-08-15"},
+      "expected": false
     },
     {
       "id": "quantity-equality-compares-the-value",

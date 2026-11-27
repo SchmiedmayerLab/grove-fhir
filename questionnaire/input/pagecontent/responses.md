@@ -130,6 +130,7 @@ A question that follows the item in a repeating group is read from the previous 
 A condition of an item beneath an answer that refers to the enclosing question reads every answer of that question.
 A condition of an item after a repeating group that refers to a question inside the group reads the last repetition.
 The answers of a disabled question count as absent, also when an earlier occurrence of the question is enabled.
+A condition with `!=` is true when no answer of the question equals the condition's answer, also when the question has no answer; a condition with `=`, `>`, `<`, `>=`, or `<=` is true when at least one answer satisfies it.
 An item whose enablement depends on itself, through its conditions or its enclosing items, cannot be evaluated.
 For enabled items, `questionnaire-maxOccurs` always limits occurrences; `questionnaire-minOccurs` is enforced when the response is `completed` or `amended`.
 An option marked exclusive cannot be combined with another answer.

@@ -1658,7 +1658,7 @@ class QuestionnaireContractTests(unittest.TestCase):
             )
         )
 
-    def test_enable_when_not_equal_matches_any_repeated_answer(self) -> None:
+    def test_enable_when_not_equal_requires_that_no_answer_is_equal(self) -> None:
         condition = {
             "enableWhen": [
                 {
@@ -1674,14 +1674,14 @@ class QuestionnaireContractTests(unittest.TestCase):
         expected = {"system": "https://example.org/codes", "code": "a"}
         other = {"system": "https://example.org/codes", "code": "b"}
 
-        self.assertFalse(validator.evaluate_enable_when(condition, enabled_answers({})))
+        self.assertTrue(validator.evaluate_enable_when(condition, enabled_answers({})))
         self.assertFalse(
             validator.evaluate_enable_when(
                 condition,
                 enabled_answers({"choice": [validator.TypedAnswerValue("valueCoding", expected)]}),
             )
         )
-        self.assertTrue(
+        self.assertFalse(
             validator.evaluate_enable_when(
                 condition,
                 enabled_answers(
@@ -1698,6 +1698,33 @@ class QuestionnaireContractTests(unittest.TestCase):
             validator.evaluate_enable_when(
                 condition,
                 enabled_answers({"choice": [validator.TypedAnswerValue("valueCoding", other)]}),
+            )
+        )
+        self.assertTrue(
+            validator.evaluate_enable_when(
+                condition,
+                lambda question: ([validator.TypedAnswerValue("valueCoding", expected)], False),
+            )
+        )
+        self.assertTrue(
+            validator.evaluate_enable_when(
+                condition,
+                lambda question: ([validator.TypedAnswerValue("valueCoding", other)], None),
+            )
+        )
+        self.assertIsNone(
+            validator.evaluate_enable_when(
+                condition,
+                lambda question: ([validator.TypedAnswerValue("valueCoding", expected)], None),
+            )
+        )
+        date_condition = {
+            "enableWhen": [{"question": "date", "operator": "!=", "answerDate": "2026-08-15"}]
+        }
+        self.assertIsNone(
+            validator.evaluate_enable_when(
+                date_condition,
+                enabled_answers({"date": [validator.TypedAnswerValue("valueDate", "2026-08")]}),
             )
         )
 

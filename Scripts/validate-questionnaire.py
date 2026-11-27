@@ -994,13 +994,10 @@ def condition_outcome(
     if operator == "=":
         return any_tristate([equal_typed_values(value, expected) for value in values])
     if operator == "!=":
-        # FHIR evaluates the condition against each answer and enables when any
-        # answer satisfies it. For `!=`, a mixed [equal, different] set is true;
-        # an unanswered question has no satisfying answer and is false.
-        equality = [equal_typed_values(value, expected) for value in values]
-        return any_tristate(
-            [not result if result is not None else None for result in equality]
-        )
+        # R5 states the R4 intent explicitly: true when no answer equals the
+        # condition's answer, which includes a question without answers.
+        any_equal = any_tristate([equal_typed_values(value, expected) for value in values])
+        return None if any_equal is None else not any_equal
     comparisons: list[bool | None] = []
     for value in values:
         comparison = compare_typed_values(value, expected)
