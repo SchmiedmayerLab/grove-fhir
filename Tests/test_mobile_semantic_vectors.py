@@ -85,6 +85,12 @@ class MobileSemanticVectorTests(unittest.TestCase):
         self.assertEqual(
             contract["excludedContracts"], ["Sensor SampledData", "ECG SampledData"]
         )
+        overrides = self.catalog["effectiveCanonicalization"]["sourcePrecisionOverrides"]
+        self.assertEqual(
+            contract["sourcePrecisionOverrides"],
+            {key: overrides[key] for key in ("adapters", "precision", "rounding")},
+        )
+        self.assertIn("effectiveCanonicalization.sourcePrecisionOverrides", self.corpus["comparisonRule"])
         ids = {vector["id"] for vector in contract["vectors"]}
         self.assertEqual(
             ids,
@@ -110,11 +116,17 @@ class MobileSemanticVectorTests(unittest.TestCase):
         self.assertEqual(
             self.catalog["effectiveCanonicalization"],
             {
-                "scope": "Every Mobile scalar or aggregate effectiveDateTime and effectivePeriod endpoint; Sensor and ECG SampledData timing is excluded.",
+                "scope": "Default for Mobile scalar or aggregate effectiveDateTime and effectivePeriod endpoints. sourcePrecisionOverrides take precedence; Sensor and ECG SampledData timing is excluded.",
                 "precision": "millisecond",
                 "rounding": "half-even",
                 "epoch": "1970-01-01T00:00:00Z",
                 "offsetPolicy": "Preserve the caller/source numeric UTC offset when it is available; never invent an offset.",
+                "sourcePrecisionOverrides": {
+                    "adapters": ["google-health-api", "oura", "withings"],
+                    "precision": "source",
+                    "rounding": "none",
+                    "rule": "Preserve each exact source instant and its supplied numeric UTC offset, including fractional seconds. Do not round provider effective times to milliseconds. Insignificant trailing zero digits may be normalized without changing the instant.",
+                },
             },
         )
 
