@@ -22,7 +22,7 @@ import sys
 from dataclasses import asdict, dataclass
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
-from typing import Any, Iterable, Iterator, Sequence
+from typing import Any, Callable, Iterable, Iterator, Sequence
 
 try:
     from fhir_fixture_corpus import strict_json_loads
@@ -959,35 +959,14 @@ def answer_value(answer: dict[str, Any]) -> tuple[str | None, Any]:
     return values[0]
 
 
-def questionnaire_answer_values(
-    response: dict[str, Any],
-) -> dict[str, list[TypedAnswerValue]]:
-    values: dict[str, list[TypedAnswerValue]] = {}
-    for item in response_items(response.get("item", [])):
-        bucket = values.setdefault(str(item.get("linkId", "")), [])
-        for answer in item.get("answer", []):
-            key, value = answer_value(answer)
-            if key is not None and value is not None:
-                bucket.append(TypedAnswerValue(key, value))
-    return values
-
-
-def direct_answer_values(
-    items: Iterable[dict[str, Any]],
-) -> dict[str, list[TypedAnswerValue]]:
-    """Collect answers from one response container without crossing repetitions."""
-    values: dict[str, list[TypedAnswerValue]] = {}
-    for item in items:
-        link_id = item.get("linkId")
-        if not isinstance(link_id, str) or not link_id:
+def answer_values(answers: Any) -> list[TypedAnswerValue]:
+    values: list[TypedAnswerValue] = []
+    for answer in answers if isinstance(answers, list) else []:
+        if not isinstance(answer, dict):
             continue
-        bucket = values.setdefault(link_id, [])
-        for answer in item.get("answer", []):
-            if not isinstance(answer, dict):
-                continue
-            key, value = answer_value(answer)
-            if key is not None and value is not None:
-                bucket.append(TypedAnswerValue(key, value))
+        key, value = answer_value(answer)
+        if key is not None and value is not None:
+            values.append(TypedAnswerValue(key, value))
     return values
 
 
@@ -1007,15 +986,52 @@ def all_tristate(outcomes: Sequence[bool | None]) -> bool | None:
     return True
 
 
-def evaluate_enable_when(
-    item: dict[str, Any], all_answers: dict[str, list[TypedAnswerValue]]
+def condition_outcome(
+    operator: Any, expected: TypedAnswerValue, values: Sequence[TypedAnswerValue]
 ) -> bool | None:
+    if operator == "exists":
+        return bool(values) is expected.value
+    if operator == "=":
+        return any_tristate([equal_typed_values(value, expected) for value in values])
+    if operator == "!=":
+        # FHIR evaluates the condition against each answer and enables when any
+        # answer satisfies it. For `!=`, a mixed [equal, different] set is true;
+        # an unanswered question has no satisfying answer and is false.
+        equality = [equal_typed_values(value, expected) for value in values]
+        return any_tristate(
+            [not result if result is not None else None for result in equality]
+        )
+    comparisons: list[bool | None] = []
+    for value in values:
+        comparison = compare_typed_values(value, expected)
+        comparisons.append(
+            None
+            if comparison is None
+            else {
+                ">": comparison > 0,
+                "<": comparison < 0,
+                ">=": comparison >= 0,
+                "<=": comparison <= 0,
+            }[operator]
+        )
+    return any_tristate(comparisons)
+
+
+QuestionSource = Callable[[str], "tuple[list[TypedAnswerValue], bool | None] | None"]
+
+
+def evaluate_enable_when(item: dict[str, Any], source: QuestionSource) -> bool | None:
+    """Evaluate the item's core enableWhen.
+
+    `source` returns the answers of the question occurrence a condition reads and
+    whether that occurrence is enabled, or None when the condition has no
+    occurrence to read. A disabled question counts as unanswered.
+    """
     conditions = item.get("enableWhen", [])
     if not conditions:
         return True
     outcomes: list[bool | None] = []
     for condition in conditions:
-        values = all_answers.get(str(condition.get("question", "")), [])
         operator = condition.get("operator")
         expected_pairs = [
             (key.replace("answer", "value", 1), value)
@@ -1028,40 +1044,220 @@ def evaluate_enable_when(
         if operator == "exists":
             if expected.key != "valueBoolean" or not isinstance(expected.value, bool):
                 return None
-            outcomes.append(bool(values) is expected.value)
-        elif operator == "=":
-            outcomes.append(
-                any_tristate([equal_typed_values(value, expected) for value in values])
-            )
-        elif operator == "!=":
-            # FHIR evaluates the condition against each answer and enables when any
-            # answer satisfies it. For `!=`, a mixed [equal, different] set is true;
-            # an unanswered question has no satisfying answer and is false.
-            equality = [equal_typed_values(value, expected) for value in values]
-            outcomes.append(
-                any_tristate(
-                    [not result if result is not None else None for result in equality]
-                )
-            )
-        elif operator in {">", "<", ">=", "<="}:
-            comparisons: list[bool | None] = []
-            for value in values:
-                comparison = compare_typed_values(value, expected)
-                comparisons.append(
-                    None
-                    if comparison is None
-                    else {
-                        ">": comparison > 0,
-                        "<": comparison < 0,
-                        ">=": comparison >= 0,
-                        "<=": comparison <= 0,
-                    }[operator]
-                )
-            outcomes.append(any_tristate(comparisons))
-        else:
+        elif operator not in {"=", "!=", ">", "<", ">=", "<="}:
             return None
+        question = source(str(condition.get("question", "")))
+        if question is None:
+            outcomes.append(None)
+            continue
+        answers, enabled = question
+        if enabled is True:
+            outcomes.append(condition_outcome(operator, expected, answers))
+        elif enabled is False:
+            outcomes.append(condition_outcome(operator, expected, []))
+        else:
+            # The outcome is known when it does not depend on whether the question is enabled.
+            with_answers = condition_outcome(operator, expected, answers)
+            without_answers = condition_outcome(operator, expected, [])
+            outcomes.append(with_answers if with_answers == without_answers else None)
     behavior = item.get("enableBehavior", "all")
     return any_tristate(outcomes) if behavior == "any" else all_tristate(outcomes)
+
+
+def cyclic_link_ids(items: Iterable[dict[str, Any]]) -> set[str]:
+    """Return the linkIds whose enablement depends on itself, through conditions or enclosing items."""
+    dependencies: dict[str, set[str]] = {}
+
+    def collect(entries: Iterable[dict[str, Any]], parent: str | None) -> None:
+        for item in entries:
+            link_id = item.get("linkId")
+            if isinstance(link_id, str):
+                bucket = dependencies.setdefault(link_id, set())
+                bucket.update(
+                    condition["question"]
+                    for condition in item.get("enableWhen", [])
+                    if isinstance(condition, dict) and isinstance(condition.get("question"), str)
+                )
+                if parent is not None:
+                    bucket.add(parent)
+            collect(item.get("item", []), link_id if isinstance(link_id, str) else parent)
+
+    collect(items, None)
+    cyclic: set[str] = set()
+    for start in dependencies:
+        visited: set[str] = set()
+        pending = list(dependencies[start])
+        while pending:
+            current = pending.pop()
+            if current == start:
+                cyclic.add(start)
+                break
+            if current not in visited:
+                visited.add(current)
+                pending.extend(dependencies.get(current, ()))
+    return cyclic
+
+
+class ResponseOccurrences:
+    """Every item occurrence of a response in document order, with the enablement enableWhen gives it.
+
+    An occurrence exists for each Questionnaire item wherever the item can appear,
+    also where the response omits it: once in every instance of an enclosing
+    group, and once beneath every answer of an enclosing question, or once when
+    that question has no answer. A question the response omits in one repetition
+    is therefore an occurrence without answers in that repetition, and a
+    condition reads that occurrence instead of another repetition's answers.
+    Only the first of several response items for a non-repeating item counts as
+    an occurrence that conditions read.
+    """
+
+    def __init__(self, questionnaire: dict[str, Any], response: dict[str, Any]) -> None:
+        self.definitions: list[dict[str, Any]] = []
+        self.parents: list[int | None] = []
+        self.answers: list[list[TypedAnswerValue]] = []
+        self.by_link_id: dict[Any, list[int]] = {}
+        self.by_path: dict[str, int] = {}
+        self.cyclic = cyclic_link_ids(questionnaire.get("item", []))
+        self.place(
+            questionnaire.get("item", []),
+            response.get("item", []),
+            None,
+            "QuestionnaireResponse.item",
+            True,
+        )
+        self.states: dict[int, bool | None] = {}
+        self.condition_states: dict[int, bool | None] = {}
+        self.evaluating: set[int] = set()
+        for index in range(len(self.definitions)):
+            self.state(index)
+
+    def place(
+        self,
+        definitions: Iterable[dict[str, Any]],
+        responses: Any,
+        parent: int | None,
+        path: str,
+        readable: bool,
+    ) -> None:
+        found: dict[Any, list[tuple[dict[str, Any], str]]] = {}
+        for index, item in enumerate(responses if isinstance(responses, list) else []):
+            if isinstance(item, dict):
+                found.setdefault(item.get("linkId"), []).append((item, f"{path}[{index}]"))
+        for definition in definitions:
+            link_id = definition.get("linkId")
+            entries = found.get(link_id, [])
+            repeating_group = definition.get("type") == "group" and definition.get("repeats") is True
+            instances: list[tuple[dict[str, Any] | None, str]] = list(entries) or [(None, f"{path}.{link_id}")]
+            for position, (item, item_path) in enumerate(instances):
+                self.add(definition, item, item_path, parent, readable and (repeating_group or position == 0))
+
+    def add(
+        self,
+        definition: dict[str, Any],
+        item: dict[str, Any] | None,
+        path: str,
+        parent: int | None,
+        readable: bool,
+    ) -> None:
+        index = len(self.definitions)
+        raw_answers = item.get("answer", []) if item is not None else []
+        raw_answers = raw_answers if isinstance(raw_answers, list) else []
+        self.definitions.append(definition)
+        self.parents.append(parent)
+        self.answers.append(answer_values(raw_answers))
+        self.by_path[path] = index
+        if readable:
+            self.by_link_id.setdefault(definition.get("linkId"), []).append(index)
+        children = definition.get("item", [])
+        if not children:
+            return
+        if definition.get("type") == "group":
+            self.place(children, item.get("item", []) if item is not None else [], index, f"{path}.item", readable)
+        elif not raw_answers:
+            self.place(children, [], index, f"{path}.answer.item", readable)
+        else:
+            for answer_index, answer in enumerate(raw_answers):
+                self.place(
+                    children,
+                    answer.get("item", []) if isinstance(answer, dict) else [],
+                    index,
+                    f"{path}.answer[{answer_index}].item",
+                    readable,
+                )
+
+    def is_descendant(self, candidate: int, occurrence: int) -> bool:
+        parent = self.parents[candidate]
+        while parent is not None:
+            if parent == occurrence:
+                return True
+            parent = self.parents[parent]
+        return False
+
+    def source(self, link_id: str, occurrence: int) -> int | None:
+        """Return the occurrence of `link_id` that a condition of `occurrence` reads.
+
+        Follows FHIR R4 Questionnaire.item.enableWhen.question: the nearest
+        occurrence on the ancestor axis, then on the preceding axis, then on the
+        following axis. A condition never reads its own item.
+        """
+        if self.definitions[occurrence].get("linkId") == link_id:
+            return None
+        ancestor = self.parents[occurrence]
+        while ancestor is not None:
+            if self.definitions[ancestor].get("linkId") == link_id:
+                return ancestor
+            ancestor = self.parents[ancestor]
+        candidates = self.by_link_id.get(link_id, [])
+        preceding = [candidate for candidate in candidates if candidate < occurrence]
+        if preceding:
+            return preceding[-1]
+        return next(
+            (
+                candidate
+                for candidate in candidates
+                if candidate > occurrence and not self.is_descendant(candidate, occurrence)
+            ),
+            None,
+        )
+
+    def state(self, index: int) -> bool | None:
+        """Whether the occurrence is enabled, by its enclosing items and its own enablement."""
+        if index in self.states:
+            return self.states[index]
+        if index in self.evaluating:
+            return None
+        self.evaluating.add(index)
+        try:
+            parent = self.parents[index]
+            enclosing = True if parent is None else self.state(parent)
+            definition = self.definitions[index]
+            if definition.get("linkId") in self.cyclic:
+                # An item that depends on itself has no enablement of its own.
+                self.condition_states[index] = None
+                own = None
+            else:
+                condition = evaluate_enable_when(
+                    definition, lambda link_id: self.read(link_id, index)
+                )
+                self.condition_states[index] = condition
+                # FHIRPath enablement is not evaluated here, so such an item is an unknown source.
+                own = None if extensions(definition, ENABLE_EXPRESSION) else condition
+            state = all_tristate([enclosing, own])
+        finally:
+            self.evaluating.discard(index)
+        self.states[index] = state
+        return state
+
+    def read(self, link_id: str, occurrence: int) -> tuple[list[TypedAnswerValue], bool | None] | None:
+        source = self.source(link_id, occurrence)
+        if source is None:
+            return None
+        return self.answers[source], self.state(source)
+
+    def condition_state(self, path: str) -> bool | None:
+        """The outcome of the core enableWhen of the occurrence at a response path."""
+        index = self.by_path.get(path)
+        return None if index is None else self.condition_states.get(index)
 
 
 class ValueSetResolver:
@@ -1403,7 +1599,7 @@ def validate_pair(
         issues.append(Issue("pair-response-entered-in-error", "QuestionnaireResponse.status", "An entered-in-error response must not be accepted as answer data"))
 
     definitions = {item.get("linkId"): item for item, _ in iter_items(questionnaire.get("item", [])) if item.get("linkId")}
-    all_answers = questionnaire_answer_values(response)
+    response_occurrences = ResponseOccurrences(questionnaire, response)
     resolver = ValueSetResolver(value_sets)
     completed = response.get("status") in COMPLETED_STATUSES
 
@@ -1411,7 +1607,6 @@ def validate_pair(
         expected_items: list[dict[str, Any]],
         actual_items: list[dict[str, Any]],
         path: str,
-        inherited_answers: dict[str, list[TypedAnswerValue]],
     ) -> None:
         expected = {item.get("linkId"): item for item in expected_items}
         actual_by_link: dict[str, list[tuple[dict[str, Any], str]]] = {}
@@ -1433,22 +1628,18 @@ def validate_pair(
             if len(occurrences) > 1 and not is_repeating_group:
                 issues.append(Issue("pair-item-duplicate", path, f"Item {link_id!r} appears more than once in one response context"))
 
-        # Start with the document-order fallback required by R4, then let each
-        # ancestor and the current response container override it. This keeps
-        # children of repeated groups and repeated answers in their own nearest
-        # occurrence while retaining preceding/following resolution elsewhere.
-        scoped_answers = dict(all_answers)
-        scoped_answers.update(inherited_answers)
-        scoped_answers.update(direct_answer_values(actual_items))
-
         for link_id, definition in expected.items():
-            enabled = evaluate_enable_when(definition, scoped_answers)
+            present = actual_by_link.get(link_id, [])
+            # Every instance of an item in one container reads the same question
+            # occurrences, so the first instance, or the omitted one, decides.
+            enabled = response_occurrences.condition_state(
+                present[0][1] if present else f"{path}.{link_id}"
+            )
             has_expression_enablement = bool(extensions(definition, ENABLE_EXPRESSION))
             if has_expression_enablement and completed:
                 issues.append(Issue("pair-expression-engine-required", path, f"Completed response requires FHIRPath enablement evaluation for {link_id!r}"))
             if enabled is None and completed:
                 issues.append(Issue("pair-enable-evaluation", path, f"Cannot evaluate enableWhen for {link_id!r}"))
-            present = actual_by_link.get(link_id, [])
             item_type = definition.get("type")
             _, minimum_occurs = first_extension_value(definition, MIN_OCCURS)
             _, maximum_occurs = first_extension_value(definition, MAX_OCCURS)
@@ -1512,22 +1703,13 @@ def validate_pair(
                         definition.get("item", []),
                         actual.get("item", []),
                         f"{actual_path}.item",
-                        scoped_answers,
                     )
                 else:
                     for answer_index, answer in enumerate(answers):
-                        answer_scope = dict(scoped_answers)
-                        if isinstance(answer, dict):
-                            value_key, value = answer_value(answer)
-                            if value_key is not None and value is not None:
-                                answer_scope[link_id] = [
-                                    TypedAnswerValue(value_key, value)
-                                ]
                         check_container(
                             definition.get("item", []),
                             answer.get("item", []) if isinstance(answer, dict) else [],
                             f"{actual_path}.answer[{answer_index}].item",
-                            answer_scope,
                         )
 
                 for constraint in extensions(definition, TARGET_CONSTRAINT):
@@ -1560,14 +1742,12 @@ def validate_pair(
                     definition.get("item", []),
                     [],
                     f"{path}.{link_id}.item",
-                    scoped_answers,
                 )
 
     check_container(
         questionnaire.get("item", []),
         response.get("item", []),
         "QuestionnaireResponse.item",
-        {},
     )
     for constraint in extensions(questionnaire, TARGET_CONSTRAINT):
         if not completed:

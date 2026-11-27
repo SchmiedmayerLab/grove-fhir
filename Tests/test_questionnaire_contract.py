@@ -81,6 +81,11 @@ def load_generated(filename: str) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def enabled_answers(answers: dict) -> object:
+    """Return an enableWhen source that reads enabled questions with the given answers."""
+    return lambda question: (answers.get(question, []), True)
+
+
 class QuestionnaireContractTests(unittest.TestCase):
     def test_official_validator_fails_closed_on_malformed_or_crashed_output(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -1534,7 +1539,9 @@ class QuestionnaireContractTests(unittest.TestCase):
                 self.assertIs(
                     validator.evaluate_enable_when(
                         condition,
-                        validator.questionnaire_answer_values(response),
+                        enabled_answers(
+                            {"source": validator.answer_values(answers)}
+                        ),
                     ),
                     case["expected"],
                 )
@@ -1666,28 +1673,30 @@ class QuestionnaireContractTests(unittest.TestCase):
         expected = {"system": "https://example.org/codes", "code": "a"}
         other = {"system": "https://example.org/codes", "code": "b"}
 
-        self.assertFalse(validator.evaluate_enable_when(condition, {}))
+        self.assertFalse(validator.evaluate_enable_when(condition, enabled_answers({})))
         self.assertFalse(
             validator.evaluate_enable_when(
                 condition,
-                {"choice": [validator.TypedAnswerValue("valueCoding", expected)]},
+                enabled_answers({"choice": [validator.TypedAnswerValue("valueCoding", expected)]}),
             )
         )
         self.assertTrue(
             validator.evaluate_enable_when(
                 condition,
-                {
-                    "choice": [
-                        validator.TypedAnswerValue("valueCoding", expected),
-                        validator.TypedAnswerValue("valueCoding", other),
-                    ]
-                },
+                enabled_answers(
+                    {
+                        "choice": [
+                            validator.TypedAnswerValue("valueCoding", expected),
+                            validator.TypedAnswerValue("valueCoding", other),
+                        ]
+                    }
+                ),
             )
         )
         self.assertTrue(
             validator.evaluate_enable_when(
                 condition,
-                {"choice": [validator.TypedAnswerValue("valueCoding", other)]},
+                enabled_answers({"choice": [validator.TypedAnswerValue("valueCoding", other)]}),
             )
         )
 
@@ -1747,6 +1756,303 @@ class QuestionnaireContractTests(unittest.TestCase):
         self.assertEqual(
             {issue.rule for issue in validator.validate_pair(questionnaire, invalid, value_sets)},
             {"pair-item-disabled"},
+        )
+
+    def pair_issues(
+        self, items: list[dict], response_items: list[dict]
+    ) -> set[tuple[str, str]]:
+        """Validate a completed response against the base pair with replaced items."""
+        questionnaire = load_json(PAIR_FIXTURES / "valid/questionnaire.json")
+        response = load_json(PAIR_FIXTURES / "valid/response.json")
+        value_sets = [load_json(PAIR_FIXTURES / "valid/value-set.json")]
+        questionnaire["item"] = items
+        response["item"] = response_items
+        return {
+            (issue.rule, issue.path)
+            for issue in validator.validate_pair(questionnaire, response, value_sets)
+        }
+
+    @staticmethod
+    def boolean_answer(link_id: str, value: bool) -> dict:
+        return {"linkId": link_id, "answer": [{"valueBoolean": value}]}
+
+    @staticmethod
+    def string_answer(link_id: str, value: str = "Text") -> dict:
+        return {"linkId": link_id, "answer": [{"valueString": value}]}
+
+    @staticmethod
+    def condition(question: str, value: bool = True) -> list[dict]:
+        return [{"question": question, "operator": "=", "answerBoolean": value}]
+
+    def test_enable_when_reads_a_later_question_from_the_previous_repetition(self) -> None:
+        items = [{
+            "linkId": "visit",
+            "text": "Visit",
+            "type": "group",
+            "repeats": True,
+            "item": [
+                {
+                    "linkId": "note",
+                    "text": "Note",
+                    "type": "string",
+                    "required": True,
+                    "enableWhen": self.condition("attended"),
+                },
+                {"linkId": "attended", "text": "Attended?", "type": "boolean"},
+            ],
+        }]
+        # The first visit reads its own answer on the following axis; each later
+        # visit reads the answer of the visit before it on the preceding axis.
+        response = [
+            {"linkId": "visit", "item": [self.string_answer("note"), self.boolean_answer("attended", True)]},
+            {"linkId": "visit", "item": [self.string_answer("note"), self.boolean_answer("attended", False)]},
+            {"linkId": "visit", "item": [self.boolean_answer("attended", True)]},
+        ]
+        self.assertEqual(self.pair_issues(items, response), set())
+
+        invalid = copy.deepcopy(response)
+        invalid[2]["item"].insert(0, self.string_answer("note"))
+        self.assertEqual(
+            self.pair_issues(items, invalid),
+            {("pair-item-disabled", "QuestionnaireResponse.item[2].item[0]")},
+        )
+
+    def test_enable_when_after_a_repeating_group_reads_its_last_repetition(self) -> None:
+        items = [
+            {
+                "linkId": "episode",
+                "text": "Episode",
+                "type": "group",
+                "repeats": True,
+                "item": [{"linkId": "symptom", "text": "Symptom?", "type": "boolean"}],
+            },
+            {
+                "linkId": "summary",
+                "text": "Summary",
+                "type": "string",
+                "required": True,
+                "enableWhen": self.condition("symptom"),
+            },
+        ]
+
+        def episodes(*values: bool) -> list[dict]:
+            return [
+                {"linkId": "episode", "item": [self.boolean_answer("symptom", value)]}
+                for value in values
+            ]
+
+        self.assertEqual(
+            self.pair_issues(items, episodes(True, False) + [self.string_answer("summary")]),
+            {("pair-item-disabled", "QuestionnaireResponse.item[2]")},
+        )
+        self.assertEqual(self.pair_issues(items, episodes(True, False)), set())
+        self.assertEqual(
+            self.pair_issues(items, episodes(False, True)),
+            {("pair-required-item", "QuestionnaireResponse.item")},
+        )
+
+    def test_enable_when_reads_a_question_in_a_subgroup_of_the_same_repetition(self) -> None:
+        items = [{
+            "linkId": "visit",
+            "text": "Visit",
+            "type": "group",
+            "repeats": True,
+            "item": [
+                {
+                    "linkId": "attendance",
+                    "text": "Attendance",
+                    "type": "group",
+                    "item": [{"linkId": "attended", "text": "Attended?", "type": "boolean"}],
+                },
+                {
+                    "linkId": "details",
+                    "text": "Details",
+                    "type": "group",
+                    "item": [{
+                        "linkId": "note",
+                        "text": "Note",
+                        "type": "string",
+                        "enableWhen": self.condition("attended"),
+                    }],
+                },
+            ],
+        }]
+
+        def visit(attended: bool, note: bool) -> dict:
+            group = [{"linkId": "attendance", "item": [self.boolean_answer("attended", attended)]}]
+            if note:
+                group.append({"linkId": "details", "item": [self.string_answer("note")]})
+            return {"linkId": "visit", "item": group}
+
+        self.assertEqual(self.pair_issues(items, [visit(True, True), visit(False, False)]), set())
+        self.assertEqual(
+            self.pair_issues(items, [visit(True, True), visit(False, True)]),
+            {("pair-item-disabled", "QuestionnaireResponse.item[1].item[1].item[0]")},
+        )
+
+    def test_enable_when_reads_an_omitted_question_in_its_own_repetition(self) -> None:
+        # A question the response omits in a repetition is still an occurrence
+        # there, without answers, so the condition does not read another repetition.
+        items = [{
+            "linkId": "round",
+            "text": "Round",
+            "type": "group",
+            "repeats": True,
+            "item": [
+                {"linkId": "played", "text": "Played?", "type": "boolean"},
+                {
+                    "linkId": "score",
+                    "text": "Score",
+                    "type": "string",
+                    "enableWhen": self.condition("played"),
+                },
+            ],
+        }]
+        response = [
+            {"linkId": "round", "item": [self.boolean_answer("played", True), self.string_answer("score")]},
+            {"linkId": "round", "item": [self.string_answer("score")]},
+        ]
+        self.assertEqual(
+            self.pair_issues(items, response),
+            {("pair-item-disabled", "QuestionnaireResponse.item[1].item[0]")},
+        )
+
+    def test_enable_when_in_nested_repeating_groups_reads_the_nearest_occurrence(self) -> None:
+        items = [{
+            "linkId": "outer",
+            "text": "Outer",
+            "type": "group",
+            "repeats": True,
+            "item": [
+                {"linkId": "flag", "text": "Flag?", "type": "boolean"},
+                {
+                    "linkId": "inner",
+                    "text": "Inner",
+                    "type": "group",
+                    "repeats": True,
+                    "item": [
+                        {
+                            "linkId": "flag-note",
+                            "text": "Flag note",
+                            "type": "string",
+                            "enableWhen": self.condition("flag"),
+                        },
+                        {
+                            "linkId": "late-note",
+                            "text": "Late note",
+                            "type": "string",
+                            "enableWhen": self.condition("late"),
+                        },
+                    ],
+                },
+                {"linkId": "late", "text": "Late?", "type": "boolean"},
+            ],
+        }]
+
+        def inner(*link_ids: str) -> dict:
+            return {"linkId": "inner", "item": [self.string_answer(link_id) for link_id in link_ids]}
+
+        response = [
+            {
+                "linkId": "outer",
+                "item": [
+                    self.boolean_answer("flag", True),
+                    inner("flag-note", "late-note"),
+                    inner("flag-note", "late-note"),
+                    self.boolean_answer("late", True),
+                ],
+            },
+            {
+                # `flag` precedes the inner groups in this repetition; `late`
+                # follows them and is read from the first repetition.
+                "linkId": "outer",
+                "item": [
+                    self.boolean_answer("flag", False),
+                    inner("late-note"),
+                    self.boolean_answer("late", False),
+                ],
+            },
+        ]
+        self.assertEqual(self.pair_issues(items, response), set())
+
+        invalid = copy.deepcopy(response)
+        invalid[1]["item"][1] = inner("flag-note", "late-note")
+        self.assertEqual(
+            self.pair_issues(items, invalid),
+            {("pair-item-disabled", "QuestionnaireResponse.item[1].item[1].item[0]")},
+        )
+
+    def test_enable_when_beneath_an_answer_reads_every_answer_of_the_question(self) -> None:
+        items = [{
+            "linkId": "site",
+            "text": "Site",
+            "type": "string",
+            "repeats": True,
+            "item": [{
+                "linkId": "knee-detail",
+                "text": "Knee detail",
+                "type": "string",
+                "enableWhen": [{"question": "site", "operator": "=", "answerString": "Knee"}],
+            }],
+        }]
+        response = [{
+            "linkId": "site",
+            "answer": [
+                {"valueString": "Knee", "item": [self.string_answer("knee-detail")]},
+                {"valueString": "Ankle", "item": [self.string_answer("knee-detail")]},
+            ],
+        }]
+        self.assertEqual(self.pair_issues(items, response), set())
+
+    def test_enable_when_ignores_the_answers_of_a_disabled_question(self) -> None:
+        items = [
+            {"linkId": "gate", "text": "Gate?", "type": "boolean"},
+            {
+                "linkId": "detail",
+                "text": "Detail?",
+                "type": "boolean",
+                "enableWhen": self.condition("gate"),
+            },
+            {
+                "linkId": "follow-up",
+                "text": "Follow-up",
+                "type": "string",
+                "enableWhen": self.condition("detail"),
+            },
+        ]
+        response = [
+            self.boolean_answer("gate", False),
+            self.boolean_answer("detail", True),
+            self.string_answer("follow-up"),
+        ]
+        self.assertEqual(
+            self.pair_issues(items, response),
+            {
+                ("pair-item-disabled", "QuestionnaireResponse.item[1]"),
+                ("pair-item-disabled", "QuestionnaireResponse.item[2]"),
+            },
+        )
+
+    def test_enable_when_on_a_dependency_cycle_cannot_be_evaluated(self) -> None:
+        items = [
+            {
+                "linkId": "first",
+                "text": "First?",
+                "type": "boolean",
+                "enableWhen": [{"question": "second", "operator": "exists", "answerBoolean": True}],
+            },
+            {
+                "linkId": "second",
+                "text": "Second?",
+                "type": "boolean",
+                "enableWhen": [{"question": "first", "operator": "exists", "answerBoolean": True}],
+            },
+        ]
+        self.assertEqual(
+            self.pair_issues(items, []),
+            {
+                ("pair-enable-evaluation", "QuestionnaireResponse.item"),
+            },
         )
 
     def test_occurrence_minima_apply_only_to_enabled_completed_items(self) -> None:
