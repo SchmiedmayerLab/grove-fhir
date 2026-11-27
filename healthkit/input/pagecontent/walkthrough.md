@@ -30,7 +30,7 @@ Every field is length-framed as exact UTF-8 according to the [Grove exchange pro
 The opaque Grove identities are always present.
 They are deliberately non-reversible: equality supports retry, reconciliation, and retraction, but the digest cannot recover the UUID.
 When exact upstream round-trip is required, a deployment may additionally place the clear UUID on this catalog-designated primary Observation as a governed Identifier under its own absolute HealthKit-store namespace.
-The same setting adds the [readable sync identifier](mapping.html#readable-sync-identifier) for a sample that carries a sync pair, which discloses the writing application's bundle identifier.
+A second setting, which takes effect only while the UUID is disclosed, adds the [readable sync identifier](mapping.html#readable-sync-identifier) for a sample that carries a sync pair, which discloses the writing application's bundle identifier.
 That optional identifier is not a Grove graph key and is not repeated on child or support resources.
 The `single` discriminator has no independent clinical meaning; any meaningful source order, time, multiplicity, or ordinal must also appear in a FHIR element or registered payload rather than only in the preimage.
 
