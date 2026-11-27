@@ -410,6 +410,10 @@ def check_task(view: TaskView, index: Definitions, responses: Sequence[Resolved]
         stopped = instant(task.get("lastModified"))
         if not valid_window or stopped is None or (end is not None and stopped > end):
             report("study-task-cancellation-window", "a cancelled occurrence was last modified after its window ended")
+    if status == "failed":
+        attempted = instant(task.get("lastModified"))
+        if not valid_window or attempted is None or attempted < start or (end is not None and attempted > end):
+            report("study-task-failure-window", "a failed occurrence was not attempted within its performance window")
 
     # A component revision or a Task with the complete-questionnaire code makes the occurrence a
     # questionnaire occurrence. Any other occurrence completes without an output.
@@ -568,7 +572,7 @@ class Receiver:
             return "the occurrence identifier is already assigned with other facts", "study-task-occurrence-conflict"
         if prior.content == current.content:
             return "replayed", None
-        if prior.status == "ready" and current.status in {"completed", "cancelled"}:
+        if prior.status == "ready" and current.status in {"completed", "failed", "cancelled"}:
             return "accepted", None
         if prior.status == "completed" and current.status == "completed":
             if current.submission != prior.submission:

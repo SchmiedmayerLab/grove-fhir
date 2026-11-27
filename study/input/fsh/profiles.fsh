@@ -120,7 +120,7 @@ Description: "One assigned occurrence of a study component of any kind. A recurr
 * instantiatesCanonical ^short = "Exact url|version of the component revision this occurrence belongs to"
 * status 1..1 MS
 * status from GroveStudyTaskStatusVS (required)
-* status ^short = "ready | completed | cancelled"
+* status ^short = "ready | completed | failed | cancelled"
 * statusReason MS
 * statusReason from GroveStudyTaskStatusReasonVS (required)
 * statusReason.coding 1..1 MS

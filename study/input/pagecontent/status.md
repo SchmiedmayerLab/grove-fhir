@@ -15,9 +15,10 @@ Completion states such as missed and excused are derived from the status, the st
 |---|---|---|
 | Assigned | `ready` | none |
 | Accepted completion | `completed` | the result the component kind defines: exactly one result link for a questionnaire occurrence, none for a component without a result |
+| Failed attempt | `failed` | none |
 | Stopped assignment | `cancelled` | none |
 
-The [Grove Study Task Status](ValueSet-grove-study-task-status.html) value set binds these three codes; every other R4 Task status is rejected.
+The [Grove Study Task Status](ValueSet-grove-study-task-status.html) value set binds these four codes; every other R4 Task status is rejected.
 A local pending completion is not an accepted transition: an occurrence whose work is in progress, such as a response being answered, or whose completion awaits acceptance, stays `ready`.
 
 The allowed transitions are:
@@ -25,11 +26,13 @@ The allowed transitions are:
 | From | To | Meaning |
 |---|---|---|
 | `ready` | `completed` | The completion, with the result its component kind defines, was accepted |
+| `ready` | `failed` | The participant attempted the occurrence and it could not be completed |
 | `ready` | `cancelled` | The assignment was stopped |
 | `completed` | `completed` | A correction changed the result link of a questionnaire occurrence to a new version of the same response |
 
-A `completed` or `cancelled` occurrence never returns to `ready`, and a `cancelled` occurrence is final.
-A first transmission may already carry `completed` or `cancelled`.
+A `completed`, `failed` or `cancelled` occurrence never returns to `ready`, and a `failed` or `cancelled` occurrence is final.
+A first transmission may already carry `completed`, `failed` or `cancelled`.
+A failed Task's `lastModified` lies within its performance window: an occurrence that lapsed is missed, not failed.
 
 A questionnaire occurrence is completed within its window when its response is authored within it, as [Link the result](results.html) states.
 An occurrence of a component without a result is completed when its status becomes `completed`, so its `lastModified` lies within its performance window.
@@ -55,6 +58,7 @@ A consumer that reports completion evaluates each Task at one stated projection 
 | Completion state | Task |
 |---|---|
 | completed | `status` is `completed` |
+| failed | `status` is `failed` |
 | excused | `status` is `cancelled` and `statusReason` is `excused` |
 | cancelled | `status` is `cancelled` without a status reason |
 | missed | `status` is `ready` and the performance window ended at or before `T` |

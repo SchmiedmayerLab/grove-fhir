@@ -162,6 +162,25 @@ class StudyGraphCaseTests(unittest.TestCase):
             {"rejected": ["study-task-cancellation-window"]},
         )
 
+    def test_a_failed_occurrence_is_final_and_attempted_within_its_window(self) -> None:
+        failed = self.delivery("assigned")
+        failed["entry"][0]["resource"]["status"] = "failed"
+        failed["entry"][0]["resource"]["lastModified"] = "2026-08-19T09:30:00-07:00"
+        receiver = self.receiver()
+        self.assertEqual(outcome(receiver.apply(graph.resources_of(failed))), {"outcomes": {"occurrence-0001": "accepted"}})
+        reopened = self.delivery("assigned")
+        self.assertEqual(
+            outcome(receiver.apply(graph.resources_of(reopened))),
+            {"rejected": ["study-task-status-transition"]},
+        )
+        late = self.delivery("assigned")
+        late["entry"][0]["resource"]["status"] = "failed"
+        late["entry"][0]["resource"]["lastModified"] = "2026-08-20T00:00:01-07:00"
+        self.assertEqual(
+            outcome(self.receiver().apply(graph.resources_of(late))),
+            {"rejected": ["study-task-failure-window"]},
+        )
+
     def test_one_response_completes_one_occurrence(self) -> None:
         shared = self.delivery("completed")
         other = copy.deepcopy(shared["entry"][0])

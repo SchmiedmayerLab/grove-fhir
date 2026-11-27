@@ -20,10 +20,11 @@ Description: "The type of one Task input that places an assigned occurrence of a
 ValueSet: GroveStudyTaskStatusVS
 Id: grove-study-task-status
 Title: "Grove Study Task Status"
-Description: "The Task statuses an assigned occurrence can carry: ready while it is assigned, completed once its completion and any result its component kind defines have been accepted, and cancelled once the assignment was stopped."
+Description: "The Task statuses an assigned occurrence can carry: ready while it is assigned, completed once its completion and any result its component kind defines have been accepted, failed once the participant attempted it and it could not be completed, and cancelled once the assignment was stopped."
 * insert GroveStudyExperimental
 * $taskStatus#ready
 * $taskStatus#completed
+* $taskStatus#failed
 * $taskStatus#cancelled
 
 CodeSystem: GroveStudyTaskStatusReasonCS
