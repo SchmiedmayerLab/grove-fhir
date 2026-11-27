@@ -19,6 +19,7 @@ import tempfile
 import unittest
 from datetime import datetime
 from pathlib import Path
+from typing import Callable
 from unittest import mock
 
 
@@ -81,7 +82,7 @@ def load_generated(filename: str) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def enabled_answers(answers: dict) -> object:
+def enabled_answers(answers: dict) -> Callable[[str], tuple[list, bool]]:
     """Return an enableWhen source that reads enabled questions with the given answers."""
     return lambda question: (answers.get(question, []), True)
 
@@ -1980,6 +1981,41 @@ class QuestionnaireContractTests(unittest.TestCase):
         self.assertEqual(
             self.pair_issues(items, invalid),
             {("pair-item-disabled", "QuestionnaireResponse.item[1].item[1].item[0]")},
+        )
+
+    def test_enable_when_does_not_skip_a_disabled_nearest_occurrence(self) -> None:
+        items = [
+            {
+                "linkId": "round",
+                "text": "Round",
+                "type": "group",
+                "repeats": True,
+                "item": [
+                    {"linkId": "played", "text": "Played?", "type": "boolean"},
+                    {
+                        "linkId": "score",
+                        "text": "Score",
+                        "type": "string",
+                        "enableWhen": self.condition("played"),
+                    },
+                ],
+            },
+            {
+                "linkId": "summary",
+                "text": "Summary",
+                "type": "string",
+                "enableWhen": [{"question": "score", "operator": "exists", "answerBoolean": True}],
+            },
+        ]
+        # The last score is disabled, so the summary does not read the first round's score.
+        response = [
+            {"linkId": "round", "item": [self.boolean_answer("played", True), self.string_answer("score")]},
+            {"linkId": "round", "item": [self.boolean_answer("played", False)]},
+            self.string_answer("summary"),
+        ]
+        self.assertEqual(
+            self.pair_issues(items, response),
+            {("pair-item-disabled", "QuestionnaireResponse.item[2]")},
         )
 
     def test_enable_when_beneath_an_answer_reads_every_answer_of_the_question(self) -> None:
