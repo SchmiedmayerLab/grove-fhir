@@ -4,7 +4,8 @@
   "purpose": "Every committed Grove FHIR fixture outside a guide's input directory goes through the official HL7 FHIR Validator with the exact Grove packages. A guide's own worked examples are validated by the IG Publisher during its build and audited by Scripts/check-guide-qa.py; these fixtures are the ones no build ever sees, so a fixture that contradicts its claimed profile could otherwise ship. Every JSON file beneath the declared roots is either validated here, rejected for one declared reason through a negative corpus, or excluded with a reason, so a new fixture cannot be added unclassified.",
   "roots": [
     "Conformance",
-    "questionnaire/fixtures"
+    "questionnaire/fixtures",
+    "study/fixtures"
   ],
   "packages": [
     {
@@ -26,6 +27,11 @@
     {
       "alias": "healthkit",
       "packageId": "org.grovealliance.fhir.healthkit",
+      "version": "0.8.3"
+    },
+    {
+      "alias": "study",
+      "packageId": "org.grovealliance.fhir.study",
       "version": "0.8.3"
     }
   ],
@@ -165,11 +171,35 @@
       "profiles": [
         "https://grovealliance.org/fhir/questionnaire/StructureDefinition/grove-questionnaire"
       ]
-    }
+    },
+    {"path": "study/fixtures/graph/definitions.json", "profiles": []},
+    {"path": "study/fixtures/structural/questionnaire-task/open-ended.json", "profiles": ["https://grovealliance.org/fhir/study/StructureDefinition/grove-study-questionnaire-task"]},
+    {"path": "study/fixtures/structural/questionnaire-task/fractional-window.json", "profiles": ["https://grovealliance.org/fhir/study/StructureDefinition/grove-study-questionnaire-task"]},
+    {"path": "study/fixtures/structural/questionnaire-task/mixed-precision-window.json", "profiles": ["https://grovealliance.org/fhir/study/StructureDefinition/grove-study-questionnaire-task"]},
+    {"path": "study/fixtures/graph/deliveries/assigned.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/completed-after-window.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/completed.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/conflicting-reuse.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/corrected.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/excused.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/informational-completed.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/invalid-result-reference.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/pending-as-completed.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/questionnaire-completed-without-result.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/re-enrollment.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/result-outside-window.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/reused-after-re-enrollment.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/same-time.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/second-completion.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/wrong-component-revision.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/wrong-instrument-version.json", "profiles": []},
+    {"path": "study/fixtures/graph/deliveries/wrong-subject.json", "profiles": []}
   ],
   "negativeCorpora": [
     "Conformance/corpora/mobile-profile-invariants/corpus.json",
-    "Conformance/corpora/healthkit-insulin-delivery/corpus.json"
+    "Conformance/corpora/healthkit-insulin-delivery/corpus.json",
+    "study/fixtures/structural/questionnaire-task/corpus.json",
+    "study/fixtures/structural/task/corpus.json"
   ],
   "excluded": [
     {
@@ -235,6 +265,10 @@
     {
       "path": "questionnaire/fixtures/validator/cases.json",
       "reason": "A Questionnaire validator case manifest of JSON Patch mutations, not a FHIR resource."
+    },
+    {
+      "path": "study/fixtures/graph/cases.json",
+      "reason": "Graph cases: each names its deliveries in order and the outcome or graph rules expected for each; checked by Tests/test_study_graph.py, not a FHIR resource."
     },
     {
       "path": "questionnaire/fixtures/validator/validator-expectations.json",

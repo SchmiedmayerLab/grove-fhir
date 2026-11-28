@@ -45,6 +45,7 @@ class PackageGraphTests(unittest.TestCase):
                 "withings",
                 "oura",
                 "google-health",
+                "study",
             ],
         )
         self.assertEqual(len(sources), len(set(sources)))

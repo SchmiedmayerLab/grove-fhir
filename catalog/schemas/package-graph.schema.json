@@ -14,8 +14,8 @@
     "canonicalRoot": { "const": "https://grovealliance.org/fhir" },
     "packages": {
       "type": "array",
-      "minItems": 10,
-      "maxItems": 10,
+      "minItems": 11,
+      "maxItems": 11,
       "uniqueItems": true,
       "allOf": [
         { "contains": { "type": "object", "properties": { "source": { "const": "mobile" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 },
@@ -27,7 +27,8 @@
         { "contains": { "type": "object", "properties": { "source": { "const": "providers" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 },
         { "contains": { "type": "object", "properties": { "source": { "const": "withings" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 },
         { "contains": { "type": "object", "properties": { "source": { "const": "oura" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 },
-        { "contains": { "type": "object", "properties": { "source": { "const": "google-health" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 }
+        { "contains": { "type": "object", "properties": { "source": { "const": "google-health" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 },
+        { "contains": { "type": "object", "properties": { "source": { "const": "study" } }, "required": ["source"] }, "minContains": 1, "maxContains": 1 }
       ],
       "items": {
         "type": "object",
@@ -63,7 +64,8 @@
           { "$ref": "#/$defs/providersPackage" },
           { "$ref": "#/$defs/withingsPackage" },
           { "$ref": "#/$defs/ouraPackage" },
-          { "$ref": "#/$defs/googleHealthPackage" }
+          { "$ref": "#/$defs/googleHealthPackage" },
+          { "$ref": "#/$defs/studyPackage" }
         ]
       }
     }
@@ -87,6 +89,7 @@
     "providersPackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "providers" }, "packageId": { "const": "org.grovealliance.fhir.providers" }, "canonical": { "const": "https://grovealliance.org/fhir/providers" } } }] },
     "withingsPackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "withings" }, "packageId": { "const": "org.grovealliance.fhir.withings" }, "canonical": { "const": "https://grovealliance.org/fhir/withings" } } }] },
     "ouraPackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "oura" }, "packageId": { "const": "org.grovealliance.fhir.oura" }, "canonical": { "const": "https://grovealliance.org/fhir/oura" } } }] },
-    "googleHealthPackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "google-health" }, "packageId": { "const": "org.grovealliance.fhir.google-health" }, "canonical": { "const": "https://grovealliance.org/fhir/google-health" } } }] }
+    "googleHealthPackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "google-health" }, "packageId": { "const": "org.grovealliance.fhir.google-health" }, "canonical": { "const": "https://grovealliance.org/fhir/google-health" } } }] },
+    "studyPackage": { "allOf": [{ "$ref": "#/$defs/packageIdentity" }, { "type": "object", "properties": { "source": { "const": "study" }, "packageId": { "const": "org.grovealliance.fhir.study" }, "canonical": { "const": "https://grovealliance.org/fhir/study" } } }] }
   }
 }

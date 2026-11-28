@@ -133,6 +133,17 @@
         "org.grovealliance.fhir.providers#0.8.3",
         "org.grovealliance.fhir.sensor#0.8.3"
       ]
+    },
+    {
+      "source": "study",
+      "packageId": "org.grovealliance.fhir.study",
+      "canonical": "https://grovealliance.org/fhir/study",
+      "directDependencies": [
+        "hl7.terminology.r4#7.5.0",
+        "hl7.fhir.uv.sdc#4.0.0",
+        "hl7.fhir.uv.extensions.r4#5.4.0",
+        "org.grovealliance.fhir.questionnaire#0.8.3"
+      ]
     }
   ],
   "normativeCatalogs": [

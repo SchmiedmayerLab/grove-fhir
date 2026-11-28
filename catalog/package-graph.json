@@ -404,6 +404,24 @@
         "google-health-daily-resting-heart-rate",
         "google-health-observation"
       ]
+    },
+    {
+      "source": "study",
+      "packageId": "org.grovealliance.fhir.study",
+      "canonical": "https://grovealliance.org/fhir/study",
+      "dependencies": [
+        "hl7.terminology.r4#7.5.0",
+        "hl7.fhir.uv.sdc#4.0.0",
+        "hl7.fhir.uv.extensions.r4#5.4.0",
+        "org.grovealliance.fhir.questionnaire#0.8.3"
+      ],
+      "profiles": [
+        "grove-study-component",
+        "grove-study-protocol",
+        "grove-study-questionnaire-component",
+        "grove-study-questionnaire-task",
+        "grove-study-task"
+      ]
     }
   ]
 }

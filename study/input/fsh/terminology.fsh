@@ -1,0 +1,44 @@
+//
+// This source file is part of the Grove FHIR open-source project
+//
+// SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
+//
+
+CodeSystem: GroveStudyTaskInputCS
+Id: grove-study-task-input
+Title: "Grove Study Task Input"
+Description: "The type of one Task input that places an assigned occurrence of any component kind in its study context. The Questionnaire input of a questionnaire occurrence uses the Structured Data Capture code for that role."
+* insert GroveStudyExperimental
+* ^caseSensitive = true
+* ^content = #complete
+* #performance-window "Performance window" "The Period in which the participant is allowed to perform the occurrence. Its start opens the occurrence and its end is the last instant at which answers can be gathered for it."
+* #enrollment "Enrollment" "The ResearchSubject the occurrence was assigned under. A later enrollment of the same participant is a different ResearchSubject."
+* #protocol "Protocol" "The exact url|version of the PlanDefinition whose action assigned the occurrence."
+
+ValueSet: GroveStudyTaskStatusVS
+Id: grove-study-task-status
+Title: "Grove Study Task Status"
+Description: "The Task statuses an assigned occurrence can carry: ready while it is assigned, completed once its completion and any result its component kind defines have been accepted, failed once the participant attempted it and it could not be completed, and cancelled once the assignment was stopped."
+* insert GroveStudyExperimental
+* $taskStatus#ready
+* $taskStatus#completed
+* $taskStatus#failed
+* $taskStatus#cancelled
+
+CodeSystem: GroveStudyTaskStatusReasonCS
+Id: grove-study-task-status-reason
+Title: "Grove Study Task Status Reason"
+Description: "Why the assignment of a cancelled occurrence was stopped, where the reason changes how the occurrence counts."
+* insert GroveStudyExperimental
+* ^caseSensitive = true
+* ^content = #complete
+* #excused "Excused" "The study released the participant from this occurrence. It counts as excused, neither as completed nor as missed."
+
+ValueSet: GroveStudyTaskStatusReasonVS
+Id: grove-study-task-status-reason
+Title: "Grove Study Task Status Reason"
+Description: "The status reasons a cancelled occurrence can carry."
+* insert GroveStudyExperimental
+* include codes from system GroveStudyTaskStatusReasonCS

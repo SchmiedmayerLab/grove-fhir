@@ -6,9 +6,10 @@ SPDX-FileCopyrightText: 2026 Schmiedmayer Lab and the project authors (see CONTR
 SPDX-License-Identifier: MIT
 -->
 
-The Grove FHIR Implementation Guides are a coordinated family of ten packages that share one exchange model.
-This guide, Mobile, is the hub: it defines the source-neutral profiles every adapter emits.
+The Grove FHIR Implementation Guides are a coordinated family of eleven packages.
+This guide, Mobile, is the hub of the measurement exchange: it defines the source-neutral profiles every adapter emits.
 Each adapter guide binds one platform or provider API to those shared profiles and states exactly which source types convert, which do not, and why.
+The Questionnaire and Study guides define instruments, responses, and assigned study tasks beside the measurement exchange.
 
 ### Guide responsibilities
 
@@ -24,6 +25,7 @@ Each adapter guide binds one platform or provider API to those shared profiles a
 | [Oura](https://grovealliance.org/fhir/oura/) | The Oura specialization of the provider contract | Implementing the exact Oura source surface |
 | [Google Health](https://grovealliance.org/fhir/google-health/) | The Google Health API specialization of the provider contract | Implementing the exact Google source surface |
 | [Questionnaire](https://grovealliance.org/fhir/questionnaire/) | Instrument definition, response capture, and the validated pair contract | Defining instruments or accepting questionnaire responses |
+| [Study](https://grovealliance.org/fhir/study/) | Protocol and component revisions, assigned task occurrences, and their accepted results | Assigning study tasks or accepting their completions |
 
 ### Select a source route
 
@@ -50,7 +52,7 @@ Producer implementations use these files to select profiles, map source data, an
 | [providers-adapter.json](https://grovealliance.org/fhir/catalog/providers-adapter.json) | The exhaustive Google Health, Oura, and Withings element inventory |
 | [sensor-catalog.json](https://grovealliance.org/fhir/catalog/sensor-catalog.json) | The source-neutral sensor recording and time-series contract |
 | [profile-claims.json](https://grovealliance.org/fhir/catalog/profile-claims.json) | The exact profile sets a conformant resource must claim, per output kind |
-| [package-graph.json](https://grovealliance.org/fhir/catalog/package-graph.json) | The dependency graph between the ten guide packages |
+| [package-graph.json](https://grovealliance.org/fhir/catalog/package-graph.json) | The dependency graph between the eleven guide packages |
 | [exchange-protocol.json](https://grovealliance.org/fhir/catalog/exchange-protocol.json) | The normative identity, record, record-version, lifecycle, entry-key, canonical JSON, and payload contract, including language-independent conformance test vectors |
 | [release-manifest.json](https://grovealliance.org/fhir/catalog/release-manifest.json) | The coordinated release version, FHIR release, package identities, exact direct dependencies, catalogs, and publication state |
 
