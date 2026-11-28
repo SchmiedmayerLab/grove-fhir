@@ -124,8 +124,14 @@ When `repeats` is false or absent, a question has at most one answer and a group
 A repeating question carries multiple answers in one response item.
 A repeating group is represented by multiple group-item occurrences.
 When the question an `enableWhen` refers to occurs more than once, the condition reads the nearest occurrence reachable by tracing first the ancestor axis, then the preceding axis, then the following axis, as the [R4 definition of `enableWhen.question`](https://hl7.org/fhir/R4/questionnaire-definitions.html#Questionnaire.item.enableWhen.question) specifies.
-A question that precedes the item in the same repetition and is answered there is therefore read from that repetition.
-A question that follows the item, or has no occurrence in that repetition, can be read from another repetition.
+Every item has an occurrence in every repetition of its enclosing groups and beneath every answer of its enclosing question, also where the response omits it; an omitted question is an occurrence without answers.
+A question that precedes the item in the same repetition is therefore read from that repetition, also when the response omits it there.
+A question that follows the item in a repeating group is read from the previous repetition, and in the first repetition from that repetition.
+A condition of an item beneath an answer that refers to the enclosing question reads every answer of that question.
+A condition of an item after a repeating group that refers to a question inside the group reads the last repetition.
+The answers of a disabled question count as absent, also when an earlier occurrence of the question is enabled.
+A condition with `!=` is true when no answer of the question equals the condition's answer, also when the question has no answer; a condition with `=`, `>`, `<`, `>=`, or `<=` is true when at least one answer satisfies it.
+An item whose enablement depends on itself, through its conditions or its enclosing items, cannot be evaluated.
 For enabled items, `questionnaire-maxOccurs` always limits occurrences; `questionnaire-minOccurs` is enforced when the response is `completed` or `amended`.
 An option marked exclusive cannot be combined with another answer.
 
